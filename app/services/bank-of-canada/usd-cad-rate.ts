@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { fetchWithRetry } from '@/services/public-cloud-finance/ingest/http-retry';
 
 /** Bank of Canada Valet: daily average USD expressed in CAD (1 USD → CAD). */
 const BOC_FXUSDCAD_SERIES = 'FXUSDCAD';
@@ -69,9 +70,11 @@ export async function fetchUsdCadExchangeRate(fetchImpl: typeof fetch = fetch): 
     return latestCache.value;
   }
 
-  const response = await fetchImpl(`${BOC_VALET_BASE}?recent=1`, {
-    headers: { Accept: 'application/json' },
-  });
+  const response = await fetchWithRetry(
+    `${BOC_VALET_BASE}?recent=1`,
+    { headers: { Accept: 'application/json' } },
+    { fetchImpl },
+  );
 
   if (!response.ok) {
     throw new Error(`Bank of Canada Valet request failed (${response.status})`);
@@ -101,9 +104,7 @@ export async function fetchUsdCadExchangeRateForMonth(
   const end = `${year}-${String(month).padStart(2, '0')}-${String(lastDayOfMonth(year, month)).padStart(2, '0')}`;
   const url = `${BOC_VALET_BASE}?start_date=${start}&end_date=${end}`;
 
-  const response = await fetchImpl(url, {
-    headers: { Accept: 'application/json' },
-  });
+  const response = await fetchWithRetry(url, { headers: { Accept: 'application/json' } }, { fetchImpl });
 
   if (!response.ok) {
     throw new Error(`Bank of Canada Valet request failed (${response.status}) for ${key}`);

@@ -65,6 +65,28 @@ describe('fetchUsdCadExchangeRate', () => {
     expect(second.rate).toBe(1.4049);
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
+
+  it('retries a throttled Valet response', async () => {
+    const fetchImpl = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+        headers: new Headers({ 'retry-after': '0' }),
+        json: async () => ({}),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        headers: new Headers(),
+        json: async () => ({
+          observations: [{ d: '2026-07-15', FXUSDCAD: { v: '1.4049' } }],
+        }),
+      });
+
+    const result = await fetchUsdCadExchangeRate(fetchImpl as unknown as typeof fetch);
+    expect(result.rate).toBe(1.4049);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('fetchUsdCadExchangeRateForMonth', () => {

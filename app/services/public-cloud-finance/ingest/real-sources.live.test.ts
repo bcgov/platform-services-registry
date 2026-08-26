@@ -162,7 +162,7 @@ describe('finance live billing sources (SSO / az login)', () => {
         });
       }
     },
-    180_000,
+    300_000,
   );
 
   (canRunAzure ? it : it.skip)(
@@ -232,7 +232,7 @@ describe('finance live billing sources (SSO / az login)', () => {
         });
       }
     },
-    180_000,
+    300_000,
   );
 
   if (!canRunAws && !canRunAzure) {

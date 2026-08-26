@@ -126,6 +126,8 @@ Subscription / account IDs for joins still come from product metadata (`azureSub
 | `AWS_REGION` or `FINANCE_AWS_REGION` | Prefer `ca-central-1`                                                            |
 | `FINANCE_LIVE_BILLING`               | Optional; set `api` to force live adapters (also auto when AWS keys are present) |
 
+Cost Explorer ingest is one monthly `GetCostAndUsage` (account × service), paginated, with the AWS SDK adaptive retry mode. Linked-account allowlists are chunked so a live test filter cannot overflow the CE dimension limit.
+
 Optional later: replace static keys with IRSA / assume-role (`AWS_ROLE_ARN`) if platform standards prefer that.
 
 ### Azure (Cost Management)
@@ -139,14 +141,17 @@ Optional later: replace static keys with IRSA / assume-role (`AWS_ROLE_ARN`) if 
 
 **Vault keys to add (Test, then Prod):**
 
-| Env var                | Purpose                                                                       |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| `AZURE_TENANT_ID`      | Entra tenant                                                                  |
-| `AZURE_CLIENT_ID`      | App registration (application) ID                                             |
-| `AZURE_CLIENT_SECRET`  | Client secret                                                                 |
-| `FINANCE_LIVE_BILLING` | Optional; set `api` to force live adapters (also auto when SP env is present) |
+| Env var                    | Purpose                                                                                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AZURE_TENANT_ID`          | Entra tenant                                                                                                                                                                                           |
+| `AZURE_CLIENT_ID`          | App registration (application) ID                                                                                                                                                                      |
+| `AZURE_CLIENT_SECRET`      | Client secret                                                                                                                                                                                          |
+| `FINANCE_LIVE_BILLING`     | Optional; set `api` to force live adapters (also auto when SP env is present)                                                                                                                          |
+| `FINANCE_AZURE_COST_SCOPE` | Optional ARM scope for **one** estate Query (billing account or management group), e.g. `/providers/Microsoft.Management/managementGroups/{id}` or `/providers/Microsoft.Billing/billingAccounts/{id}` |
 
 Subscription IDs come from product metadata (`azureSubscriptions` / `billingAccountLinks`), not from Vault.
+
+**Rate limits.** Azure Cost Management Query is the tight quota. Ingest prefers `FINANCE_AZURE_COST_SCOPE` (one call grouped by `SubscriptionId` + `ServiceName`, then filtered to known products). If that scope is unset or returns 400/401/403/404, it falls back to sequential per-subscription queries paced at 2s, retries 429/5xx, and honors `Retry-After` / `retry-after-ms`. Pages follow `nextLink`. The `az rest` local fallback retries on 429-like errors. Bank of Canada Valet uses the same HTTP retry helper.
 
 ### Airflow → registry auth
 

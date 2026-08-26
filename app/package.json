@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
     "test": "dotenv -e .env.test -- prisma db push && NODE_OPTIONS='--experimental-vm-modules' jest --runInBand",
-    "test:finance-live": "dotenv -e .env.local -- env NODE_OPTIONS='--experimental-vm-modules' jest --runInBand --testPathIgnorePatterns=/node_modules/ --testPathPattern=real-sources.live.test",
+    "test:finance-live": "dotenv -e .env.local -- env NODE_OPTIONS='--experimental-vm-modules' jest --runInBand --testPathIgnorePatterns=/node_modules/ --testPathPatterns=real-sources.live.test",
     "prisma-generate": "prisma generate",
     "prisma-push": "dotenv -e .env.local -- prisma db push",
     "seed-local": "dotenv -e .env.local -- ts-node --project tsconfig.seed.json seed/seed-local-dev.ts",
