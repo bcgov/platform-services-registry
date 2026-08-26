@@ -1,3 +1,5 @@
+import { randomInt } from 'node:crypto';
+
 const DEFAULT_MAX_ATTEMPTS = 6;
 const DEFAULT_MAX_DELAY_MS = 60_000;
 
@@ -49,7 +51,7 @@ export function retryAfterDelayMs(
   }
 
   const exp = Math.min(1000 * 2 ** Math.max(attempt - 1, 0), 30_000);
-  const jitter = options?.jitterMs ?? Math.floor(Math.random() * 250);
+  const jitter = options?.jitterMs ?? randomInt(250);
   return clampDelay(exp + jitter, maxDelayMs);
 }
 

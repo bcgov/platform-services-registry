@@ -73,6 +73,12 @@ function columnIndex(columns: string[], ...names: string[]) {
   return columns.findIndex((column) => wanted.has(column.toLowerCase()));
 }
 
+function columnName(value: unknown) {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number') return String(value);
+  return '';
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -81,7 +87,7 @@ function readAzureQueryPayload(payload: unknown): AzureQueryPayload {
   if (!isRecord(payload)) return {};
   const properties = isRecord(payload.properties) ? payload.properties : undefined;
   const columns = Array.isArray(properties?.columns)
-    ? properties.columns.filter(isRecord).map((column) => ({ name: String(column.name ?? '') }))
+    ? properties.columns.filter(isRecord).map((column) => ({ name: columnName(column.name) }))
     : undefined;
   const rows = Array.isArray(properties?.rows)
     ? properties.rows.filter((row): row is Array<string | number> => Array.isArray(row))
