@@ -31,13 +31,17 @@ export const POST = createApiHandler({
     ? 'finance-ingest-sa'
     : session.user?.email || session.userIdirGuid || 'api';
 
-  const result = await ingestBillingPeriod({
-    provider: body.provider as Provider,
-    period: { year: body.year, month: body.month },
-    triggeredBy,
-    source: useSimulated ? createSimulatedBillingSource() : undefined,
-    scope: body.licencePlates?.length ? { licencePlates: body.licencePlates } : undefined,
-  });
-
-  return OkResponse(result);
+  try {
+    const result = await ingestBillingPeriod({
+      provider: body.provider as Provider,
+      period: { year: body.year, month: body.month },
+      triggeredBy,
+      source: useSimulated ? createSimulatedBillingSource() : undefined,
+      scope: body.licencePlates?.length ? { licencePlates: body.licencePlates } : undefined,
+    });
+    return OkResponse(result);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Ingest failed';
+    return BadRequestResponse(message);
+  }
 });

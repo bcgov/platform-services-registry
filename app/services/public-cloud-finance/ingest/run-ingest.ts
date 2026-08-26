@@ -10,7 +10,11 @@ import {
 import { defaultFinanceBillingSource } from '../constants';
 import { loadProductBillingStartByPlate, platesToRollupForPeriod } from '../product-billing-start';
 import { evaluateSpendFlagsForPeriod } from './evaluate-flags';
-import { elapsedCompleteFyMonths } from './missing-periods';
+import {
+  assertClassicAwsRealIngestAllowed,
+  elapsedCompleteFyMonths,
+  SCHEDULED_INGEST_PROVIDERS,
+} from './missing-periods';
 import { partitionMatchedUnmatched } from './partition-lines';
 import { createAwsBillingSource, createAzureBillingSource } from './real-sources';
 import { createSimulatedBillingSource } from './simulated-source';
@@ -308,6 +312,7 @@ async function evaluateFlagsForPeriodAndLater(period: BillingPeriod) {
 
 export async function ingestBillingPeriod(options: IngestOptions): Promise<IngestResult> {
   const { provider, period, triggeredBy } = options;
+  assertClassicAwsRealIngestAllowed(provider, { forcedSource: Boolean(options.source) });
   const source = resolveBillingSource(provider, options.source);
   const { periodStart, periodEnd } = periodBounds(period);
   const isScoped = Boolean(options.scope?.licencePlates?.length || options.scope?.accountIdentifiers?.length);
@@ -410,20 +415,8 @@ export async function ingestFiscalYearToDate(options: {
 }) {
   const now = new Date();
   const through = options.throughMonth ?? { year: now.getFullYear(), month: now.getMonth() + 1 };
-  const fyStartYear = through.month >= 4 ? through.year : through.year - 1;
-
-  const periods: BillingPeriod[] = [];
-  for (let month = 4; month <= 12; month += 1) {
-    periods.push({ year: fyStartYear, month });
-    if (fyStartYear === through.year && month >= through.month) break;
-  }
-  if (through.year > fyStartYear) {
-    for (let month = 1; month <= through.month; month += 1) {
-      periods.push({ year: through.year, month });
-    }
-  }
-
-  const providers = options.providers ?? [Provider.AWS, Provider.AWS_LZA, Provider.AZURE];
+  const periods = elapsedCompleteFyMonths(through);
+  const providers = options.providers ?? [...SCHEDULED_INGEST_PROVIDERS];
   const results: IngestResult[] = [];
   for (const period of periods) {
     for (const provider of providers) {

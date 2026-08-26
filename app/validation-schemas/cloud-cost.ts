@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { objectId } from '@/validation-schemas/common';
 
 export const forecastMonthlyValueSchema = z.object({
   year: z.number().int().min(2000).max(2100),
@@ -57,7 +58,7 @@ export const varianceNoteBodySchema = z.object({
   year: z.number().int().min(2000).max(2100),
   month: z.number().int().min(1).max(12),
   body: z.string().min(1).max(8000),
-  supersedesNoteId: z.string().optional(),
+  supersedesNoteId: objectId.optional(),
 });
 
 export const financeIngestBodySchema = z.object({

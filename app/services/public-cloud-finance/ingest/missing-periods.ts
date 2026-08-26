@@ -6,6 +6,7 @@ import {
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Provider } from '@/prisma/client';
+import { defaultFinanceBillingSource } from '../constants';
 import type { BillingFetchScope, BillingPeriod } from './types';
 
 export const SCHEDULED_INGEST_PROVIDERS = [Provider.AWS_LZA, Provider.AZURE] as const;
@@ -59,4 +60,19 @@ export async function listScheduledIngestPlan(through: BillingPeriod = lastCompl
 
 export function isScopedAzureFetch(scope?: BillingFetchScope) {
   return Boolean(scope?.licencePlates?.length || scope?.accountIdentifiers?.length);
+}
+
+/**
+ * Classic AWS shares the LZA Cost Explorer estate. Real ingest must use AWS_LZA
+ * so the same dollars are not tagged twice. Simulated or an explicit source
+ * (local live CLI) may still ingest AWS.
+ */
+export function assertClassicAwsRealIngestAllowed(
+  provider: Provider,
+  options: { forcedSource?: boolean; billingSource?: 'simulated' | 'real' } = {},
+) {
+  const billingSource = options.billingSource ?? defaultFinanceBillingSource();
+  if (provider === Provider.AWS && !options.forcedSource && billingSource === 'real') {
+    throw new Error('Classic AWS ingest is not supported on the real Cost Explorer path. Use AWS_LZA.');
+  }
 }

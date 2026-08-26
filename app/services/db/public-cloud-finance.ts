@@ -559,9 +559,14 @@ export async function getUnmatchedBilling(options?: { provider?: ProviderFilter;
 
   const lines = await prisma.unmatchedBillingLine.findMany({
     where: {
-      year,
-      month,
-      ...(provider === 'ALL' ? {} : { provider }),
+      AND: [
+        unresolvedUnmatchedWhere,
+        {
+          year,
+          month,
+          ...(provider === 'ALL' ? {} : { provider }),
+        },
+      ],
     },
     orderBy: [{ amountCad: 'desc' }],
   });
@@ -611,21 +616,39 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
     data: { billingAccountLinks: nextLinks as Prisma.InputJsonValue },
   });
 
-  await prisma.actualSpend.create({
-    data: {
-      licencePlate,
-      provider: line.provider,
-      serviceLine: line.serviceLine,
-      year: line.year,
-      month: line.month,
-      amountCad: line.amountCad,
-      sourceCurrency: line.sourceCurrency,
-      fxRate: line.fxRate,
-      fxRateDate: line.fxRateDate,
-      ingestionRunId: line.ingestionRunId,
-      supersededBy: null,
+  const alreadyAttached = await prisma.actualSpend.findFirst({
+    where: {
+      AND: [
+        activeActualSpendWhere,
+        {
+          licencePlate,
+          provider: line.provider,
+          serviceLine: line.serviceLine,
+          year: line.year,
+          month: line.month,
+          ingestionRunId: line.ingestionRunId,
+        },
+      ],
     },
+    select: { id: true },
   });
+  if (!alreadyAttached) {
+    await prisma.actualSpend.create({
+      data: {
+        licencePlate,
+        provider: line.provider,
+        serviceLine: line.serviceLine,
+        year: line.year,
+        month: line.month,
+        amountCad: line.amountCad,
+        sourceCurrency: line.sourceCurrency,
+        fxRate: line.fxRate,
+        fxRateDate: line.fxRateDate,
+        ingestionRunId: line.ingestionRunId,
+        supersededBy: null,
+      },
+    });
+  }
 
   const group = await prisma.actualSpend.aggregate({
     where: {
