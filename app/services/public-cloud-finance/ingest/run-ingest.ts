@@ -182,10 +182,9 @@ async function writeMatchedAndSupersede(options: {
     select: { id: true },
   });
 
-  const createdIds: string[] = [];
-  for (const line of matched) {
-    const created = await prisma.actualSpend.create({
-      data: {
+  if (matched.length > 0) {
+    await prisma.actualSpend.createMany({
+      data: matched.map((line) => ({
         licencePlate: line.licencePlate,
         provider: line.provider,
         serviceLine: line.serviceLine,
@@ -197,19 +196,27 @@ async function writeMatchedAndSupersede(options: {
         fxRateDate: line.fxRateDate,
         ingestionRunId: runId,
         supersededBy: null,
-      },
-      select: { id: true },
+      })),
     });
-    createdIds.push(created.id);
   }
 
-  // Point superseded rows at the first new row id for the run (audit trail of replacement).
-  if (existing.length > 0 && createdIds[0]) {
+  const marker = await prisma.actualSpend.findFirst({
+    where: {
+      ingestionRunId: runId,
+      provider,
+      year: period.year,
+      month: period.month,
+    },
+    select: { id: true },
+  });
+
+  // Point superseded rows at a new row for the run (audit trail of replacement).
+  if (existing.length > 0 && marker) {
     await prisma.actualSpend.updateMany({
       where: { id: { in: existing.map((e) => e.id) } },
-      data: { supersededBy: createdIds[0] },
+      data: { supersededBy: marker.id },
     });
-  } else if (existing.length > 0 && createdIds.length === 0) {
+  } else if (existing.length > 0) {
     // Period cleared (no matched lines): mark prior as superseded by a sentinel run marker via soft clear.
     await prisma.actualSpend.updateMany({
       where: { id: { in: existing.map((e) => e.id) } },

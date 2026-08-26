@@ -1,0 +1,88 @@
+import { Provider, SpendFlagRuleId } from '@/prisma/client';
+import { planSpendFlagReconcile } from './evaluate-flags';
+
+const base = {
+  licencePlate: 'abc123',
+  provider: Provider.AWS,
+  year: 2026,
+  month: 6,
+  ruleId: SpendFlagRuleId.MOM_INCREASE,
+};
+
+describe('planSpendFlagReconcile', () => {
+  it('creates new flags and deletes stale unreviewed ones', () => {
+    const plan = planSpendFlagReconcile(
+      [
+        {
+          ...base,
+          id: 'stale',
+          currentAmountCad: 100,
+          priorAmountCad: 50,
+        },
+      ],
+      [
+        {
+          ...base,
+          licencePlate: 'new456',
+          currentAmountCad: 200,
+          priorAmountCad: 80,
+        },
+      ],
+    );
+
+    expect(plan.staleIds).toEqual(['stale']);
+    expect(plan.toCreate).toHaveLength(1);
+    expect(plan.toUpdate).toEqual([]);
+  });
+
+  it('updates amounts on matching keys without treating them as create or delete', () => {
+    const plan = planSpendFlagReconcile(
+      [
+        {
+          ...base,
+          id: 'keep',
+          currentAmountCad: 100,
+          priorAmountCad: 50,
+        },
+      ],
+      [
+        {
+          ...base,
+          currentAmountCad: 180,
+          priorAmountCad: 50,
+        },
+      ],
+    );
+
+    expect(plan.staleIds).toEqual([]);
+    expect(plan.toCreate).toEqual([]);
+    expect(plan.toUpdate).toEqual([{ id: 'keep', currentAmountCad: 180, priorAmountCad: 50 }]);
+  });
+
+  it('leaves unchanged flags untouched, treating null prior as missing', () => {
+    const plan = planSpendFlagReconcile(
+      [
+        {
+          ...base,
+          id: 'same',
+          ruleId: SpendFlagRuleId.NEW_SERVICE_LINE,
+          serviceLine: 'EC2',
+          currentAmountCad: 250,
+          priorAmountCad: null,
+        },
+      ],
+      [
+        {
+          ...base,
+          ruleId: SpendFlagRuleId.NEW_SERVICE_LINE,
+          serviceLine: 'EC2',
+          currentAmountCad: 250,
+        },
+      ],
+    );
+
+    expect(plan.staleIds).toEqual([]);
+    expect(plan.toCreate).toEqual([]);
+    expect(plan.toUpdate).toEqual([]);
+  });
+});

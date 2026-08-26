@@ -149,6 +149,33 @@ function collectNewServiceLineFlags(
   return flags;
 }
 
+export function spendFlagKey(flag: Pick<SpendFlagInput, 'licencePlate' | 'provider' | 'serviceLine' | 'ruleId'>) {
+  return `${flag.licencePlate}:${flag.provider}:${flag.serviceLine ?? ''}:${flag.ruleId}`;
+}
+
+export function planSpendFlagReconcile(
+  existing: Array<{ id: string; currentAmountCad: number; priorAmountCad?: number | null } & SpendFlagInput>,
+  next: SpendFlagInput[],
+) {
+  const existingByKey = new Map(existing.map((row) => [spendFlagKey(row), row]));
+  const nextKeys = new Set(next.map(spendFlagKey));
+  return {
+    staleIds: existing.filter((row) => !nextKeys.has(spendFlagKey(row))).map((row) => row.id),
+    toCreate: next.filter((flag) => !existingByKey.has(spendFlagKey(flag))),
+    toUpdate: next.flatMap((flag) => {
+      const current = existingByKey.get(spendFlagKey(flag));
+      if (!current) return [];
+      if (
+        current.currentAmountCad === flag.currentAmountCad &&
+        (current.priorAmountCad ?? undefined) === flag.priorAmountCad
+      ) {
+        return [];
+      }
+      return [{ id: current.id, currentAmountCad: flag.currentAmountCad, priorAmountCad: flag.priorAmountCad }];
+    }),
+  };
+}
+
 export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
   const { rollups, priorByKey, forecastByPlateMonth, currentLines, seenService } = await loadFlagEvaluationData(period);
 
@@ -157,18 +184,25 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
     ...collectNewServiceLineFlags(period, currentLines, seenService),
   ];
 
-  // Replace unreviewed flags for this period so re-ingest is idempotent for open items.
-  await prisma.spendFlag.deleteMany({
-    where: {
-      year: period.year,
-      month: period.month,
-      reviewedAt: null,
-    },
+  const existing = await prisma.spendFlag.findMany({
+    where: { year: period.year, month: period.month, reviewedAt: null },
   });
+  const plan = planSpendFlagReconcile(existing, flags);
 
-  if (flags.length > 0) {
-    await prisma.spendFlag.createMany({ data: flags });
+  if (plan.staleIds.length > 0) {
+    await prisma.spendFlag.deleteMany({ where: { id: { in: plan.staleIds } } });
   }
+  if (plan.toCreate.length > 0) {
+    await prisma.spendFlag.createMany({ data: plan.toCreate });
+  }
+  await Promise.all(
+    plan.toUpdate.map((row) =>
+      prisma.spendFlag.update({
+        where: { id: row.id },
+        data: { currentAmountCad: row.currentAmountCad, priorAmountCad: row.priorAmountCad },
+      }),
+    ),
+  );
 
   return flags.length;
 }
