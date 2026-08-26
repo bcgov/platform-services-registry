@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { formatCadAmount, formatPercent } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -26,7 +27,7 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
     enabled: Boolean(session?.previews.publicCloudFinance),
   });
 
-  if (!session?.previews.publicCloudFinance) return null;
+  if (!session?.previews.publicCloudFinance) return <FinancePreviewDisabled />;
 
   return (
     <div className="pt-5">
@@ -161,6 +162,13 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
                   </tr>
                 </thead>
                 <tbody>
+                  {data.serviceLines.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-3 py-4 text-sm text-gray-500">
+                        No service line rankings for this filter.
+                      </td>
+                    </tr>
+                  ) : null}
                   {data.serviceLines.map(
                     (row: {
                       rank: number;

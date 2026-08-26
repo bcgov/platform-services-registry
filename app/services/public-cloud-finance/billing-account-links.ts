@@ -68,6 +68,23 @@ export function accountJoinKey(provider: Provider, accountIdentifier: string) {
   return `${provider}:${accountIdentifier.trim().toLowerCase()}`;
 }
 
+export function collectKnownAccountIds(
+  products: Array<{
+    provider: Provider;
+    billingAccountLinks?: unknown;
+    awsAccounts?: unknown;
+    azureSubscriptions?: unknown;
+  }>,
+): Set<string> {
+  const ids = new Set<string>();
+  for (const product of products) {
+    for (const link of resolveBillingAccountIdentifiers(product)) {
+      ids.add(link.accountIdentifier.trim().toLowerCase());
+    }
+  }
+  return ids;
+}
+
 /** Build a lookup map. Colliding account IDs are omitted so spend stays unmatched. */
 export function buildAccountToLicencePlateMap(
   products: Array<{

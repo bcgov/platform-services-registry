@@ -3,18 +3,27 @@ import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Prisma, Provider } from '@/prisma/client';
 import { activeActualSpendWhere, unresolvedUnmatchedWhere } from '../active-spend';
 import {
-  accountJoinKey,
   buildAccountToLicencePlateMap,
+  collectKnownAccountIds,
   resolveBillingAccountIdentifiers,
 } from '../billing-account-links';
 import { defaultFinanceBillingSource } from '../constants';
 import { loadProductBillingStartByPlate, platesToRollupForPeriod } from '../product-billing-start';
 import { evaluateSpendFlagsForPeriod } from './evaluate-flags';
 import { elapsedCompleteFyMonths } from './missing-periods';
+import { partitionMatchedUnmatched } from './partition-lines';
 import { createAwsBillingSource, createAzureBillingSource } from './real-sources';
 import { createSimulatedBillingSource } from './simulated-source';
 import type { BillingFetchScope, BillingPeriod, BillingSource, NormalizedBillingLine } from './types';
 import { planUnmatchedReconcile } from './unmatched-reconcile';
+
+const WRITE_BATCH_SIZE = 25;
+
+async function mapInBatches<T>(items: T[], fn: (item: T) => Promise<unknown>) {
+  for (let index = 0; index < items.length; index += WRITE_BATCH_SIZE) {
+    await Promise.all(items.slice(index, index + WRITE_BATCH_SIZE).map(fn));
+  }
+}
 
 export type IngestOptions = {
   provider: Provider;
@@ -96,45 +105,27 @@ async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod
   });
   const amountByPlate = new Map(groups.map((group) => [group.licencePlate, group._sum.amountCad ?? 0]));
 
-  await Promise.all(
-    plates.map((licencePlate) => {
-      const amountCad = amountByPlate.get(licencePlate) ?? 0;
-      return prisma.monthlyProductSpendRollup.upsert({
-        where: {
-          licencePlate_provider_year_month: {
-            licencePlate,
-            provider,
-            year: period.year,
-            month: period.month,
-          },
-        },
-        create: {
+  await mapInBatches(plates, (licencePlate) => {
+    const amountCad = amountByPlate.get(licencePlate) ?? 0;
+    return prisma.monthlyProductSpendRollup.upsert({
+      where: {
+        licencePlate_provider_year_month: {
           licencePlate,
           provider,
           year: period.year,
           month: period.month,
-          amountCad,
         },
-        update: { amountCad },
-      });
-    }),
-  );
-}
-
-function partitionMatchedUnmatched(lines: NormalizedBillingLine[], accountMap: Map<string, string>) {
-  const matched: Array<NormalizedBillingLine & { licencePlate: string }> = [];
-  const unmatched: NormalizedBillingLine[] = [];
-
-  for (const line of lines) {
-    const licencePlate = accountMap.get(accountJoinKey(line.provider, line.accountIdentifier));
-    if (licencePlate) {
-      matched.push({ ...line, licencePlate });
-    } else {
-      unmatched.push(line);
-    }
-  }
-
-  return { matched, unmatched };
+      },
+      create: {
+        licencePlate,
+        provider,
+        year: period.year,
+        month: period.month,
+        amountCad,
+      },
+      update: { amountCad },
+    });
+  });
 }
 
 function resolveSupersedeLicencePlateFilter(
@@ -194,6 +185,14 @@ async function writeMatchedAndSupersede(options: {
     select: { id: true },
   });
 
+  // Supersede first so a crash cannot leave two active generations (double-count).
+  if (existing.length > 0) {
+    await prisma.actualSpend.updateMany({
+      where: { id: { in: existing.map((row) => row.id) } },
+      data: { supersededBy: runId },
+    });
+  }
+
   if (matched.length > 0) {
     await prisma.actualSpend.createMany({
       data: matched.map((line) => ({
@@ -222,17 +221,10 @@ async function writeMatchedAndSupersede(options: {
     select: { id: true },
   });
 
-  // Point superseded rows at a new row for the run (audit trail of replacement).
   if (existing.length > 0 && marker) {
     await prisma.actualSpend.updateMany({
-      where: { id: { in: existing.map((e) => e.id) } },
+      where: { id: { in: existing.map((row) => row.id) } },
       data: { supersededBy: marker.id },
-    });
-  } else if (existing.length > 0) {
-    // Period cleared (no matched lines): mark prior as superseded by a sentinel run marker via soft clear.
-    await prisma.actualSpend.updateMany({
-      where: { id: { in: existing.map((e) => e.id) } },
-      data: { supersededBy: runId },
     });
   }
 }
@@ -276,13 +268,11 @@ async function writeUnmatched(
       })),
     });
   }
-  await Promise.all(
-    plan.toUpdate.map((row) =>
-      prisma.unmatchedBillingLine.update({
-        where: { id: row.id },
-        data: { amountCad: row.amountCad, ingestionRunId: runId },
-      }),
-    ),
+  await mapInBatches(plan.toUpdate, (row) =>
+    prisma.unmatchedBillingLine.update({
+      where: { id: row.id },
+      data: { amountCad: row.amountCad, ingestionRunId: runId },
+    }),
   );
 }
 
@@ -369,7 +359,7 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
       lines = lines.filter((line) => allowed.has(line.accountIdentifier.toLowerCase()));
     }
 
-    const { matched, unmatched } = partitionMatchedUnmatched(lines, accountMap);
+    const { matched, unmatched } = partitionMatchedUnmatched(lines, accountMap, collectKnownAccountIds(products));
     const matchedPlates = [...new Set(matched.map((m) => m.licencePlate))];
 
     await writeMatchedAndSupersede({

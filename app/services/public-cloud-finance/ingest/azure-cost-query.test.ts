@@ -70,6 +70,38 @@ describe('azure cost query helpers', () => {
     expect(parsed.rows[0]?.serviceLine).toBe('Azure App Service');
   });
 
+  it('defaults to CAD when the Currency column is absent', () => {
+    const parsed = parseAzureCostQueryPayload(
+      {
+        properties: {
+          columns: [{ name: 'Cost' }, { name: 'ServiceName' }],
+          rows: [[10, 'Storage']],
+        },
+      },
+      period,
+      'sub-1',
+    );
+    expect(parsed.rows[0]?.currency).toBe('CAD');
+  });
+
+  it('skips rows with an empty Currency cell', () => {
+    const parsed = parseAzureCostQueryPayload(
+      {
+        properties: {
+          columns: [{ name: 'Cost' }, { name: 'ServiceName' }, { name: 'Currency' }],
+          rows: [
+            [10, 'Storage', ''],
+            [5, 'Bandwidth', 'USD'],
+          ],
+        },
+      },
+      period,
+      'sub-1',
+    );
+    expect(parsed.rows).toHaveLength(1);
+    expect(parsed.rows[0]?.currency).toBe('USD');
+  });
+
   it('retries 429 and follows nextLink', async () => {
     const fetchImpl = jest
       .fn()

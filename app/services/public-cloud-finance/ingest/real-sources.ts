@@ -277,7 +277,7 @@ async function fetchAzureCostManagementRows(period: BillingPeriod, scope?: Billi
   const subscriptionIds = await resolveAzureSubscriptionIds(scope);
   if (subscriptionIds.length === 0) {
     throw new Error(
-      'Azure live billing found no subscription IDs. Set product azureSubscriptions / billingAccountLinks, scope.accountIdentifiers, or FINANCE_LIVE_TEST_ACCOUNT_IDS.',
+      'Azure live billing found no subscription IDs. Set product azureSubscriptions / billingAccountLinks, or pass scope.accountIdentifiers.',
     );
   }
 

@@ -200,14 +200,17 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
   if (plan.toCreate.length > 0) {
     await prisma.spendFlag.createMany({ data: plan.toCreate });
   }
-  await Promise.all(
-    plan.toUpdate.map((row) =>
-      prisma.spendFlag.update({
-        where: { id: row.id },
-        data: { currentAmountCad: row.currentAmountCad, priorAmountCad: row.priorAmountCad },
-      }),
-    ),
-  );
+  const batchSize = 25;
+  for (let index = 0; index < plan.toUpdate.length; index += batchSize) {
+    await Promise.all(
+      plan.toUpdate.slice(index, index + batchSize).map((row) =>
+        prisma.spendFlag.update({
+          where: { id: row.id },
+          data: { currentAmountCad: row.currentAmountCad, priorAmountCad: row.priorAmountCad },
+        }),
+      ),
+    );
+  }
 
   return flags.length;
 }

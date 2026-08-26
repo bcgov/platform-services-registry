@@ -122,12 +122,13 @@ export function parseAzureCostQueryPayload(
     const amount = Number(row[costIdx] ?? 0);
     const serviceLine = String(row[serviceIdx] ?? '');
     const accountIdentifier = subscriptionIdx >= 0 ? String(row[subscriptionIdx] ?? '') : fallbackSubscriptionId ?? '';
-    if (!accountIdentifier || !serviceLine || !Number.isFinite(amount) || amount === 0) continue;
+    const currency = currencyIdx >= 0 ? String(row[currencyIdx] ?? '').trim() : 'CAD';
+    if (!accountIdentifier || !serviceLine || !Number.isFinite(amount) || amount === 0 || !currency) continue;
     rows.push({
       accountIdentifier,
       serviceLine,
       amount,
-      currency: currencyIdx >= 0 ? String(row[currencyIdx] ?? 'CAD') : 'CAD',
+      currency,
       year: period.year,
       month: period.month,
     });

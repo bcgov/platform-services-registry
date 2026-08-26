@@ -1,4 +1,5 @@
 import ExcelJS from 'exceljs';
+import { calculateVariance, elapsedLikeForLikeTotals } from '@/components/public-cloud/finance/finance-measure-utils';
 import {
   aggregateMonthlyActualsFromProducts,
   aggregateMonthlyTotalsFromProducts,
@@ -316,22 +317,22 @@ function addDetailSheet(workbook: ExcelJS.Workbook, exportSheet: ForecastExportS
 
     if (exportSheet.hasActuals) {
       const actualAmounts = fyChunk.months.map((_, i) => exportSheet.monthlyActuals[fyChunk.startIndex + i]);
-      const actualYearTotal = actualAmounts.reduce<number>((sum, amount) => sum + (amount ?? 0), 0);
+      const likeForLike = elapsedLikeForLikeTotals(
+        fyChunk.months,
+        actualAmounts,
+        fyChunk.months.map((month) => month.amount),
+      );
       const actualTotal = sheet.addRow([
         'Actual total',
         ...actualAmounts.map((amount) => amount ?? ''),
-        actualAmounts.some((amount) => amount != null) ? actualYearTotal : '',
+        likeForLike.actual ?? '',
       ]);
       styleTotalRow(actualTotal, fyColCount);
 
-      const varianceAmounts = fyChunk.months.map((month, i) => {
-        const actual = actualAmounts[i];
-        if (actual == null || month.amount === 0) return '';
-        return actual - month.amount;
-      });
-      const varianceYear =
-        actualAmounts.some((amount) => amount != null) && yearTotal !== 0 ? actualYearTotal - yearTotal : '';
-      const varianceTotal = sheet.addRow(['Variance total', ...varianceAmounts, varianceYear]);
+      const varianceAmounts = fyChunk.months.map(
+        (month, i) => calculateVariance(actualAmounts[i], month.amount)?.amount ?? '',
+      );
+      const varianceTotal = sheet.addRow(['Variance total', ...varianceAmounts, likeForLike.variance?.amount ?? '']);
       styleTotalRow(varianceTotal, fyColCount);
     }
 

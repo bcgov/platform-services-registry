@@ -7,6 +7,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { failure, success } from '@/components/notification';
 import { formatCadAmount, lastCompleteMonth } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -41,7 +42,7 @@ export default publicCloudFinanceUnmatchedPage(({ session }) => {
     onError: () => failure({ message: 'Unable to resolve line' }),
   });
 
-  if (!session?.previews.publicCloudFinance) return null;
+  if (!session?.previews.publicCloudFinance) return <FinancePreviewDisabled />;
 
   return (
     <div className="pt-5">

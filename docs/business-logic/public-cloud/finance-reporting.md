@@ -117,7 +117,7 @@ Airflow (schedule)
 | AWS_LZA  | `FINANCE_AWS_PROFILE` / `AWS_PROFILE` → shared/SSO profile             | Default AWS credential chain (`AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`, or IRSA/`AWS_ROLE_ARN`) |
 | Azure    | `DefaultAzureCredential` (picks up `az login`) with `az rest` fallback | `DefaultAzureCredential` via `AZURE_CLIENT_ID` / `AZURE_TENANT_ID` / `AZURE_CLIENT_SECRET`           |
 
-Subscription / account IDs for joins still come from product metadata (`azureSubscriptions`, `awsAccounts`, `billingAccountLinks`). Local allowlists may also use `FINANCE_LIVE_TEST_ACCOUNT_IDS`.
+Subscription / account IDs for joins come from product metadata (`azureSubscriptions`, `awsAccounts`, `billingAccountLinks`). `FINANCE_LIVE_TEST_ACCOUNT_IDS` is only for the opt-in live test suite (`pnpm test:finance-live`); it is not an estate ingest allowlist.
 
 ### AWS LZA (Cost Explorer)
 

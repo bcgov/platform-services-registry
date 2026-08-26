@@ -15,6 +15,7 @@ import {
   ytdActualHint,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { GlobalPermissions } from '@/constants';
@@ -147,7 +148,7 @@ export default publicCloudFinancePage(({ session }) => {
     },
   });
 
-  if (!session?.previews.publicCloudFinance) return null;
+  if (!session?.previews.publicCloudFinance) return <FinancePreviewDisabled />;
 
   return (
     <div className="pt-5">

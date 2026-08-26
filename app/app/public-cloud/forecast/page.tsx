@@ -84,8 +84,8 @@ function productChunkActuals(product: PlatformForecastProduct, fyChunk: FiscalYe
 }
 
 function formatProductMonthAmount(amount: number | null, hasAnyForecast: boolean, currency: string) {
-  if (amount == null || !hasAnyForecast || amount <= 0) return '—';
-  // Past months can still show previously entered forecast values (read-only).
+  if (amount == null || !hasAnyForecast) return '—';
+  // Past months can still show previously entered forecast values, including $0.
   return formatForecastAmount(amount, currency);
 }
 
@@ -161,6 +161,34 @@ function sortProducts(products: PlatformForecastProduct[], sort: ProductSort) {
 
 function formatResidualAmount(amount: number, currency: string) {
   return Math.abs(amount) < 0.005 ? '—' : formatForecastAmount(amount, currency);
+}
+
+function otherRowResiduals(
+  fyChunk: FiscalYearChunk,
+  visibleProducts: PlatformForecastProduct[],
+  actuals: Array<number | null | undefined>,
+) {
+  const forecasts = fyChunk.months.map((month, i) => {
+    const visibleTotal = visibleProducts.reduce((sum, product) => {
+      if (!product.hasForecast) return sum;
+      return sum + (product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0);
+    }, 0);
+    return month.amount - visibleTotal;
+  });
+  const residualActuals = fyChunk.months.map((_, i) => {
+    const estate = actuals[fyChunk.startIndex + i];
+    if (estate == null) return null;
+    const visibleActual = visibleProducts.reduce((sum, product) => {
+      const amount = product.monthlyActuals[fyChunk.startIndex + i];
+      return amount == null ? sum : sum + amount;
+    }, 0);
+    return estate - visibleActual;
+  });
+  return {
+    forecasts,
+    actuals: residualActuals,
+    year: elapsedLikeForLikeTotals(fyChunk.months, residualActuals, forecasts),
+  };
 }
 
 function PlatformForecastGrid({
@@ -353,6 +381,8 @@ function PlatformForecastGrid({
           const yearTotal = sumMonthlyValues(fyChunk.months);
           const fySummary = getFiscalYearTotalSummary(fyChunk);
           const hasOptional = fiscalYearChunkHasOptionalMonths(fyChunk);
+          const other =
+            showOtherRow && showActualVariance ? otherRowResiduals(fyChunk, visibleProducts, actuals) : null;
 
           return (
             <div key={fyChunk.label} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -507,40 +537,80 @@ function PlatformForecastGrid({
                         );
                       })}
                     {showOtherRow && (
-                      <tr className="border-b border-gray-100 bg-gray-50">
-                        <td className="px-3 py-2 sticky left-0 bg-gray-50 border-r border-gray-100">
-                          <div className="pl-3 text-gray-700 font-medium">Other ({otherProductCount} products)</div>
-                        </td>
-                        {fyChunk.months.map((month, i) => {
-                          const visibleTotal = visibleProducts.reduce((sum, product) => {
-                            if (!product.hasForecast) return sum;
-                            return sum + (product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0);
-                          }, 0);
-                          const residual = month.amount - visibleTotal;
-                          return (
-                            <td key={monthKey(month.year, month.month)} className="px-2 py-2 text-center text-gray-700">
-                              {formatResidualAmount(residual, group.currency)}
-                            </td>
-                          );
-                        })}
-                        <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
-                          {formatResidualAmount(
-                            yearTotal -
-                              visibleProducts.reduce((sum, product) => {
-                                if (!product.hasForecast) return sum;
-                                return (
-                                  sum +
-                                  fyChunk.months.reduce(
-                                    (monthSum, _, i) =>
-                                      monthSum + (product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0),
-                                    0,
-                                  )
-                                );
-                              }, 0),
-                            group.currency,
-                          )}
-                        </td>
-                      </tr>
+                      <>
+                        <tr className="border-b border-gray-100 bg-gray-50">
+                          <td className="px-3 py-2 sticky left-0 bg-gray-50 border-r border-gray-100">
+                            <div className="pl-3 text-gray-700 font-medium">Other ({otherProductCount} products)</div>
+                          </td>
+                          {fyChunk.months.map((month, i) => {
+                            const visibleTotal = visibleProducts.reduce((sum, product) => {
+                              if (!product.hasForecast) return sum;
+                              return sum + (product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0);
+                            }, 0);
+                            return (
+                              <td
+                                key={monthKey(month.year, month.month)}
+                                className="px-2 py-2 text-center text-gray-700"
+                              >
+                                {formatResidualAmount(month.amount - visibleTotal, group.currency)}
+                              </td>
+                            );
+                          })}
+                          <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
+                            {formatResidualAmount(
+                              yearTotal -
+                                visibleProducts.reduce((sum, product) => {
+                                  if (!product.hasForecast) return sum;
+                                  return (
+                                    sum +
+                                    fyChunk.months.reduce(
+                                      (monthSum, _, i) =>
+                                        monthSum + (product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0),
+                                      0,
+                                    )
+                                  );
+                                }, 0),
+                              group.currency,
+                            )}
+                          </td>
+                        </tr>
+                        {other && (
+                          <>
+                            <tr className="border-b border-gray-100 bg-gray-50/40">
+                              <td className="px-3 py-2 sticky left-0 bg-gray-50/40 border-r border-gray-100">
+                                <div className="pl-3 text-xs text-gray-500">Actual</div>
+                              </td>
+                              {fyChunk.months.map((month, i) => (
+                                <td
+                                  key={`other-actual-${monthKey(month.year, month.month)}`}
+                                  className="px-2 py-2 text-center text-sm text-gray-700"
+                                >
+                                  {other.actuals[i] == null ? '—' : formatCadAmount(other.actuals[i])}
+                                </td>
+                              ))}
+                              <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
+                                {formatCadAmount(other.year.actual)}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-100">
+                              <td className="px-3 py-2 sticky left-0 bg-white border-r border-gray-100">
+                                <div className="pl-3 text-xs text-gray-500">Variance</div>
+                              </td>
+                              {fyChunk.months.map((month, i) => (
+                                <td
+                                  key={`other-var-${monthKey(month.year, month.month)}`}
+                                  className="px-2 py-2 text-center text-sm text-gray-700"
+                                >
+                                  {formatVarianceCell(calculateVariance(other.actuals[i], other.forecasts[i]))}
+                                </td>
+                              ))}
+                              <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
+                                {formatVarianceCell(other.year.variance)}
+                              </td>
+                            </tr>
+                          </>
+                        )}
+                      </>
                     )}
                     <tr className={showProducts ? 'bg-amber-50/40 font-semibold' : ''}>
                       <td className="px-3 py-2 text-gray-700 sticky left-0 bg-inherit border-r border-gray-100">
@@ -551,7 +621,7 @@ function PlatformForecastGrid({
                         const cellClass = past ? 'bg-gray-100 text-gray-400' : 'bg-inherit text-gray-900';
                         return (
                           <td key={monthKey(v.year, v.month)} className={`px-2 py-2 text-center ${cellClass}`}>
-                            {v.amount <= 0 ? '—' : formatForecastAmount(v.amount, group.currency)}
+                            {formatForecastAmount(v.amount, group.currency)}
                           </td>
                         );
                       })}

@@ -4,8 +4,9 @@ import createApiHandler from '@/core/api-handler';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { resolveUnmatchedBillingLine } from '@/services/db/public-cloud-finance';
 import { financeResolveUnmatchedBodySchema } from '@/validation-schemas/cloud-cost';
+import { objectId } from '@/validation-schemas/common';
 
-const pathSchema = z.object({ id: z.string().min(1) });
+const pathSchema = z.object({ id: objectId });
 
 export const POST = createApiHandler({
   permissions: [GlobalPermissions.ViewPublicCloudForecast],

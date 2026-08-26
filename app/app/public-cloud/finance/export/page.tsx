@@ -4,6 +4,7 @@ import { Button, Checkbox, Select, SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
 import { failure, success } from '@/components/notification';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
@@ -28,7 +29,7 @@ export default publicCloudFinanceExportPage(({ session }) => {
   const [datasets, setDatasets] = useState<string[]>(DATASET_OPTIONS.map((d) => d.value));
   const [busy, setBusy] = useState(false);
 
-  if (!session?.previews.publicCloudFinance) return null;
+  if (!session?.previews.publicCloudFinance) return <FinancePreviewDisabled />;
 
   return (
     <div className="pt-5 max-w-3xl">

@@ -19,6 +19,7 @@ import {
 import { Provider } from '@/prisma/client';
 import {
   buildAccountToLicencePlateMap,
+  collectKnownAccountIds,
   inventDemoBillingLinks,
   normalizeBillingAccountLinks,
 } from '@/services/public-cloud-finance/billing-account-links';
@@ -162,6 +163,16 @@ describe('billing account links', () => {
     ]);
     expect(map.size).toBe(0);
     expect(collisions).toEqual(['AZURE:aaaa-bbbb']);
+  });
+
+  it('collects known account IDs regardless of provider', () => {
+    const ids = collectKnownAccountIds([
+      {
+        provider: Provider.AWS_LZA,
+        billingAccountLinks: [{ provider: Provider.AWS_LZA, accountIdentifier: '111122223333' }],
+      },
+    ]);
+    expect(ids.has('111122223333')).toBe(true);
   });
 });
 
