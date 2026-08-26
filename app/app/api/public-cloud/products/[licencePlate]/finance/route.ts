@@ -12,7 +12,7 @@ export const GET = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: pathSchema },
 })(async ({ pathParams, session }) => {
-  if (!session.previews.publicCloudFinance && !session.previews.publicCloudForecast) {
+  if (!session.previews.publicCloudFinance) {
     return UnauthorizedResponse();
   }
 

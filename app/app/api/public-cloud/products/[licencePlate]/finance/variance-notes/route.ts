@@ -12,7 +12,7 @@ export const POST = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: pathSchema, body: varianceNoteBodySchema },
 })(async ({ pathParams, body, session }) => {
-  if (!session.previews.publicCloudFinance && !session.previews.publicCloudForecast) {
+  if (!session.previews.publicCloudFinance) {
     return UnauthorizedResponse();
   }
 
