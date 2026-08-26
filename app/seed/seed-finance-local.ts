@@ -10,24 +10,25 @@ import { Provider } from '../prisma/client';
 import { ingestBillingPeriod } from '../services/public-cloud-finance/ingest/run-ingest';
 import { createSimulatedBillingSource } from '../services/public-cloud-finance/ingest/simulated-source';
 
+function nextCalendarMonth(year: number, month: number) {
+  if (month === 12) return { year: year + 1, month: 1 };
+  return { year, month: month + 1 };
+}
+
+function isAfterMonth(left: { year: number; month: number }, right: { year: number; month: number }) {
+  return left.year > right.year || (left.year === right.year && left.month > right.month);
+}
+
 export function buildActualPeriods(now = new Date()) {
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
-  const fyStartYear = month >= 4 ? year : year - 1;
   // At least Apr–Jul in the current FY; after New Year keep going through today
   // so prior-year Aug–Dec are not dropped.
-  const throughMonth = month >= 4 ? Math.max(7, month) : month;
-  const throughYear = month >= 4 ? year : year;
+  const start = { year: month >= 4 ? year : year - 1, month: 4 };
+  const end = { year, month: month >= 4 ? Math.max(7, month) : month };
   const periods: Array<{ year: number; month: number }> = [];
-  let cursorYear = fyStartYear;
-  let cursorMonth = 4;
-  while (cursorYear < throughYear || (cursorYear === throughYear && cursorMonth <= throughMonth)) {
-    periods.push({ year: cursorYear, month: cursorMonth });
-    cursorMonth += 1;
-    if (cursorMonth > 12) {
-      cursorMonth = 1;
-      cursorYear += 1;
-    }
+  for (let cursor = start; !isAfterMonth(cursor, end); cursor = nextCalendarMonth(cursor.year, cursor.month)) {
+    periods.push(cursor);
   }
   return periods;
 }
