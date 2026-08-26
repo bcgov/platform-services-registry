@@ -137,8 +137,8 @@ export function filterMonthsProductExisted<T extends { year: number; month: numb
   return months.filter((month) => productExistedDuringMonth(existedAt, month.year, month.month));
 }
 
-export function expectedPastActualMonths(
-  months: Array<{ year: number; month: number }>,
+export function expectedPastActualMonths<T extends { year: number; month: number }>(
+  months: T[],
   existedAt: Date | null | undefined,
   now = new Date(),
 ) {

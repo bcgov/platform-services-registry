@@ -101,11 +101,12 @@ function formatProductYearTotal(
   requiredOnly: boolean,
   forecasts: (number | null)[],
   fyChunk: FiscalYearChunk,
-  productYearTotal: number,
   currency: string,
 ) {
   if (!hasAnyForecast) return '—';
-  const total = requiredOnly ? sumProductRequiredMonthsInChunk(forecasts, fyChunk) : productYearTotal;
+  const total = requiredOnly
+    ? sumProductRequiredMonthsInChunk(forecasts, fyChunk)
+    : forecasts.reduce<number>((sum, v) => sum + (v ?? 0), 0);
   return formatForecastAmount(total, currency);
 }
 
@@ -482,7 +483,6 @@ function PlatformForecastGrid({
                                   fySummary.requiredOnly,
                                   forecasts,
                                   fyChunk,
-                                  productYearTotal,
                                   group.currency,
                                 )}
                               </td>

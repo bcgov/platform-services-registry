@@ -17,8 +17,8 @@ export function unmatchedLineKey(line: UnmatchedLineKeyParts) {
 type UnmatchedMoneyFields = {
   amountCad: number;
   sourceCurrency?: string;
-  fxRate?: number;
-  fxRateDate?: Date;
+  fxRate?: number | null;
+  fxRateDate?: Date | null;
 };
 
 function sameUnmatchedMoney(current: UnmatchedMoneyFields, next: UnmatchedMoneyFields) {

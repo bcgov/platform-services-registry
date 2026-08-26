@@ -14,12 +14,12 @@ type ServiceLineAmount = {
 type SpendFlagInput = {
   licencePlate: string;
   provider: Provider;
-  serviceLine?: string;
+  serviceLine?: string | null;
   year: number;
   month: number;
   ruleId: SpendFlagRuleId;
   currentAmountCad: number;
-  priorAmountCad?: number;
+  priorAmountCad?: number | null;
 };
 
 function priorPeriod(period: BillingPeriod): BillingPeriod {
