@@ -147,6 +147,117 @@ export async function buildFinanceWorkbookBuffer(options: {
   return Buffer.from(buffer);
 }
 
+function csvNumber(value: number | null | undefined) {
+  return value == null ? '' : String(value);
+}
+
+function appendForecastCsvRows(
+  rows: Array<Record<string, string>>,
+  forecastSummary: ForecastSummary,
+  provider: ProviderFilter,
+) {
+  for (const group of forecastSummary.groups) {
+    for (const product of group.products) {
+      appendForecastProductCsvRows(rows, product, provider);
+    }
+  }
+}
+
+function appendForecastProductCsvRows(
+  rows: Array<Record<string, string>>,
+  product: ForecastProduct,
+  provider: ProviderFilter,
+) {
+  if (!product.hasForecast || !matchesProviderFilter(product.provider, provider)) return;
+  for (const month of product.monthlyTotals) {
+    rows.push({
+      dataset: 'forecast',
+      project_identifier: product.licencePlate,
+      name: formatExportProductName(product),
+      provider: product.provider,
+      year: String(month.year),
+      month: String(month.month),
+      amount_cad: String(month.amount),
+    });
+  }
+}
+
+function appendActualsCsvRows(rows: Array<Record<string, string>>, snapshot: Snapshot) {
+  for (const row of snapshot.monthlyChart) {
+    rows.push({
+      dataset: 'actuals',
+      year: String(row.year),
+      month: String(row.month),
+      actual_cad: csvNumber(row.actual),
+      forecast_cad: String(row.forecast),
+    });
+  }
+}
+
+function appendVarianceCsvRows(rows: Array<Record<string, string>>, snapshot: Snapshot) {
+  rows.push({
+    dataset: 'variance',
+    fytd_actual: csvNumber(snapshot.fytdActual),
+    fytd_forecast: String(snapshot.fytdForecast),
+    fytd_variance_amount: csvNumber(snapshot.fytdVariance?.amount),
+  });
+}
+
+function appendProductRankingCsvRows(rows: Array<Record<string, string>>, rankings: Rankings) {
+  for (const row of rankings.products) {
+    rows.push({
+      dataset: 'product-rankings',
+      rank: String(row.rank),
+      project_identifier: row.licencePlate,
+      amount_cad: String(row.amountCad),
+      share: String(row.shareOfTotal),
+      yoy_percent: csvNumber(row.yoyChangePercent),
+    });
+  }
+}
+
+function appendServiceLineRankingCsvRows(rows: Array<Record<string, string>>, rankings: Rankings) {
+  for (const row of rankings.serviceLines) {
+    rows.push({
+      dataset: 'service-line-rankings',
+      rank: String(row.rank),
+      service_line: row.serviceLine,
+      amount_cad: String(row.amountCad),
+      share: String(row.shareOfTotal),
+      yoy_percent: csvNumber(row.yoyChangePercent),
+    });
+  }
+}
+
+function appendSnapshotCsvRows(rows: Array<Record<string, string>>, snapshot: Snapshot, datasets: string[]) {
+  if (datasets.includes('actuals')) appendActualsCsvRows(rows, snapshot);
+  if (datasets.includes('variance')) appendVarianceCsvRows(rows, snapshot);
+}
+
+function appendRankingCsvRows(rows: Array<Record<string, string>>, rankings: Rankings, datasets: string[]) {
+  if (datasets.includes('product-rankings')) appendProductRankingCsvRows(rows, rankings);
+  if (datasets.includes('service-line-rankings')) appendServiceLineRankingCsvRows(rows, rankings);
+}
+
+const FINANCE_CSV_COLUMNS = [
+  'dataset',
+  'project_identifier',
+  'name',
+  'provider',
+  'year',
+  'month',
+  'rank',
+  'service_line',
+  'amount_cad',
+  'actual_cad',
+  'forecast_cad',
+  'share',
+  'yoy_percent',
+  'fytd_actual',
+  'fytd_forecast',
+  'fytd_variance_amount',
+];
+
 export async function buildFinanceExportCsvRows(options: {
   provider: ProviderFilter;
   period: 'ytd' | 'full-fy';
@@ -161,91 +272,11 @@ export async function buildFinanceExportCsvRows(options: {
     : null;
   const forecastSummary = options.datasets.includes('forecast') ? await getPlatformForecastSummary() : null;
 
-  if (forecastSummary && options.datasets.includes('forecast')) {
-    for (const group of forecastSummary.groups) {
-      for (const product of group.products) {
-        if (!product.hasForecast || !matchesProviderFilter(product.provider, options.provider)) continue;
-        for (const month of product.monthlyTotals) {
-          rows.push({
-            dataset: 'forecast',
-            project_identifier: product.licencePlate,
-            name: formatExportProductName(product),
-            provider: product.provider,
-            year: String(month.year),
-            month: String(month.month),
-            amount_cad: String(month.amount),
-          });
-        }
-      }
-    }
-  }
+  if (forecastSummary) appendForecastCsvRows(rows, forecastSummary, options.provider);
+  if (snapshot) appendSnapshotCsvRows(rows, snapshot, options.datasets);
+  if (rankings) appendRankingCsvRows(rows, rankings, options.datasets);
 
-  if (snapshot && options.datasets.includes('actuals')) {
-    for (const row of snapshot.monthlyChart) {
-      rows.push({
-        dataset: 'actuals',
-        year: String(row.year),
-        month: String(row.month),
-        actual_cad: row.actual == null ? '' : String(row.actual),
-        forecast_cad: String(row.forecast),
-      });
-    }
-  }
-
-  if (snapshot && options.datasets.includes('variance')) {
-    rows.push({
-      dataset: 'variance',
-      fytd_actual: snapshot.fytdActual == null ? '' : String(snapshot.fytdActual),
-      fytd_forecast: String(snapshot.fytdForecast),
-      fytd_variance_amount: snapshot.fytdVariance?.amount == null ? '' : String(snapshot.fytdVariance.amount),
-    });
-  }
-
-  if (rankings && options.datasets.includes('product-rankings')) {
-    for (const row of rankings.products) {
-      rows.push({
-        dataset: 'product-rankings',
-        rank: String(row.rank),
-        project_identifier: row.licencePlate,
-        amount_cad: String(row.amountCad),
-        share: String(row.shareOfTotal),
-        yoy_percent: row.yoyChangePercent == null ? '' : String(row.yoyChangePercent),
-      });
-    }
-  }
-
-  if (rankings && options.datasets.includes('service-line-rankings')) {
-    for (const row of rankings.serviceLines) {
-      rows.push({
-        dataset: 'service-line-rankings',
-        rank: String(row.rank),
-        service_line: row.serviceLine,
-        amount_cad: String(row.amountCad),
-        share: String(row.shareOfTotal),
-        yoy_percent: row.yoyChangePercent == null ? '' : String(row.yoyChangePercent),
-      });
-    }
-  }
-
-  const columns = [
-    'dataset',
-    'project_identifier',
-    'name',
-    'provider',
-    'year',
-    'month',
-    'rank',
-    'service_line',
-    'amount_cad',
-    'actual_cad',
-    'forecast_cad',
-    'share',
-    'yoy_percent',
-    'fytd_actual',
-    'fytd_forecast',
-    'fytd_variance_amount',
-  ];
-  return rows.map((row) => Object.fromEntries(columns.map((column) => [column, row[column] ?? ''])));
+  return rows.map((row) => Object.fromEntries(FINANCE_CSV_COLUMNS.map((column) => [column, row[column] ?? ''])));
 }
 
 export function financeAmountLabel(amount: number | null | undefined) {

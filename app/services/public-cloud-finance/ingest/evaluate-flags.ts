@@ -67,58 +67,71 @@ async function loadFlagEvaluationData(period: BillingPeriod) {
   return { rollups, priorByKey, forecastByPlateMonth, currentLines, seenService };
 }
 
-function collectMomAndOverForecastFlags(
+function collectMomIncreaseFlags(
   period: BillingPeriod,
   rollups: Awaited<ReturnType<typeof loadFlagEvaluationData>>['rollups'],
   priorByKey: Map<string, number>,
-  forecastByPlateMonth: Map<string, number>,
 ): SpendFlagInput[] {
   const flags: SpendFlagInput[] = [];
-
   for (const rollup of rollups) {
-    const key = `${rollup.licencePlate}:${rollup.provider}`;
-    const priorAmount = priorByKey.get(key);
-    if (priorAmount !== undefined && priorAmount > 0) {
-      const increasePct = ((rollup.amountCad - priorAmount) / priorAmount) * 100;
-      if (increasePct > FINANCE_ANOMALY_THRESHOLDS.momIncreasePercent) {
-        flags.push({
-          licencePlate: rollup.licencePlate,
-          provider: rollup.provider,
-          year: period.year,
-          month: period.month,
-          ruleId: SpendFlagRuleId.MOM_INCREASE,
-          currentAmountCad: rollup.amountCad,
-          priorAmountCad: priorAmount,
-        });
-      }
-    }
+    const priorAmount = priorByKey.get(`${rollup.licencePlate}:${rollup.provider}`);
+    if (priorAmount === undefined || priorAmount <= 0) continue;
+    const increasePct = ((rollup.amountCad - priorAmount) / priorAmount) * 100;
+    if (increasePct <= FINANCE_ANOMALY_THRESHOLDS.momIncreasePercent) continue;
+    flags.push({
+      licencePlate: rollup.licencePlate,
+      provider: rollup.provider,
+      year: period.year,
+      month: period.month,
+      ruleId: SpendFlagRuleId.MOM_INCREASE,
+      currentAmountCad: rollup.amountCad,
+      priorAmountCad: priorAmount,
+    });
   }
+  return flags;
+}
 
+function collectOverForecastFlags(
+  period: BillingPeriod,
+  rollups: Awaited<ReturnType<typeof loadFlagEvaluationData>>['rollups'],
+  forecastByPlateMonth: Map<string, number>,
+): SpendFlagInput[] {
   const amountByPlate = new Map<string, { amountCad: number; provider: (typeof rollups)[number]['provider'] }>();
   for (const rollup of rollups) {
     const current = amountByPlate.get(rollup.licencePlate);
     if (current) current.amountCad += rollup.amountCad;
     else amountByPlate.set(rollup.licencePlate, { amountCad: rollup.amountCad, provider: rollup.provider });
   }
+
+  const flags: SpendFlagInput[] = [];
   for (const [licencePlate, row] of amountByPlate) {
     const forecast = forecastByPlateMonth.get(licencePlate);
-    if (forecast !== undefined && forecast > 0) {
-      const overPct = ((row.amountCad - forecast) / forecast) * 100;
-      if (overPct > FINANCE_ANOMALY_THRESHOLDS.overForecastPercent) {
-        flags.push({
-          licencePlate,
-          provider: row.provider,
-          year: period.year,
-          month: period.month,
-          ruleId: SpendFlagRuleId.OVER_FORECAST,
-          currentAmountCad: row.amountCad,
-          priorAmountCad: forecast,
-        });
-      }
-    }
+    if (forecast === undefined || forecast <= 0) continue;
+    const overPct = ((row.amountCad - forecast) / forecast) * 100;
+    if (overPct <= FINANCE_ANOMALY_THRESHOLDS.overForecastPercent) continue;
+    flags.push({
+      licencePlate,
+      provider: row.provider,
+      year: period.year,
+      month: period.month,
+      ruleId: SpendFlagRuleId.OVER_FORECAST,
+      currentAmountCad: row.amountCad,
+      priorAmountCad: forecast,
+    });
   }
-
   return flags;
+}
+
+function collectMomAndOverForecastFlags(
+  period: BillingPeriod,
+  rollups: Awaited<ReturnType<typeof loadFlagEvaluationData>>['rollups'],
+  priorByKey: Map<string, number>,
+  forecastByPlateMonth: Map<string, number>,
+): SpendFlagInput[] {
+  return [
+    ...collectMomIncreaseFlags(period, rollups, priorByKey),
+    ...collectOverForecastFlags(period, rollups, forecastByPlateMonth),
+  ];
 }
 
 function collectNewServiceLineFlags(

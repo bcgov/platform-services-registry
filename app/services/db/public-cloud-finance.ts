@@ -315,6 +315,125 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   };
 }
 
+type RankingProduct = {
+  licencePlate: string;
+  name: string;
+  provider: Provider;
+  status: ProjectStatus;
+  organization: { name: string };
+};
+
+type RankingRollup = { licencePlate: string; year: number; month: number; amountCad: number };
+
+function rankingMonthWindow(period?: 'ytd' | 'full-fy') {
+  const fy = currentFiscalYearBounds();
+  const complete = lastCompleteMonth();
+  const fyMonths = fiscalYearMonths(fy.startYear);
+  const ytdMonths = fyMonths.filter(
+    (m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
+  );
+  const fyEnded = complete.year > fy.startYear + 1 || (complete.year === fy.startYear + 1 && complete.month >= 3);
+  return { fiscalYearLabel: fy.label, months: period === 'full-fy' && fyEnded ? fyMonths : ytdMonths };
+}
+
+async function findRollupsForMonths(
+  plates: string[],
+  months: Array<{ year: number; month: number }>,
+  provider: ProviderFilter,
+) {
+  if (months.length === 0) return [];
+  return prisma.monthlyProductSpendRollup.findMany({
+    where: {
+      licencePlate: { in: plates },
+      OR: months.map((m) => ({ year: m.year, month: m.month })),
+      ...providerWhere(provider),
+    },
+  });
+}
+
+function sumRollupsByPlate(
+  rows: RankingRollup[],
+  billingStartedByPlate: Map<string, Date>,
+  allowedMonthKeys?: Set<string>,
+) {
+  const amountByPlate = new Map<string, number>();
+  for (const row of rows) {
+    if (allowedMonthKeys && !allowedMonthKeys.has(monthKey(row.year, row.month))) continue;
+    const startedAt = billingStartedByPlate.get(row.licencePlate);
+    if (startedAt && !productExistedDuringMonth(startedAt, row.year, row.month)) continue;
+    amountByPlate.set(row.licencePlate, (amountByPlate.get(row.licencePlate) ?? 0) + row.amountCad);
+  }
+  return amountByPlate;
+}
+
+function rankProducts(
+  products: RankingProduct[],
+  amountByPlate: Map<string, number>,
+  priorByPlate: Map<string, number>,
+  limit: number,
+) {
+  const productTotal = [...amountByPlate.values()].reduce((sum, amount) => sum + amount, 0);
+  return {
+    productTotal,
+    products: products
+      .map((product) => {
+        const amountCad = amountByPlate.get(product.licencePlate) ?? 0;
+        return {
+          licencePlate: product.licencePlate,
+          name: product.name,
+          provider: product.provider,
+          status: product.status,
+          organizationName: product.organization.name,
+          amountCad,
+          shareOfTotal: productTotal > 0 ? amountCad / productTotal : 0,
+          yoyChangePercent: yearOverYearChange(amountCad, priorByPlate.get(product.licencePlate) ?? null),
+        };
+      })
+      .sort((left, right) => right.amountCad - left.amountCad)
+      .slice(0, limit)
+      .map((row, index) => ({ rank: index + 1, ...row })),
+  };
+}
+
+async function findServiceLineGroups(
+  plates: string[],
+  months: Array<{ year: number; month: number }>,
+  provider: ProviderFilter,
+) {
+  if (months.length === 0) return [];
+  return prisma.actualSpend.groupBy({
+    by: ['serviceLine'],
+    where: {
+      AND: [
+        activeActualSpendWhere,
+        { licencePlate: { in: plates } },
+        { OR: months.map((m) => ({ year: m.year, month: m.month })) },
+        providerWhere(provider),
+      ],
+    },
+    _sum: { amountCad: true },
+    orderBy: { _sum: { amountCad: 'desc' } },
+  });
+}
+
+function rankServiceLines(
+  serviceGroups: Array<{ serviceLine: string; _sum: { amountCad: number | null } }>,
+  priorService: Map<string, number>,
+  limit: number,
+) {
+  const serviceTotal = serviceGroups.reduce((sum, group) => sum + (group._sum.amountCad ?? 0), 0);
+  return serviceGroups.slice(0, limit).map((group, index) => {
+    const amountCad = group._sum.amountCad ?? 0;
+    return {
+      rank: index + 1,
+      serviceLine: group.serviceLine,
+      amountCad,
+      shareOfTotal: serviceTotal > 0 ? amountCad / serviceTotal : 0,
+      yoyChangePercent: yearOverYearChange(amountCad, priorService.get(group.serviceLine) ?? null),
+    };
+  });
+}
+
 export async function getFinanceRankings(options: {
   provider?: ProviderFilter;
   organizationId?: string;
@@ -323,14 +442,7 @@ export async function getFinanceRankings(options: {
 }) {
   const provider = options.provider ?? 'ALL';
   const limit = options.limit ?? 10;
-  const fy = currentFiscalYearBounds();
-  const complete = lastCompleteMonth();
-  const fyMonths = fiscalYearMonths(fy.startYear);
-  const ytdMonths = fyMonths.filter(
-    (m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
-  );
-  const fyComplete = complete.year > fy.startYear + 1 || (complete.year === fy.startYear + 1 && complete.month >= 3);
-  const months = options.period === 'full-fy' && fyComplete ? fyMonths : ytdMonths;
+  const { fiscalYearLabel, months } = rankingMonthWindow(options.period);
 
   // Include ACTIVE and INACTIVE so archived products remain in historical rankings/totals.
   const products = await prisma.publicCloudProduct.findMany({
@@ -346,119 +458,28 @@ export async function getFinanceRankings(options: {
       organization: { select: { id: true, code: true, name: true } },
     },
   });
-  const plates = products.map((p) => p.licencePlate);
+  const plates = products.map((product) => product.licencePlate);
 
-  const rollups =
-    months.length === 0
-      ? []
-      : await prisma.monthlyProductSpendRollup.findMany({
-          where: {
-            licencePlate: { in: plates },
-            OR: months.map((m) => ({ year: m.year, month: m.month })),
-            ...(provider === 'ALL' ? {} : { provider }),
-          },
-        });
-
+  const rollups = await findRollupsForMonths(plates, months, provider);
   const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
   const { completeMonths } = likeForLikeMonths(months, products, billingStartedByPlate, rollups);
   const completeMonthKeys = new Set(completeMonths.map((month) => monthKey(month.year, month.month)));
-  const priorYearMonths = completeMonths.map((m) => ({ year: m.year - 1, month: m.month }));
-  const priorRollups =
-    priorYearMonths.length === 0
-      ? []
-      : await prisma.monthlyProductSpendRollup.findMany({
-          where: {
-            licencePlate: { in: plates },
-            OR: priorYearMonths.map((m) => ({ year: m.year, month: m.month })),
-            ...(provider === 'ALL' ? {} : { provider }),
-          },
-        });
+  const priorYearMonths = completeMonths.map((month) => ({ year: month.year - 1, month: month.month }));
+  const priorRollups = await findRollupsForMonths(plates, priorYearMonths, provider);
+  const amountByPlate = sumRollupsByPlate(rollups, billingStartedByPlate, completeMonthKeys);
+  const priorByPlate = sumRollupsByPlate(priorRollups, billingStartedByPlate);
+  const { productTotal, products: productRows } = rankProducts(products, amountByPlate, priorByPlate, limit);
 
-  const amountByPlate = new Map<string, number>();
-  const priorByPlate = new Map<string, number>();
-  for (const row of rollups) {
-    if (!completeMonthKeys.has(monthKey(row.year, row.month))) continue;
-    const startedAt = billingStartedByPlate.get(row.licencePlate);
-    if (startedAt && !productExistedDuringMonth(startedAt, row.year, row.month)) continue;
-    amountByPlate.set(row.licencePlate, (amountByPlate.get(row.licencePlate) ?? 0) + row.amountCad);
-  }
-  for (const row of priorRollups) {
-    const startedAt = billingStartedByPlate.get(row.licencePlate);
-    if (startedAt && !productExistedDuringMonth(startedAt, row.year, row.month)) continue;
-    priorByPlate.set(row.licencePlate, (priorByPlate.get(row.licencePlate) ?? 0) + row.amountCad);
-  }
-
-  const productTotal = [...amountByPlate.values()].reduce((a, b) => a + b, 0);
-  const productRows = products
-    .map((p) => {
-      const amountCad = amountByPlate.get(p.licencePlate) ?? 0;
-      return {
-        licencePlate: p.licencePlate,
-        name: p.name,
-        provider: p.provider,
-        status: p.status,
-        organizationName: p.organization.name,
-        amountCad,
-        shareOfTotal: productTotal > 0 ? amountCad / productTotal : 0,
-        yoyChangePercent: yearOverYearChange(amountCad, priorByPlate.get(p.licencePlate) ?? null),
-      };
-    })
-    .sort((a, b) => b.amountCad - a.amountCad)
-    .slice(0, limit)
-    .map((row, index) => ({ rank: index + 1, ...row }));
-
-  const serviceGroups =
-    completeMonths.length === 0
-      ? []
-      : await prisma.actualSpend.groupBy({
-          by: ['serviceLine'],
-          where: {
-            AND: [
-              activeActualSpendWhere,
-              { licencePlate: { in: plates } },
-              { OR: completeMonths.map((m) => ({ year: m.year, month: m.month })) },
-              provider === 'ALL' ? {} : { provider },
-            ],
-          },
-          _sum: { amountCad: true },
-          orderBy: { _sum: { amountCad: 'desc' } },
-        });
-
-  const priorServiceGroups =
-    priorYearMonths.length === 0
-      ? []
-      : await prisma.actualSpend.groupBy({
-          by: ['serviceLine'],
-          where: {
-            AND: [
-              activeActualSpendWhere,
-              { licencePlate: { in: plates } },
-              { OR: priorYearMonths.map((m) => ({ year: m.year, month: m.month })) },
-              provider === 'ALL' ? {} : { provider },
-            ],
-          },
-          _sum: { amountCad: true },
-        });
-  const priorService = new Map(priorServiceGroups.map((s) => [s.serviceLine, s._sum.amountCad ?? 0]));
-  const serviceTotal = serviceGroups.reduce((sum, s) => sum + (s._sum.amountCad ?? 0), 0);
-
-  const serviceRows = serviceGroups.slice(0, limit).map((s, index) => {
-    const amountCad = s._sum.amountCad ?? 0;
-    return {
-      rank: index + 1,
-      serviceLine: s.serviceLine,
-      amountCad,
-      shareOfTotal: serviceTotal > 0 ? amountCad / serviceTotal : 0,
-      yoyChangePercent: yearOverYearChange(amountCad, priorService.get(s.serviceLine) ?? null),
-    };
-  });
+  const serviceGroups = await findServiceLineGroups(plates, completeMonths, provider);
+  const priorServiceGroups = await findServiceLineGroups(plates, priorYearMonths, provider);
+  const priorService = new Map(priorServiceGroups.map((group) => [group.serviceLine, group._sum.amountCad ?? 0]));
 
   return {
-    fiscalYearLabel: fy.label,
+    fiscalYearLabel,
     period: options.period ?? 'ytd',
     filteredTotalCad: productTotal,
     products: productRows,
-    serviceLines: serviceRows,
+    serviceLines: rankServiceLines(serviceGroups, priorService, limit),
   };
 }
 
@@ -786,12 +807,7 @@ export async function createVarianceNote(input: {
 }) {
   if (input.supersedesNoteId) {
     const prior = await prisma.varianceNote.findUnique({ where: { id: input.supersedesNoteId } });
-    if (
-      !prior ||
-      prior.licencePlate !== input.licencePlate ||
-      prior.year !== input.year ||
-      prior.month !== input.month
-    ) {
+    if (prior?.licencePlate !== input.licencePlate || prior?.year !== input.year || prior?.month !== input.month) {
       throw new Error('supersedesNoteId must refer to a note on the same product and month');
     }
   }
