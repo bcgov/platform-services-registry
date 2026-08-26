@@ -1,4 +1,4 @@
-import { filterMissingIngestPeriods, periodsToIngest } from './missing-periods';
+import { filterMissingIngestPeriods, isScopedAzureFetch, periodsToIngest } from './missing-periods';
 
 describe('missing ingest periods', () => {
   it('returns elapsed months with no successful run', () => {
@@ -37,5 +37,14 @@ describe('missing ingest periods', () => {
       { year: 2026, month: 6 },
       { year: 2026, month: 7 },
     ]);
+  });
+
+  it('does not treat FINANCE_LIVE_TEST_ACCOUNT_IDS as a scoped fetch', () => {
+    const previous = process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS;
+    process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS = 'sub-1';
+    expect(isScopedAzureFetch(undefined)).toBe(false);
+    expect(isScopedAzureFetch({ licencePlates: ['abc'] })).toBe(true);
+    if (previous === undefined) delete process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS;
+    else process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS = previous;
   });
 });

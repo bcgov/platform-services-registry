@@ -1,11 +1,14 @@
 import {
   buildIngestionFreshness,
   calculateVariance,
+  elapsedLikeForLikeTotals,
   failedIngestProviders,
   formatCadAmount,
   formatIngestionFreshnessLine,
   hasForecastValuesForRequiredHorizon,
+  indexRollupPlatesByMonth,
   isLowForecastCoverage,
+  monthsWithCompleteRollups,
   sumForecastForMonths,
   sumKnownActualsOrNull,
   expectedPastActualMonths,
@@ -15,6 +18,7 @@ import {
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { Provider } from '@/prisma/client';
 import {
+  buildAccountToLicencePlateMap,
   inventDemoBillingLinks,
   normalizeBillingAccountLinks,
 } from '@/services/public-cloud-finance/billing-account-links';
@@ -45,8 +49,9 @@ describe('finance measure utils', () => {
 
   it('formats CAD amounts and distinguishes zero from missing', () => {
     expect(formatCadAmount(null)).toBe('—');
-    expect(formatCadAmount(0)).toBe('CA$0');
-    expect(formatCadAmount(1234)).toBe('CA$1,234');
+    expect(formatCadAmount(0)).toBe('CA$0.00');
+    expect(formatCadAmount(1234)).toBe('CA$1,234.00');
+    expect(formatCadAmount(100.4)).toBe('CA$100.40');
   });
 
   it('treats missing YTD rollups as null, not zero', () => {
@@ -140,5 +145,56 @@ describe('billing account links', () => {
 
     const invented = inventDemoBillingLinks('e71b0e', Provider.AZURE);
     expect(invented[0]?.accountIdentifier).toContain('demo');
+  });
+
+  it('omits colliding account IDs from the join map', () => {
+    const { map, collisions } = buildAccountToLicencePlateMap([
+      {
+        licencePlate: 'aaa111',
+        provider: Provider.AZURE,
+        billingAccountLinks: [{ provider: Provider.AZURE, accountIdentifier: 'AAAA-bbbb' }],
+      },
+      {
+        licencePlate: 'bbb222',
+        provider: Provider.AZURE,
+        billingAccountLinks: [{ provider: Provider.AZURE, accountIdentifier: 'aaaa-BBBB' }],
+      },
+    ]);
+    expect(map.size).toBe(0);
+    expect(collisions).toEqual(['AZURE:aaaa-bbbb']);
+  });
+});
+
+describe('complete rollup months and like-for-like totals', () => {
+  it('treats a month as complete only when every expected plate has a rollup', () => {
+    const complete = monthsWithCompleteRollups(
+      [
+        { year: 2026, month: 4 },
+        { year: 2026, month: 5 },
+      ],
+      new Map([
+        ['2026-4', ['a', 'b']],
+        ['2026-5', ['a', 'b']],
+      ]),
+      indexRollupPlatesByMonth([
+        { licencePlate: 'a', year: 2026, month: 4 },
+        { licencePlate: 'b', year: 2026, month: 4 },
+        { licencePlate: 'a', year: 2026, month: 5 },
+      ]),
+    );
+    expect(complete).toEqual([{ year: 2026, month: 4 }]);
+  });
+
+  it('does not treat missing elapsed actuals as zero against a full-year forecast', () => {
+    const now = new Date('2026-08-15T12:00:00');
+    const months = [
+      { year: 2026, month: 4 },
+      { year: 2026, month: 5 },
+      { year: 2026, month: 8 },
+    ];
+    const result = elapsedLikeForLikeTotals(months, [10, null, null], [100, 100, 100], now);
+    expect(result.complete).toBe(false);
+    expect(result.variance).toBeNull();
+    expect(result.actual).toBe(10);
   });
 });

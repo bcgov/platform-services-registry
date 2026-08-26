@@ -23,14 +23,9 @@ export function calculateVariance(
 }
 
 export function formatCadAmount(amount: number | null | undefined, opts?: { treatMissingAsDash?: boolean }): string {
-  if (amount == null) return opts?.treatMissingAsDash === false ? 'CA$0' : '—';
-  if (amount === 0) return 'CA$0';
-  const abs = Math.abs(amount);
-  const formatted =
-    abs >= 100
-      ? Math.round(amount).toLocaleString('en-CA')
-      : amount.toLocaleString('en-CA', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  return `CA$${formatted}`;
+  if (amount == null) return opts?.treatMissingAsDash === false ? 'CA$0.00' : '—';
+  if (amount === 0) return 'CA$0.00';
+  return `CA$${amount.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export function formatPercent(value: number | null | undefined, digits = 0): string {
@@ -237,6 +232,52 @@ export function formatIngestionFreshnessLine(item: IngestionFreshness) {
 
 export function failedIngestProviders(freshness: IngestionFreshness[]) {
   return freshness.filter((item) => item.latest?.status === 'FAILED').map((item) => item.provider);
+}
+
+export function monthsWithCompleteRollups(
+  months: Array<{ year: number; month: number }>,
+  expectedPlatesByMonth: Map<string, string[]>,
+  rollupPlatesByMonth: Map<string, Set<string>>,
+) {
+  return months.filter((month) => {
+    const key = monthKey(month.year, month.month);
+    const expected = expectedPlatesByMonth.get(key) ?? [];
+    if (expected.length === 0) return false;
+    const have = rollupPlatesByMonth.get(key) ?? new Set();
+    return expected.every((plate) => have.has(plate));
+  });
+}
+
+export function indexRollupPlatesByMonth(rollups: Array<{ licencePlate: string; year: number; month: number }>) {
+  const byMonth = new Map<string, Set<string>>();
+  for (const row of rollups) {
+    const key = monthKey(row.year, row.month);
+    const plates = byMonth.get(key) ?? new Set<string>();
+    plates.add(row.licencePlate);
+    byMonth.set(key, plates);
+  }
+  return byMonth;
+}
+
+export function elapsedLikeForLikeTotals(
+  months: Array<{ year: number; month: number }>,
+  actuals: Array<number | null | undefined>,
+  forecasts: Array<number | null | undefined>,
+  now = new Date(),
+) {
+  const elapsedIndexes = months
+    .map((month, index) => (isPastMonth(month.year, month.month, now) ? index : -1))
+    .filter((index) => index >= 0);
+  const elapsedActuals = elapsedIndexes.map((index) => actuals[index]);
+  const complete = elapsedActuals.every((amount) => amount != null);
+  const actual = sumKnownActualsOrNull(elapsedActuals);
+  const forecast = elapsedIndexes.reduce((sum, index) => sum + (forecasts[index] ?? 0), 0);
+  return {
+    actual,
+    forecast,
+    complete,
+    variance: complete ? calculateVariance(actual, forecast) : null,
+  };
 }
 
 /** Known actuals only. Null when none of the amounts are present. */

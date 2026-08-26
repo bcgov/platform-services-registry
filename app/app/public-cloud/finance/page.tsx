@@ -4,6 +4,7 @@ import { Button, SegmentedControl } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
+import { openConfirmModal } from '@/components/modal/confirm';
 import { failure, success } from '@/components/notification';
 import {
   calculateVariance,
@@ -135,6 +136,9 @@ export default publicCloudFinancePage(({ session }) => {
       setIngestProgress(null);
       success({ message: ingestFinishedMessage(jobs) });
       await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
+      await queryClient.invalidateQueries({ queryKey: ['finance-anomalies'] });
+      await queryClient.invalidateQueries({ queryKey: ['finance-unmatched'] });
+      await queryClient.invalidateQueries({ queryKey: ['finance-rankings'] });
     },
     onError: async (error) => {
       setIngestProgress(null);
@@ -181,7 +185,13 @@ export default publicCloudFinancePage(({ session }) => {
             data={data}
             ingestProgress={ingestProgress}
             ingestPending={ingestMutation.isPending}
-            onIngest={() => ingestMutation.mutate()}
+            onIngest={async () => {
+              const { state } = await openConfirmModal({
+                content:
+                  'This re-runs the last complete month and any earlier fiscal-year month with no successful ingest. It calls AWS and Azure and can take several minutes.',
+              });
+              if (state.confirmed) ingestMutation.mutate();
+            }}
           />
         )}
       </FinanceQueryState>
@@ -291,7 +301,7 @@ function FinanceSnapshotBody({
                     <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
                     <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
                     <td className="px-3 py-2 text-right text-gray-700">
-                      {formatVarianceCell(row.actual, row.forecast)}
+                      {data.lowCoverage ? '—' : formatVarianceCell(row.actual, row.forecast)}
                     </td>
                     <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
                   </tr>
@@ -322,6 +332,13 @@ function FinanceSnapshotBody({
               </tr>
             </thead>
             <tbody>
+              {data.topProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="px-3 py-4 text-sm text-gray-500">
+                    No product spend for this period.
+                  </td>
+                </tr>
+              ) : null}
               {data.topProducts.map(
                 (row: { licencePlate: string; name: string; amountCad: number; provider: string; status?: string }) => (
                   <tr key={row.licencePlate}>
@@ -357,6 +374,13 @@ function FinanceSnapshotBody({
               </tr>
             </thead>
             <tbody>
+              {data.topServiceLines.length === 0 ? (
+                <tr>
+                  <td colSpan={2} className="px-3 py-4 text-sm text-gray-500">
+                    No service-line spend for this period.
+                  </td>
+                </tr>
+              ) : null}
               {data.topServiceLines.map((row: { serviceLine: string; amountCad: number }) => (
                 <tr key={row.serviceLine}>
                   <td className="px-3 py-2">{row.serviceLine}</td>

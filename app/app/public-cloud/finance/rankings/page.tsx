@@ -102,6 +102,13 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
                   </tr>
                 </thead>
                 <tbody>
+                  {data.products.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-3 py-4 text-sm text-gray-500">
+                        No product rankings for this filter.
+                      </td>
+                    </tr>
+                  ) : null}
                   {data.products.map(
                     (row: {
                       rank: number;

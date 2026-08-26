@@ -9,6 +9,7 @@ import ExportButton from '@/components/buttons/ExportButton';
 import LoadingBox from '@/components/generic/LoadingBox';
 import {
   calculateVariance,
+  elapsedLikeForLikeTotals,
   formatCadAmount,
   isCurrentCalendarMonth,
 } from '@/components/public-cloud/finance/finance-measure-utils';
@@ -413,8 +414,11 @@ function PlatformForecastGrid({
                       visibleProducts.map((product) => {
                         const forecasts = productChunkForecasts(product, fyChunk);
                         const productActuals = productChunkActuals(product, fyChunk);
-                        const productYearTotal = forecasts.reduce<number>((sum, v) => sum + (v ?? 0), 0);
-                        const productActualYearTotal = productActuals.reduce<number>((sum, v) => sum + (v ?? 0), 0);
+                        const productYearLikeForLike = elapsedLikeForLikeTotals(
+                          fyChunk.months,
+                          productActuals,
+                          forecasts,
+                        );
                         const hasAnyForecast = forecasts.some((v) => v != null && v !== 0) || product.hasForecast;
                         return (
                           <Fragment key={product.licencePlate}>
@@ -475,9 +479,7 @@ function PlatformForecastGrid({
                                     );
                                   })}
                                   <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
-                                    {productActuals.some((v) => v != null)
-                                      ? formatCadAmount(productActualYearTotal)
-                                      : '—'}
+                                    {formatCadAmount(productYearLikeForLike.actual)}
                                   </td>
                                 </tr>
                                 <tr className="border-b border-gray-100">
@@ -496,7 +498,7 @@ function PlatformForecastGrid({
                                     );
                                   })}
                                   <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
-                                    {formatVarianceCell(calculateVariance(productActualYearTotal, productYearTotal))}
+                                    {formatVarianceCell(productYearLikeForLike.variance)}
                                   </td>
                                 </tr>
                               </>
@@ -579,11 +581,13 @@ function PlatformForecastGrid({
                             );
                           })}
                           <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
-                            {fyChunk.months.some((_, i) => actuals[fyChunk.startIndex + i] != null)
-                              ? formatCadAmount(
-                                  fyChunk.months.reduce((sum, _, i) => sum + (actuals[fyChunk.startIndex + i] ?? 0), 0),
-                                )
-                              : '—'}
+                            {formatCadAmount(
+                              elapsedLikeForLikeTotals(
+                                fyChunk.months,
+                                fyChunk.months.map((_, i) => actuals[fyChunk.startIndex + i]),
+                                fyChunk.months.map((month) => month.amount),
+                              ).actual,
+                            )}
                           </td>
                         </tr>
                         <tr className={showProducts ? 'bg-amber-50/20 font-semibold' : ''}>
@@ -603,10 +607,11 @@ function PlatformForecastGrid({
                           })}
                           <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
                             {formatVarianceCell(
-                              calculateVariance(
-                                fyChunk.months.reduce((sum, _, i) => sum + (actuals[fyChunk.startIndex + i] ?? 0), 0),
-                                fySummary.total,
-                              ),
+                              elapsedLikeForLikeTotals(
+                                fyChunk.months,
+                                fyChunk.months.map((_, i) => actuals[fyChunk.startIndex + i]),
+                                fyChunk.months.map((month) => month.amount),
+                              ).variance,
                             )}
                           </td>
                         </tr>

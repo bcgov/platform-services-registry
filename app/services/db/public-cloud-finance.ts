@@ -7,8 +7,10 @@ import {
   hasForecastValuesForRequiredHorizon,
   isCurrentCalendarMonth,
   isLowForecastCoverage,
+  indexRollupPlatesByMonth,
   lastCompleteMonth,
   monthKey,
+  monthsWithCompleteRollups,
   sumForecastForFiscalYear,
   sumForecastForMonths,
   summarizeYtdActuals,
@@ -17,8 +19,9 @@ import {
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
-import { FinanceIngestionStatus, Provider, ProjectStatus } from '@/prisma/client';
-import { activeActualSpendWhere } from '@/services/public-cloud-finance/active-spend';
+import { FinanceIngestionStatus, Prisma, Provider, ProjectStatus } from '@/prisma/client';
+import { activeActualSpendWhere, unresolvedUnmatchedWhere } from '@/services/public-cloud-finance/active-spend';
+import { normalizeBillingAccountLinks } from '@/services/public-cloud-finance/billing-account-links';
 import { FINANCE_ANOMALY_THRESHOLDS, SPEND_FLAG_RULE_LABELS } from '@/services/public-cloud-finance/constants';
 import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
 
@@ -83,10 +86,10 @@ function buildMonthlyChart(options: {
   products: SnapshotProduct[];
   forecastByPlate: Map<string, MonthlyValue[]>;
   actualByPlateMonth: Map<string, number>;
-  rollups: Array<{ year: number; month: number }>;
   complete: { year: number; month: number };
+  completeMonthKeys: Set<string>;
 }) {
-  const { fyMonths, products, forecastByPlate, actualByPlateMonth, rollups, complete } = options;
+  const { fyMonths, products, forecastByPlate, actualByPlateMonth, complete, completeMonthKeys } = options;
 
   const forecastByPlateMonth = new Map<string, number>();
   for (const product of products) {
@@ -96,8 +99,6 @@ function buildMonthlyChart(options: {
       forecastByPlateMonth.set(`${product.licencePlate}:${monthKey(value.year, value.month)}`, value.amount);
     }
   }
-
-  const monthsWithActuals = new Set(rollups.map((row) => monthKey(row.year, row.month)));
 
   return fyMonths.map((m) => {
     const keySuffix = monthKey(m.year, m.month);
@@ -114,7 +115,7 @@ function buildMonthlyChart(options: {
       year: m.year,
       month: m.month,
       label: new Date(m.year, m.month - 1, 1).toLocaleString('en-CA', { month: 'short' }),
-      actual: monthsWithActuals.has(keySuffix) ? actualTotal : null,
+      actual: completeMonthKeys.has(keySuffix) ? actualTotal : null,
       forecast: forecastTotal,
       isElapsed: m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
       isCurrentPartial: isCurrentCalendarMonth(m.year, m.month),
@@ -191,7 +192,27 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
       return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
     }),
   );
-  const { fytdActual, presentMonths, expectedMonths } = summarizeYtdActuals(expectedYtdMonths, rollups);
+  const expectedPlatesByMonth = new Map<string, string[]>();
+  for (const month of expectedYtdMonths) {
+    expectedPlatesByMonth.set(
+      monthKey(month.year, month.month),
+      products
+        .filter((product) => {
+          const startedAt = billingStartedByPlate.get(product.licencePlate);
+          return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
+        })
+        .map((product) => product.licencePlate),
+    );
+  }
+  const completeYtdMonths = monthsWithCompleteRollups(
+    expectedYtdMonths,
+    expectedPlatesByMonth,
+    indexRollupPlatesByMonth(rollups),
+  );
+  const completeMonthKeys = new Set(completeYtdMonths.map((month) => monthKey(month.year, month.month)));
+  const { fytdActual } = summarizeYtdActuals(completeYtdMonths, rollups);
+  const presentMonths = completeYtdMonths.length;
+  const expectedMonths = expectedYtdMonths.length;
 
   // Service-line totals from active lines for current FY YTD
   const serviceLines = await prisma.actualSpend.groupBy({
@@ -209,28 +230,27 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     take: 5,
   });
 
-  const {
-    fullYearForecast,
-    fytdForecast,
-    productsWithForecast,
-    productsWithCompleteCoverage,
-    excludedFromForecastTotals,
-    productActualYtd,
-  } = accumulateProductForecastTotals(products, forecastByPlate, fy.startYear, ytdMonths, actualByPlateMonth);
+  const { fullYearForecast, fytdForecast, productsWithForecast, excludedFromForecastTotals } =
+    accumulateProductForecastTotals(products, forecastByPlate, fy.startYear, completeYtdMonths, actualByPlateMonth);
 
+  const activeProducts = products.filter((product) => product.status === ProjectStatus.ACTIVE);
+  const activeComplete = activeProducts.filter((product) => {
+    const forecast = forecastByPlate.get(product.licencePlate);
+    return forecast ? hasForecastValuesForRequiredHorizon(forecast) : false;
+  }).length;
   const coveragePercent =
-    products.length === 0 ? 0 : Math.round((productsWithCompleteCoverage / products.length) * 1000) / 10;
+    activeProducts.length === 0 ? 0 : Math.round((activeComplete / activeProducts.length) * 1000) / 10;
   const lowCoverage = isLowForecastCoverage(coveragePercent);
-  // Like-for-like: FYTD actual vs forecast for the same elapsed months (not full-year forecast).
-  const fytdVariance = lowCoverage ? null : calculateVariance(fytdActual, fytdForecast);
+  const actualsIncomplete = presentMonths < expectedMonths;
+  const fytdVariance = lowCoverage || actualsIncomplete ? null : calculateVariance(fytdActual, fytdForecast);
 
   const monthlyChart = buildMonthlyChart({
     fyMonths,
     products,
     forecastByPlate,
     actualByPlateMonth,
-    rollups,
     complete,
+    completeMonthKeys,
   });
 
   const topProducts = [...products]
@@ -240,7 +260,15 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
       provider: p.provider,
       status: p.status,
       organizationName: p.organization.name,
-      amountCad: productActualYtd.get(p.licencePlate) ?? 0,
+      amountCad: completeYtdMonths
+        .filter((month) => {
+          const startedAt = billingStartedByPlate.get(p.licencePlate);
+          return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
+        })
+        .reduce(
+          (sum, month) => sum + (actualByPlateMonth.get(`${p.licencePlate}:${monthKey(month.year, month.month)}`) ?? 0),
+          0,
+        ),
     }))
     .sort((a, b) => b.amountCad - a.amountCad)
     .slice(0, 5);
@@ -251,12 +279,14 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   }));
 
   const [anomaliesAwaitingReview, unmatchedThisMonth, productsMissingForecast] = await Promise.all([
-    prisma.spendFlag.count({ where: { reviewedAt: null } }),
+    prisma.spendFlag.count({
+      where: { reviewedAt: null, ...(provider === 'ALL' ? {} : { provider }) },
+    }),
     prisma.unmatchedBillingLine.count({
       where: {
         year: complete.year,
         month: complete.month,
-        resolvedTo: null,
+        AND: [unresolvedUnmatchedWhere],
         ...(provider === 'ALL' ? {} : { provider }),
       },
     }),
@@ -278,8 +308,8 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     lowCoverage,
     coverage: {
       percent: coveragePercent,
-      completeCount: productsWithCompleteCoverage,
-      productCount: products.length,
+      completeCount: activeComplete,
+      productCount: activeProducts.length,
       withForecastCount: productsWithForecast,
       excludedFromForecastTotals,
     },
@@ -307,10 +337,11 @@ export async function getFinanceRankings(options: {
   const fy = currentFiscalYearBounds();
   const complete = lastCompleteMonth();
   const fyMonths = fiscalYearMonths(fy.startYear);
-  const months =
-    options.period === 'full-fy'
-      ? fyMonths
-      : fyMonths.filter((m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month));
+  const ytdMonths = fyMonths.filter(
+    (m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
+  );
+  const fyComplete = complete.year > fy.startYear + 1 || (complete.year === fy.startYear + 1 && complete.month >= 3);
+  const months = options.period === 'full-fy' && fyComplete ? fyMonths : ytdMonths;
 
   // Include ACTIVE and INACTIVE so archived products remain in historical rankings/totals.
   const products = await prisma.publicCloudProduct.findMany({
@@ -345,12 +376,17 @@ export async function getFinanceRankings(options: {
     },
   });
 
+  const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
   const amountByPlate = new Map<string, number>();
   const priorByPlate = new Map<string, number>();
   for (const row of rollups) {
+    const startedAt = billingStartedByPlate.get(row.licencePlate);
+    if (startedAt && !productExistedDuringMonth(startedAt, row.year, row.month)) continue;
     amountByPlate.set(row.licencePlate, (amountByPlate.get(row.licencePlate) ?? 0) + row.amountCad);
   }
   for (const row of priorRollups) {
+    const startedAt = billingStartedByPlate.get(row.licencePlate);
+    if (startedAt && !productExistedDuringMonth(startedAt, row.year, row.month)) continue;
     priorByPlate.set(row.licencePlate, (priorByPlate.get(row.licencePlate) ?? 0) + row.amountCad);
   }
 
@@ -385,7 +421,6 @@ export async function getFinanceRankings(options: {
     },
     _sum: { amountCad: true },
     orderBy: { _sum: { amountCad: 'desc' } },
-    take: limit,
   });
 
   const priorServiceGroups = await prisma.actualSpend.groupBy({
@@ -403,7 +438,7 @@ export async function getFinanceRankings(options: {
   const priorService = new Map(priorServiceGroups.map((s) => [s.serviceLine, s._sum.amountCad ?? 0]));
   const serviceTotal = serviceGroups.reduce((sum, s) => sum + (s._sum.amountCad ?? 0), 0);
 
-  const serviceRows = serviceGroups.map((s, index) => {
+  const serviceRows = serviceGroups.slice(0, limit).map((s, index) => {
     const amountCad = s._sum.amountCad ?? 0;
     return {
       rank: index + 1,
@@ -502,14 +537,18 @@ export async function getAnomalyQueue(options?: { includeReviewed?: boolean }) {
 }
 
 export async function reviewSpendFlag(id: string, reviewerIdir: string, reviewNote: string) {
-  return prisma.spendFlag.update({
-    where: { id },
+  const updated = await prisma.spendFlag.updateMany({
+    where: { id, reviewedAt: null },
     data: {
       reviewedBy: reviewerIdir,
       reviewedAt: new Date(),
       reviewNote,
     },
   });
+  if (updated.count === 0) {
+    throw new Error('Flag already reviewed or not found');
+  }
+  return prisma.spendFlag.findUniqueOrThrow({ where: { id } });
 }
 
 export async function getUnmatchedBilling(options?: { provider?: ProviderFilter; year?: number; month?: number }) {
@@ -545,8 +584,76 @@ export async function getUnmatchedBilling(options?: { provider?: ProviderFilter;
 }
 
 export async function resolveUnmatchedBillingLine(id: string, licencePlate: string) {
+  const line = await prisma.unmatchedBillingLine.findUnique({ where: { id } });
+  if (!line) throw new Error('Unmatched line not found');
+  if (line.resolvedTo) throw new Error('Unmatched line already resolved');
+
+  const product = await prisma.publicCloudProduct.findUnique({
+    where: { licencePlate },
+    select: { licencePlate: true, provider: true, billingAccountLinks: true },
+  });
+  if (!product) throw new Error('Unknown project identifier');
+  if (product.provider !== line.provider) {
+    throw new Error('Project provider does not match the unmatched line');
+  }
+
+  const links = normalizeBillingAccountLinks(product.billingAccountLinks);
+  const alreadyLinked = links.some(
+    (link) =>
+      link.provider === line.provider && link.accountIdentifier.toLowerCase() === line.accountIdentifier.toLowerCase(),
+  );
+  const nextLinks = alreadyLinked
+    ? links
+    : [...links, { provider: line.provider, accountIdentifier: line.accountIdentifier }];
+
+  await prisma.publicCloudProduct.update({
+    where: { licencePlate },
+    data: { billingAccountLinks: nextLinks as Prisma.InputJsonValue },
+  });
+
+  await prisma.actualSpend.create({
+    data: {
+      licencePlate,
+      provider: line.provider,
+      serviceLine: line.serviceLine,
+      year: line.year,
+      month: line.month,
+      amountCad: line.amountCad,
+      sourceCurrency: line.sourceCurrency,
+      fxRate: line.fxRate,
+      fxRateDate: line.fxRateDate,
+      ingestionRunId: line.ingestionRunId,
+      supersededBy: null,
+    },
+  });
+
+  const group = await prisma.actualSpend.aggregate({
+    where: {
+      AND: [activeActualSpendWhere, { licencePlate, provider: line.provider, year: line.year, month: line.month }],
+    },
+    _sum: { amountCad: true },
+  });
+  await prisma.monthlyProductSpendRollup.upsert({
+    where: {
+      licencePlate_provider_year_month: {
+        licencePlate,
+        provider: line.provider,
+        year: line.year,
+        month: line.month,
+      },
+    },
+    create: {
+      licencePlate,
+      provider: line.provider,
+      year: line.year,
+      month: line.month,
+      amountCad: group._sum.amountCad ?? 0,
+    },
+    update: { amountCad: group._sum.amountCad ?? 0 },
+  });
+
   return prisma.unmatchedBillingLine.update({
-    where: { id },
+    where: { id: line.id },
     data: { resolvedTo: licencePlate, resolvedAt: new Date() },
   });
 }
@@ -589,6 +696,18 @@ export async function createVarianceNote(input: {
   authorIdir: string;
   supersedesNoteId?: string;
 }) {
+  if (input.supersedesNoteId) {
+    const prior = await prisma.varianceNote.findUnique({ where: { id: input.supersedesNoteId } });
+    if (
+      !prior ||
+      prior.licencePlate !== input.licencePlate ||
+      prior.year !== input.year ||
+      prior.month !== input.month
+    ) {
+      throw new Error('supersedesNoteId must refer to a note on the same product and month');
+    }
+  }
+
   return prisma.varianceNote.create({
     data: {
       licencePlate: input.licencePlate,

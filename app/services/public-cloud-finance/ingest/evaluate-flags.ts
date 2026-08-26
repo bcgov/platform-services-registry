@@ -46,10 +46,7 @@ async function loadFlagEvaluationData(period: BillingPeriod) {
     }),
     prisma.actualSpend.findMany({
       where: {
-        AND: [
-          activeActualSpendWhere,
-          { OR: [{ year: { lt: period.year } }, { year: period.year, month: { lt: period.month } }] },
-        ],
+        OR: [{ year: { lt: period.year } }, { year: period.year, month: { lt: period.month } }],
       },
       select: { licencePlate: true, provider: true, serviceLine: true },
       distinct: ['licencePlate', 'provider', 'serviceLine'],
@@ -95,18 +92,26 @@ function collectMomAndOverForecastFlags(
         });
       }
     }
+  }
 
-    const forecast = forecastByPlateMonth.get(rollup.licencePlate);
+  const amountByPlate = new Map<string, { amountCad: number; provider: (typeof rollups)[number]['provider'] }>();
+  for (const rollup of rollups) {
+    const current = amountByPlate.get(rollup.licencePlate);
+    if (current) current.amountCad += rollup.amountCad;
+    else amountByPlate.set(rollup.licencePlate, { amountCad: rollup.amountCad, provider: rollup.provider });
+  }
+  for (const [licencePlate, row] of amountByPlate) {
+    const forecast = forecastByPlateMonth.get(licencePlate);
     if (forecast !== undefined && forecast > 0) {
-      const overPct = ((rollup.amountCad - forecast) / forecast) * 100;
+      const overPct = ((row.amountCad - forecast) / forecast) * 100;
       if (overPct > FINANCE_ANOMALY_THRESHOLDS.overForecastPercent) {
         flags.push({
-          licencePlate: rollup.licencePlate,
-          provider: rollup.provider,
+          licencePlate,
+          provider: row.provider,
           year: period.year,
           month: period.month,
           ruleId: SpendFlagRuleId.OVER_FORECAST,
-          currentAmountCad: rollup.amountCad,
+          currentAmountCad: row.amountCad,
           priorAmountCad: forecast,
         });
       }

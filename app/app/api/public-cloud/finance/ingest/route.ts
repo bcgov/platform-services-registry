@@ -1,6 +1,6 @@
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { Provider } from '@/prisma/client';
 import { defaultFinanceBillingSource } from '@/services/public-cloud-finance/constants';
 import { ingestBillingPeriod } from '@/services/public-cloud-finance/ingest/run-ingest';
@@ -18,12 +18,15 @@ export const POST = createApiHandler({
   useServiceAccount: true,
   validations: { body: financeIngestBodySchema },
 })(async ({ body, session }) => {
-  const allowWithoutPreview = defaultFinanceBillingSource() === 'real';
-  if (!session.isServiceAccount && !session.previews.publicCloudFinance && !allowWithoutPreview) {
+  if (!session.isServiceAccount && !session.previews.publicCloudFinance) {
     return UnauthorizedResponse();
   }
 
-  const useSimulated = body.useSimulated ?? defaultFinanceBillingSource() === 'simulated';
+  const defaultSource = defaultFinanceBillingSource();
+  if (body.useSimulated === true && defaultSource === 'real') {
+    return BadRequestResponse('Simulated ingest is not allowed when the billing source is real');
+  }
+  const useSimulated = body.useSimulated ?? defaultSource === 'simulated';
   const triggeredBy = session.isServiceAccount
     ? 'finance-ingest-sa'
     : session.user?.email || session.userIdirGuid || 'api';

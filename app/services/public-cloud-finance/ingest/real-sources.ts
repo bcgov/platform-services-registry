@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { Provider } from '@/prisma/client';
+import { convertCurrencyAmount, type CurrencyCode } from '@/services/exchange-rates';
 import { resolveBillingAccountIdentifiers } from '@/services/public-cloud-finance/billing-account-links';
 import { ensureMonthlyUsdCadRate } from '@/services/public-cloud-finance/monthly-fx-rate';
 import { createAwsCostExplorerClient, fetchAwsCostExplorerPages, type AwsExportRow } from './aws-cost-explorer';
@@ -31,13 +32,20 @@ function toCad(
   fx: FxContext | null,
 ): { amountCad: number; fxRate?: number; fxRateDate?: Date } {
   const sourceCurrency = (currency ?? 'CAD').toUpperCase();
+  if (sourceCurrency !== 'CAD' && sourceCurrency !== 'USD') {
+    throw new Error(`Unsupported billing currency: ${sourceCurrency}`);
+  }
   if (sourceCurrency === 'CAD') {
-    return { amountCad: amount };
+    return { amountCad: convertCurrencyAmount(amount, 'CAD', 'CAD') };
   }
   if (!fx) {
     throw new Error('USD→CAD conversion requires a month-end FX rate from Bank of Canada');
   }
-  return { amountCad: amount * fx.rate, fxRate: fx.rate, fxRateDate: fx.rateDate };
+  return {
+    amountCad: convertCurrencyAmount(amount, 'USD' as CurrencyCode, 'CAD', fx.rate),
+    fxRate: fx.rate,
+    fxRateDate: fx.rateDate,
+  };
 }
 
 async function resolvePeriodFx(period: BillingPeriod, rows: ExportRow[]): Promise<FxContext | null> {
@@ -160,14 +168,6 @@ async function resolveAzureSubscriptionIds(scope?: BillingFetchScope): Promise<s
     return [...new Set(scope.accountIdentifiers)];
   }
 
-  const fromEnv = (process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS || '')
-    .split(',')
-    .map((v) => v.trim())
-    .filter(Boolean);
-  if (fromEnv.length > 0) {
-    return [...new Set(fromEnv)];
-  }
-
   const products = await prisma.publicCloudProduct.findMany({
     where: {
       provider: Provider.AZURE,
@@ -221,11 +221,7 @@ async function fetchAzureCostManagementViaAzCli(subscriptionId: string, period: 
   return parseAzureCostQueryPayload(parsed, period, subscriptionId).rows;
 }
 
-async function fetchAzureRowsAtEstateScope(
-  period: BillingPeriod,
-  accessToken: string,
-  knownSubscriptionIds: string[],
-): Promise<ExportRow[] | null> {
+async function fetchAzureRowsAtEstateScope(period: BillingPeriod, accessToken: string): Promise<ExportRow[] | null> {
   const estateScope = azureCostScopeFromEnv();
   if (!estateScope) return null;
 
@@ -236,9 +232,7 @@ async function fetchAzureRowsAtEstateScope(
       accessToken,
       period,
     });
-    if (knownSubscriptionIds.length === 0) return rows;
-    const known = new Set(knownSubscriptionIds.map((id) => id.toLowerCase()));
-    return rows.filter((row) => known.has(row.accountIdentifier.toLowerCase()));
+    return rows;
   } catch (error) {
     const status = azureQueryErrorStatus(error);
     if (status && isAzureScopeFallbackStatus(status)) {
@@ -303,7 +297,7 @@ async function fetchAzureCostManagementRows(period: BillingPeriod, scope?: Billi
 
   let rows: ExportRow[] = [];
   if (accessToken) {
-    const estateRows = await fetchAzureRowsAtEstateScope(period, accessToken, subscriptionIds);
+    const estateRows = await fetchAzureRowsAtEstateScope(period, accessToken);
     if (estateRows) {
       rows = estateRows;
     } else if (scoped) {

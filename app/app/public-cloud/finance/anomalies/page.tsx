@@ -3,6 +3,7 @@
 import { Button, Checkbox, Textarea } from '@mantine/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { openConfirmModal } from '@/components/modal/confirm';
 import { failure, success } from '@/components/notification';
 import { formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
@@ -31,6 +32,7 @@ export default publicCloudFinanceAnomaliesPage(({ session }) => {
     onSuccess: async () => {
       success({ message: 'Flag marked reviewed' });
       await queryClient.invalidateQueries({ queryKey: ['finance-anomalies'] });
+      await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
     },
     onError: () => failure({ message: 'Unable to review flag' }),
   });
@@ -92,6 +94,13 @@ export default publicCloudFinanceAnomaliesPage(({ session }) => {
               </tr>
             </thead>
             <tbody>
+              {data.flags.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-3 py-4 text-sm text-gray-500">
+                    No flags in this queue.
+                  </td>
+                </tr>
+              ) : null}
               {data.flags.map(
                 (flag: {
                   id: string;
@@ -134,12 +143,17 @@ export default publicCloudFinanceAnomaliesPage(({ session }) => {
                           <Button
                             size="xs"
                             loading={reviewMutation.isPending}
-                            onClick={() =>
-                              reviewMutation.mutate({
-                                id: flag.id,
-                                reviewNote: notes[flag.id] || 'Reviewed',
-                              })
-                            }
+                            onClick={async () => {
+                              const { state } = await openConfirmModal({
+                                content: `Mark this flag for ${flag.licencePlate} as reviewed?`,
+                              });
+                              if (state.confirmed) {
+                                reviewMutation.mutate({
+                                  id: flag.id,
+                                  reviewNote: notes[flag.id] || 'Reviewed',
+                                });
+                              }
+                            }}
                           >
                             Mark reviewed
                           </Button>

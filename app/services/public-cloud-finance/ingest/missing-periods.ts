@@ -37,7 +37,7 @@ export async function listMissingIngestPeriods(
 ): Promise<BillingPeriod[]> {
   const elapsed = elapsedCompleteFyMonths(through);
   const runs = await prisma.ingestionRun.findMany({
-    where: { provider, status: FinanceIngestionStatus.SUCCESS },
+    where: { provider, status: FinanceIngestionStatus.SUCCESS, isScoped: false },
     select: { periodStart: true },
   });
   const successful = runs.map((run) => ({
@@ -58,9 +58,5 @@ export async function listScheduledIngestPlan(through: BillingPeriod = lastCompl
 }
 
 export function isScopedAzureFetch(scope?: BillingFetchScope) {
-  return Boolean(
-    scope?.licencePlates?.length ||
-      scope?.accountIdentifiers?.length ||
-      process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS?.trim(),
-  );
+  return Boolean(scope?.licencePlates?.length || scope?.accountIdentifiers?.length);
 }

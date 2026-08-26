@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { failure, success } from '@/components/notification';
 import {
   calculateVariance,
+  elapsedLikeForLikeTotals,
   formatCadAmount,
   isCurrentCalendarMonth,
   expectedPastActualMonths,
@@ -480,13 +481,15 @@ export default function ProjectBudgetForecastPanel({
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
                             {(() => {
-                              const { known } = fiscalChunkKnownActuals(
+                              const likeForLike = elapsedLikeForLikeTotals(
                                 fyChunk.months,
-                                actualByKey,
-                                billingStartedDate,
+                                fyChunk.months.map((month) => {
+                                  const key = monthKey(month.year, month.month);
+                                  return actualByKey.has(key) ? actualByKey.get(key) : null;
+                                }),
+                                fyChunk.months.map((month) => month.amount),
                               );
-                              const variance = calculateVariance(known, fySummary.total);
-                              return variance == null ? '—' : formatCadAmount(variance.amount);
+                              return likeForLike.variance == null ? '—' : formatCadAmount(likeForLike.variance.amount);
                             })()}
                           </td>
                         </tr>

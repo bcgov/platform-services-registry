@@ -64,7 +64,11 @@ export function resolveBillingAccountIdentifiers(product: {
   return [];
 }
 
-/** Build a lookup map: `${provider}:${accountIdentifier}` → licencePlate. */
+export function accountJoinKey(provider: Provider, accountIdentifier: string) {
+  return `${provider}:${accountIdentifier.trim().toLowerCase()}`;
+}
+
+/** Build a lookup map. Colliding account IDs are omitted so spend stays unmatched. */
 export function buildAccountToLicencePlateMap(
   products: Array<{
     licencePlate: string;
@@ -73,14 +77,23 @@ export function buildAccountToLicencePlateMap(
     awsAccounts?: unknown;
     azureSubscriptions?: unknown;
   }>,
-): Map<string, string> {
+): { map: Map<string, string>; collisions: string[] } {
   const map = new Map<string, string>();
+  const collisions = new Set<string>();
   for (const product of products) {
     for (const link of resolveBillingAccountIdentifiers(product)) {
-      map.set(`${link.provider}:${link.accountIdentifier}`, product.licencePlate);
+      const key = accountJoinKey(link.provider, link.accountIdentifier);
+      const existing = map.get(key);
+      if (collisions.has(key)) continue;
+      if (existing && existing !== product.licencePlate) {
+        collisions.add(key);
+        map.delete(key);
+        continue;
+      }
+      map.set(key, product.licencePlate);
     }
   }
-  return map;
+  return { map, collisions: [...collisions] };
 }
 
 /** Invented demo billing links for local/dev seed (never real account IDs). */

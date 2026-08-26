@@ -8,3 +8,8 @@ import type { Prisma } from '@/prisma/client';
 export const activeActualSpendWhere: Prisma.ActualSpendWhereInput = {
   OR: [{ supersededBy: null }, { supersededBy: { isSet: false } }],
 };
+
+/** Unresolved unmatched rows. Missing `resolvedTo` is not the same as `null` on Mongo. */
+export const unresolvedUnmatchedWhere: Prisma.UnmatchedBillingLineWhereInput = {
+  OR: [{ resolvedTo: null }, { resolvedTo: { isSet: false } }],
+};

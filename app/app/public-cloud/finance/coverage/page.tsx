@@ -86,6 +86,13 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
               </tr>
             </thead>
             <tbody>
+              {rows.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-3 py-4 text-sm text-gray-500">
+                    No active products to chase.
+                  </td>
+                </tr>
+              ) : null}
               {rows.map(
                 (row: {
                   licencePlate: string;

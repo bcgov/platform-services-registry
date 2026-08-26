@@ -54,7 +54,11 @@ async function upsertMonthlyUsdCadRate(data: {
       rateDate: data.rateDate,
       source: data.source,
     },
-    update: {},
+    update: {
+      rate: data.rate,
+      rateDate: data.rateDate,
+      source: data.source,
+    },
   });
   return toStored(row);
 }
@@ -69,7 +73,7 @@ export async function ensureMonthlyUsdCadRate(year: number, month: number): Prom
     where: { pair_year_month: { pair: USD_CAD_PAIR, year, month } },
   });
 
-  if (existing) {
+  if (existing && existing.source !== 'FINANCE_USD_CAD_RATE') {
     return toStored(existing);
   }
 
@@ -83,6 +87,7 @@ export async function ensureMonthlyUsdCadRate(year: number, month: number): Prom
       source: boc.source,
     });
   } catch (error) {
+    if (existing) return toStored(existing);
     const fallback = Number(process.env.FINANCE_USD_CAD_RATE);
     if (Number.isFinite(fallback) && fallback > 0) {
       logger.warn(

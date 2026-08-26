@@ -842,6 +842,10 @@ model IngestionRun {
   rowsUnmatched Int                    @default(0)
   triggeredBy   String
   errorMessage  String?
+  /// Set only while RUNNING so two ingests cannot share a provider/month.
+  ingestLockKey String?                @unique
+  /// True when the run was limited to licence plates / account IDs.
+  isScoped      Boolean                @default(false)
 }
 
 /// Month-end FX rate used when converting provider invoices (typically USD→CAD).

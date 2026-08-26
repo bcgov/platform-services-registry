@@ -2,6 +2,7 @@
 
 import { Button, Checkbox, Select, SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
+import { failure, success } from '@/components/notification';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -89,12 +90,16 @@ export default publicCloudFinanceExportPage(({ session }) => {
           onClick={async () => {
             setBusy(true);
             try {
-              await downloadFinanceExport({
+              const downloaded = await downloadFinanceExport({
                 format,
                 provider,
                 period,
                 datasets: datasets.join(','),
               });
+              if (!downloaded) failure({ message: 'Nothing to export for the selected datasets.' });
+              else success({ message: 'Export downloaded.' });
+            } catch {
+              failure({ message: 'Export failed.' });
             } finally {
               setBusy(false);
             }

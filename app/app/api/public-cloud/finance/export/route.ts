@@ -26,7 +26,7 @@ export const GET = createApiHandler({
   const format = queryParams.format ?? 'xlsx';
 
   if (format === 'csv') {
-    const rows = await buildFinanceExportCsvRows({ provider, period });
+    const rows = await buildFinanceExportCsvRows({ provider, period, datasets });
     if (!rows.length) return NoContent();
     return CsvResponse(rows, 'public-cloud-finance.csv');
   }

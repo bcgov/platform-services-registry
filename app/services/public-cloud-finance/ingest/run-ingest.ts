@@ -1,13 +1,20 @@
+import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { FinanceIngestionStatus, Provider } from '@/prisma/client';
-import { activeActualSpendWhere } from '../active-spend';
-import { buildAccountToLicencePlateMap } from '../billing-account-links';
+import { FinanceIngestionStatus, Prisma, Provider } from '@/prisma/client';
+import { activeActualSpendWhere, unresolvedUnmatchedWhere } from '../active-spend';
+import {
+  accountJoinKey,
+  buildAccountToLicencePlateMap,
+  resolveBillingAccountIdentifiers,
+} from '../billing-account-links';
 import { defaultFinanceBillingSource } from '../constants';
 import { loadProductBillingStartByPlate, platesToRollupForPeriod } from '../product-billing-start';
 import { evaluateSpendFlagsForPeriod } from './evaluate-flags';
+import { elapsedCompleteFyMonths } from './missing-periods';
 import { createAwsBillingSource, createAzureBillingSource } from './real-sources';
 import { createSimulatedBillingSource } from './simulated-source';
 import type { BillingFetchScope, BillingPeriod, BillingSource, NormalizedBillingLine } from './types';
+import { planUnmatchedReconcile } from './unmatched-reconcile';
 
 export type IngestOptions = {
   provider: Provider;
@@ -41,12 +48,9 @@ export function resolveBillingSource(provider: Provider, forced?: BillingSource)
   return createAwsBillingSource(Provider.AWS);
 }
 
-async function loadAccountMap(scope?: BillingFetchScope) {
+async function loadProductsForAccountMap() {
   // Include INACTIVE so residual billing after archive still attaches to historical products.
-  const products = await prisma.publicCloudProduct.findMany({
-    where: {
-      ...(scope?.licencePlates?.length ? { licencePlate: { in: scope.licencePlates } } : {}),
-    },
+  return prisma.publicCloudProduct.findMany({
     select: {
       licencePlate: true,
       provider: true,
@@ -55,7 +59,20 @@ async function loadAccountMap(scope?: BillingFetchScope) {
       azureSubscriptions: true,
     },
   });
-  return buildAccountToLicencePlateMap(products);
+}
+
+function accountIdentifiersForPlates(
+  products: Awaited<ReturnType<typeof loadProductsForAccountMap>>,
+  licencePlates: string[],
+) {
+  const wanted = new Set(licencePlates);
+  return [
+    ...new Set(
+      products
+        .filter((product) => wanted.has(product.licencePlate))
+        .flatMap((product) => resolveBillingAccountIdentifiers(product).map((link) => link.accountIdentifier)),
+    ),
+  ];
 }
 
 async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod, licencePlates: string[]) {
@@ -109,7 +126,7 @@ function partitionMatchedUnmatched(lines: NormalizedBillingLine[], accountMap: M
   const unmatched: NormalizedBillingLine[] = [];
 
   for (const line of lines) {
-    const licencePlate = accountMap.get(`${line.provider}:${line.accountIdentifier}`);
+    const licencePlate = accountMap.get(accountJoinKey(line.provider, line.accountIdentifier));
     if (licencePlate) {
       matched.push({ ...line, licencePlate });
     } else {
@@ -121,12 +138,8 @@ function partitionMatchedUnmatched(lines: NormalizedBillingLine[], accountMap: M
 }
 
 function resolveSupersedeLicencePlateFilter(
-  matchedPlates: string[],
   scope?: BillingFetchScope,
 ): { licencePlate: { in: string[] } } | Record<string, never> {
-  if (matchedPlates.length && scope?.licencePlates?.length) {
-    return { licencePlate: { in: matchedPlates } };
-  }
   if (scope?.licencePlates?.length) {
     return { licencePlate: { in: scope.licencePlates } };
   }
@@ -162,10 +175,9 @@ async function writeMatchedAndSupersede(options: {
   period: BillingPeriod;
   runId: string;
   matched: Array<NormalizedBillingLine & { licencePlate: string }>;
-  matchedPlates: string[];
   scope?: BillingFetchScope;
 }) {
-  const { provider, period, runId, matched, matchedPlates, scope } = options;
+  const { provider, period, runId, matched, scope } = options;
 
   const existing = await prisma.actualSpend.findMany({
     where: {
@@ -175,7 +187,7 @@ async function writeMatchedAndSupersede(options: {
           provider,
           year: period.year,
           month: period.month,
-          ...resolveSupersedeLicencePlateFilter(matchedPlates, scope),
+          ...resolveSupersedeLicencePlateFilter(scope),
         },
       ],
     },
@@ -230,20 +242,27 @@ async function writeUnmatched(
   period: BillingPeriod,
   runId: string,
   unmatched: NormalizedBillingLine[],
+  scope?: BillingFetchScope,
 ) {
-  // Clear prior unmatched for provider/period that are still unresolved (re-ingest replace).
-  await prisma.unmatchedBillingLine.deleteMany({
-    where: {
-      provider,
-      year: period.year,
-      month: period.month,
-      resolvedTo: null,
-    },
+  const existing = await prisma.unmatchedBillingLine.findMany({
+    where: { provider, year: period.year, month: period.month },
   });
+  const scopedAccounts = scope?.accountIdentifiers?.length
+    ? new Set(scope.accountIdentifiers.map((id) => id.toLowerCase()))
+    : null;
+  const existingInScope = scopedAccounts
+    ? existing.filter((row) => scopedAccounts.has(row.accountIdentifier.toLowerCase()))
+    : existing;
+  const plan = planUnmatchedReconcile(existingInScope, unmatched);
 
-  if (unmatched.length > 0) {
+  if (plan.staleIds.length > 0) {
+    await prisma.unmatchedBillingLine.deleteMany({
+      where: { id: { in: plan.staleIds }, AND: [unresolvedUnmatchedWhere] },
+    });
+  }
+  if (plan.toCreate.length > 0) {
     await prisma.unmatchedBillingLine.createMany({
-      data: unmatched.map((line) => ({
+      data: plan.toCreate.map((line) => ({
         provider: line.provider,
         accountIdentifier: line.accountIdentifier,
         serviceLine: line.serviceLine,
@@ -257,35 +276,97 @@ async function writeUnmatched(
       })),
     });
   }
+  await Promise.all(
+    plan.toUpdate.map((row) =>
+      prisma.unmatchedBillingLine.update({
+        where: { id: row.id },
+        data: { amountCad: row.amountCad, ingestionRunId: runId },
+      }),
+    ),
+  );
 }
 
 /**
  * Idempotent month ingest: supersede prior active lines for the provider/period (scoped),
  * write new lines, refresh rollups, evaluate flags.
  */
+function ingestLockKey(provider: Provider, period: BillingPeriod) {
+  return `${provider}:${period.year}-${period.month}`;
+}
+
+async function releaseIngestLock(runId: string, data: Prisma.IngestionRunUpdateInput) {
+  await prisma.ingestionRun.update({
+    where: { id: runId },
+    data: { ...data, ingestLockKey: null },
+  });
+}
+
+async function evaluateFlagsForPeriodAndLater(period: BillingPeriod) {
+  const flagsRaised = await evaluateSpendFlagsForPeriod(period);
+  const later = elapsedCompleteFyMonths().filter(
+    (month) => month.year > period.year || (month.year === period.year && month.month > period.month),
+  );
+  for (const month of later) {
+    const hasRollup = await prisma.monthlyProductSpendRollup.findFirst({
+      where: { year: month.year, month: month.month },
+      select: { id: true },
+    });
+    if (hasRollup) await evaluateSpendFlagsForPeriod(month);
+  }
+  return flagsRaised;
+}
+
 export async function ingestBillingPeriod(options: IngestOptions): Promise<IngestResult> {
-  const { provider, period, triggeredBy, scope } = options;
+  const { provider, period, triggeredBy } = options;
   const source = resolveBillingSource(provider, options.source);
   const { periodStart, periodEnd } = periodBounds(period);
+  const isScoped = Boolean(options.scope?.licencePlates?.length || options.scope?.accountIdentifiers?.length);
 
-  const run = await prisma.ingestionRun.create({
-    data: {
-      provider,
-      periodStart,
-      periodEnd,
-      status: FinanceIngestionStatus.RUNNING,
-      triggeredBy,
-    },
-  });
+  let run: { id: string };
+  try {
+    run = await prisma.ingestionRun.create({
+      data: {
+        provider,
+        periodStart,
+        periodEnd,
+        status: FinanceIngestionStatus.RUNNING,
+        triggeredBy,
+        ingestLockKey: ingestLockKey(provider, period),
+        isScoped,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      throw new Error(`Ingest already running for ${provider} ${period.year}-${period.month}`);
+    }
+    throw error;
+  }
 
   try {
-    const accountMap = await loadAccountMap(scope);
+    const products = await loadProductsForAccountMap();
+    const { map: accountMap, collisions } = buildAccountToLicencePlateMap(products);
+    if (collisions.length > 0) {
+      logger.warn('Duplicate billing account links omitted from ingest join', { collisions });
+    }
+
+    const scope: BillingFetchScope | undefined = options.scope?.licencePlates?.length
+      ? {
+          ...options.scope,
+          accountIdentifiers: [
+            ...new Set([
+              ...(options.scope.accountIdentifiers ?? []),
+              ...accountIdentifiersForPlates(products, options.scope.licencePlates),
+            ]),
+          ],
+        }
+      : options.scope;
+
     let lines = await source.fetchBillingLines(period, scope);
     lines = lines.filter((line) => line.provider === provider);
 
     if (scope?.accountIdentifiers?.length) {
-      const allowed = new Set(scope.accountIdentifiers);
-      lines = lines.filter((line) => allowed.has(line.accountIdentifier));
+      const allowed = new Set(scope.accountIdentifiers.map((id) => id.toLowerCase()));
+      lines = lines.filter((line) => allowed.has(line.accountIdentifier.toLowerCase()));
     }
 
     const { matched, unmatched } = partitionMatchedUnmatched(lines, accountMap);
@@ -296,23 +377,19 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
       period,
       runId: run.id,
       matched,
-      matchedPlates,
       scope,
     });
-    await writeUnmatched(provider, period, run.id, unmatched);
+    await writeUnmatched(provider, period, run.id, unmatched, scope);
 
     const rollupPlates = await resolveRollupPlates(provider, period, matchedPlates, scope);
     await refreshRollupsForPeriod(provider, period, rollupPlates);
-    const flagsRaised = await evaluateSpendFlagsForPeriod(period);
+    const flagsRaised = await evaluateFlagsForPeriodAndLater(period);
 
-    await prisma.ingestionRun.update({
-      where: { id: run.id },
-      data: {
-        status: FinanceIngestionStatus.SUCCESS,
-        completedAt: new Date(),
-        rowsLoaded: matched.length,
-        rowsUnmatched: unmatched.length,
-      },
+    await releaseIngestLock(run.id, {
+      status: FinanceIngestionStatus.SUCCESS,
+      completedAt: new Date(),
+      rowsLoaded: matched.length,
+      rowsUnmatched: unmatched.length,
     });
 
     return {
@@ -324,13 +401,10 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    await prisma.ingestionRun.update({
-      where: { id: run.id },
-      data: {
-        status: FinanceIngestionStatus.FAILED,
-        completedAt: new Date(),
-        errorMessage: message.slice(0, 2000),
-      },
+    await releaseIngestLock(run.id, {
+      status: FinanceIngestionStatus.FAILED,
+      completedAt: new Date(),
+      errorMessage: message.slice(0, 2000),
     });
     throw error;
   }
