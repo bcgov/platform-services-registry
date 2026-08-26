@@ -25,16 +25,21 @@ export function sanitizeGpuResourceRequests(
   resourceRequests: ResourceRequestsEnv,
   cluster: Cluster,
   canManageGpu: boolean,
+  currentResourceRequests?: ResourceRequestsEnv,
 ): ResourceRequestsEnv {
-  const gpuEnabled = canManageGpu && (cluster === Cluster.EMERALD || cluster === Cluster.KLAB2);
+  const gpuEnabled = cluster === Cluster.EMERALD || cluster === Cluster.KLAB2;
 
   return Object.fromEntries(
-    Object.entries(resourceRequests).map(([namespace, requests]) => [
-      namespace,
-      {
-        ...requests,
-        gpu: gpuEnabled ? requests.gpu ?? 0 : 0,
-      },
-    ]),
+    Object.entries(resourceRequests).map(([namespace, requests]) => {
+      const key = namespace as keyof ResourceRequestsEnv;
+
+      return [
+        namespace,
+        {
+          ...requests,
+          gpu: !gpuEnabled ? 0 : canManageGpu ? requests.gpu ?? 0 : currentResourceRequests?.[key]?.gpu ?? 0,
+        },
+      ];
+    }),
   ) as ResourceRequestsEnv;
 }

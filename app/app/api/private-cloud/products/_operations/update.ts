@@ -54,7 +54,12 @@ export default async function updateOp({
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
   const canManageGpu = canManageGpuQuota(session);
-  rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, product.cluster, canManageGpu);
+  rest.resourceRequests = sanitizeGpuResourceRequests(
+    rest.resourceRequests,
+    product.cluster,
+    canManageGpu,
+    product.resourceRequests,
+  );
 
   const productData = {
     ...rest,

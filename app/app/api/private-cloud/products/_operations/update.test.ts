@@ -311,9 +311,46 @@ describe('Update Private Cloud Product - Validations', () => {
     expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
   });
 
-  it('should reset GPU quota to 0 for regular users on Emerald', async () => {
-    const { product, request } = await createAndProvisionProduct(Cluster.EMERALD);
+  it('should preserve existing GPU quota when regular user updates other resources on Emerald', async () => {
+    const product = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 4,
+          },
+        },
+      },
+    });
 
+    // Create with admin so GPU 4 is allowed
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const createResponse = await createPrivateCloudProduct(product);
+    expect(createResponse.status).toBe(200);
+
+    const request = await createResponse.json();
+
+    // Approve
+    await mockSessionByRole(GlobalRole.PrivateReviewer);
+
+    const approvalResponse = await makePrivateCloudRequestDecision(request.id, {
+      ...request.decisionData,
+      type: RequestType.CREATE,
+      decision: DecisionStatus.APPROVED,
+    });
+
+    expect(approvalResponse.status).toBe(200);
+
+    // Provision
+    await mockTeamServiceAccount(['private-admin']);
+
+    const provisionResponse = await provisionPrivateCloudProduct(request.licencePlate);
+    expect(provisionResponse.status).toBe(200);
+
+    // Regular user edits another resource
     await mockSessionByIdirGuid(product.primaryTechnicalLead.idirGuid);
 
     const response = await editPrivateCloudProduct(request.licencePlate, {
@@ -323,7 +360,7 @@ describe('Update Private Cloud Product - Validations', () => {
         ...request.decisionData.resourceRequests,
         development: {
           ...request.decisionData.resourceRequests.development,
-          gpu: 4,
+          cpu: request.decisionData.resourceRequests.development.cpu + 0.5,
         },
       },
     });
@@ -332,7 +369,7 @@ describe('Update Private Cloud Product - Validations', () => {
 
     const responseData = await response.json();
 
-    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(4);
   });
 
   it('should preserve GPU quota for admin on Emerald', async () => {
