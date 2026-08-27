@@ -3,7 +3,7 @@ python 3.14.7
 pnpm 11.24.0
 oc 4.13.3
 kubectl 1.37.0
-terraform 1.15.9
+terraform 1.16.0
 helm 4.2.4
 shfmt 3.13.1
 act 0.2.89
