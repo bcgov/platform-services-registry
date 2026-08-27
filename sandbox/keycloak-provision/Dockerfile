@@ -1,4 +1,4 @@
-FROM node:24.19.0-alpine AS build
+FROM node:24.20.0-alpine AS build
 WORKDIR /opt
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm --dir sandbox/_packages/keycloak-admin build
 RUN pnpm --dir sandbox/keycloak-provision build
 
-FROM node:24.19.0-alpine
+FROM node:24.20.0-alpine
 WORKDIR /opt
 
 COPY --from=build /opt/sandbox/keycloak-provision/build ./
