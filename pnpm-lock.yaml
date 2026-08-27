@@ -137,6 +137,9 @@ importers:
       '@tanstack/react-table':
         specifier: ^9.0.0
         version: 9.2.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@tanstack/table-core':
+        specifier: 9.2.3
+        version: 9.2.3
       '@tiptap/extension-blockquote':
         specifier: ^3.0.9
         version: 3.30.5(@tiptap/core@3.30.5(@tiptap/pm@3.30.5))(@tiptap/pm@3.30.5)

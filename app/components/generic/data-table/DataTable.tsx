@@ -1,19 +1,13 @@
 import { UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowsSort, IconArrowUp } from '@tabler/icons-react';
-import {
-  CellContext,
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { FlexRender, useTable } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/table-core';
 import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
 import { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/utils/js';
+import { dataTableFeatures } from './features';
 import Pagination from './Pagination';
 
 export interface ColumnDefinition<TData> {
@@ -38,7 +32,7 @@ export default function DataTable<TData extends object>({
   disablePagination = false,
   footer,
 }: TableProps<TData>) {
-  const columnHelper = createColumnHelper<TData>();
+  const columnHelper = createColumnHelper<typeof dataTableFeatures, TData>();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: disablePagination ? data.length : defaultPageSize,
@@ -94,7 +88,7 @@ export default function DataTable<TData extends object>({
             </UnstyledButton>
           );
         },
-        cell: (info: CellContext<TData, TData>) => (
+        cell: (info) => (
           <div
             className={cn({
               'text-left': col.align === 'left',
@@ -109,15 +103,13 @@ export default function DataTable<TData extends object>({
     });
   }, [_columns, data, columnHelper]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data,
     columns: columnDefs,
     state: {
       pagination,
     },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
   });
 
@@ -131,7 +123,7 @@ export default function DataTable<TData extends object>({
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th className="text-left p-2 border-b border-gray-200 bg-gray-100" key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : <FlexRender header={header} />}{' '}
                     </th>
                   ))}
                 </tr>
@@ -141,10 +133,8 @@ export default function DataTable<TData extends object>({
               {table.getRowModel().rows.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <tr key={row.id} className="bg-white even:bg-gray-50">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 border-b border-gray-200 align-center">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
+                    {row.getAllCells().map((cell) => (
+                      <td key={cell.id} className="p-2 border-b border-gray-200 align-center"></td>
                     ))}
                   </tr>
                 ))
