@@ -8,7 +8,7 @@ COPY data-migrations/migrate-mongo-config.js ./data-migrations/migrate-mongo-con
 COPY data-migrations/migrations ./data-migrations/migrations
 
 
-RUN npm install -g turbo pnpm@11.23.0
+RUN npm install -g turbo pnpm@11.24.0
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 WORKDIR /app/data-migrations
