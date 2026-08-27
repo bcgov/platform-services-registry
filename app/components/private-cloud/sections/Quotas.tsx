@@ -18,7 +18,15 @@ const resourceUnit = {
   cpu: 'Core',
   memory: 'GiB',
   storage: 'GiB',
+  gpu: '',
 };
+
+const resourceMaxValue = {
+  cpu: 64,
+  memory: 128,
+  storage: 512,
+  gpu: 8,
+} as const;
 
 export default function Quotas({
   disabled,
@@ -27,6 +35,7 @@ export default function Quotas({
   licencePlate,
   originalResourceRequests,
   quotaContactRequired = false,
+  canManageGpu = false,
 }: {
   disabled: boolean;
   cluster?: Cluster;
@@ -34,26 +43,33 @@ export default function Quotas({
   licencePlate?: string;
   originalResourceRequests?: ResourceRequestsEnv;
   quotaContactRequired?: boolean;
+  canManageGpu?: boolean;
 }) {
   const { watch } = useFormContext();
 
-  const [resourceRequests] = watch(['resourceRequests']);
+  const [resourceRequests, formCluster] = watch(['resourceRequests', 'cluster']);
+
+  const currentCluster = cluster ?? formCluster;
+
+  const canShowGpu = canManageGpu && (currentCluster === Cluster.EMERALD || currentCluster === Cluster.KLAB2);
+
+  const visibleResourceKeys = resourceKeys.filter((resourceKey) => resourceKey !== 'gpu' || canShowGpu);
 
   const subnetInformation = useQueries({
     queries: ['dev', 'test', 'prod', 'tools'].map((environment) => {
       return {
-        queryKey: [licencePlate, environment],
+        queryKey: ['emerald-subnet', licencePlate, currentCluster, environment],
         queryFn: () => getSubnetForEmerald(licencePlate!, environment),
-        enabled: cluster === Cluster.EMERALD && !!licencePlate,
+        enabled: currentCluster === Cluster.EMERALD && !!licencePlate,
       };
     }),
   });
 
   const pdbPolicyReports = useQueries({
     queries: namespaceKeys.map((namespace) => ({
-      queryKey: ['pdb-policy-report', licencePlate, cluster, environmentShortNames[namespace]],
-      queryFn: () => getPdbPolicyStatus(licencePlate!, cluster!, environmentShortNames[namespace]),
-      enabled: !!licencePlate && !!cluster,
+      queryKey: ['pdb-policy-report', licencePlate, currentCluster, environmentShortNames[namespace]],
+      queryFn: () => getPdbPolicyStatus(licencePlate!, currentCluster!, environmentShortNames[namespace]),
+      enabled: !!licencePlate && !!currentCluster,
       staleTime: 60_000,
       retry: false,
     })),
@@ -70,6 +86,14 @@ export default function Quotas({
 
   const isPdbPolicyLoading = pdbPolicyReports.some((query) => query.isLoading);
   const hasPdbPolicyError = pdbPolicyReports.some((query) => query.isError);
+
+  const getResourceValue = (resource: ResourceRequests | undefined, resourceKey: (typeof resourceKeys)[number]) => {
+    if (resourceKey === 'gpu') {
+      return resource?.gpu ?? 0;
+    }
+
+    return resource?.[resourceKey];
+  };
 
   return (
     <>
@@ -132,12 +156,12 @@ export default function Quotas({
           const newVal = (resourceRequests[namespace] || {}) as ResourceRequests;
           const changed =
             hasOriginalVal &&
-            (originalVal?.cpu !== newVal?.cpu ||
-              originalVal?.memory !== newVal?.memory ||
-              originalVal?.storage !== newVal?.storage);
+            visibleResourceKeys.some(
+              (resourceKey) => getResourceValue(originalVal, resourceKey) !== getResourceValue(newVal, resourceKey),
+            );
 
           let subnetInfo: ReactNode = null;
-          if (cluster === Cluster.EMERALD) {
+          if (currentCluster === Cluster.EMERALD) {
             if (subnetInformation[index].isLoading) {
               subnetInfo = <Loader color="blue" type="dots" />;
             } else if (subnetInformation[index].data) {
@@ -154,10 +178,10 @@ export default function Quotas({
           }
 
           let clusterLink: ReactNode = null;
-          if (licencePlate && cluster) {
+          if (licencePlate && currentCluster) {
             clusterLink = (
               <ExternalLink
-                href={`https://console.apps.${cluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-${environmentShortNames[namespace]}`}
+                href={`https://console.apps.${currentCluster}.devops.gov.bc.ca/k8s/cluster/projects/${licencePlate}-${environmentShortNames[namespace]}`}
               >
                 {licencePlate}-{environmentShortNames[namespace] || ''}
               </ExternalLink>
@@ -179,14 +203,18 @@ export default function Quotas({
               {clusterLink}
               {subnetInfo}
 
-              {resourceKeys.map((resourceKey) => {
-                const oldval = String(originalVal?.[resourceKey]);
-                const newval = String(newVal[resourceKey]);
+              {visibleResourceKeys.map((resourceKey) => {
+                const oldval = String(getResourceValue(originalVal, resourceKey));
+                const newval = String(getResourceValue(newVal, resourceKey));
 
                 return (
                   <div key={resourceKey}>
                     <HookFormTextInput
-                      label={`${resourceKey.toUpperCase()} (${resourceUnit[resourceKey]})`}
+                      label={
+                        resourceUnit[resourceKey]
+                          ? `${resourceKey.toUpperCase()} (${resourceUnit[resourceKey]})`
+                          : resourceKey.toUpperCase()
+                      }
                       name={`resourceRequests.${namespace}.${resourceKey}`}
                       type="number"
                       step={resourceKey === 'cpu' ? 0.5 : 1}
@@ -196,7 +224,7 @@ export default function Quotas({
                       classNames={{ wrapper: 'mt-3' }}
                       options={{ valueAsNumber: true }}
                       min={0}
-                      max={resourceKey === 'cpu' ? 64 : resourceKey === 'memory' ? 128 : 512}
+                      max={resourceMaxValue[resourceKey]}
                     />
                     {hasOriginalVal && oldval !== newval && (
                       <div>

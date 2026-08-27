@@ -93,6 +93,12 @@ export const resourceRequestsSchema = z.object({
     .refine((val) => val % 1 === 0, {
       message: 'Storage must be an integer',
     }),
+  gpu: z
+    .number()
+    .int('GPU must be an integer')
+    .min(0, 'GPU must be at least 0')
+    .max(8, 'GPU must be at most 8')
+    .default(0),
 });
 
 export const resourceRequestsEnvSchema = z.object({

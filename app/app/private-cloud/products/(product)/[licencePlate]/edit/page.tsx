@@ -17,6 +17,7 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { canManageGpuQuota } from '@/helpers/quota-change';
 import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { ResourceRequestsEnv } from '@/prisma/client';
 import { getQuotaChangeStatus, updatePrivateCloudProductRepositories } from '@/services/backend/private-cloud/products';
@@ -39,6 +40,7 @@ export default privateCloudProductEdit(({ session }) => {
   type PrivateCloudEditRequestInput = z.input<typeof privateCloudEditRequestBodySchema>;
   type PrivateCloudEditRequestOutput = z.output<typeof privateCloudEditRequestBodySchema>;
 
+  const canManageGpu = canManageGpuQuota(session);
   const methods = useForm<PrivateCloudEditRequestInput, unknown, PrivateCloudEditRequestOutput>({
     resolver: async (values, context, options) => {
       const { resourceRequests } = values;
@@ -100,6 +102,15 @@ export default privateCloudProductEdit(({ session }) => {
 
   useEffect(() => {
     if (!currentProduct) return;
+    const resourceRequests = Object.fromEntries(
+      Object.entries(currentProduct.resourceRequests ?? {}).map(([namespace, requests]) => [
+        namespace,
+        {
+          ...requests,
+          gpu: requests.gpu ?? 0,
+        },
+      ]),
+    ) as ResourceRequestsEnv;
 
     setDisabled(!currentProduct._permissions.edit);
 
@@ -107,6 +118,7 @@ export default privateCloudProductEdit(({ session }) => {
       {
         ...currentProduct,
         ...getRepositoryFormValues(currentProduct),
+        resourceRequests,
         isAgMinistry: false,
         isAgMinistryChecked: true,
       },
@@ -166,6 +178,7 @@ export default privateCloudProductEdit(({ session }) => {
         isGoldDR: currentProduct.golddrEnabled ?? false,
         originalResourceRequests: currentProduct.resourceRequests,
         quotaContactRequired: true,
+        canManageGpu,
       },
     },
   ];

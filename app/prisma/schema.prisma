@@ -584,6 +584,7 @@ type ResourceRequests {
   cpu     Float
   memory  Float
   storage Float
+  gpu     Int
 }
 
 type Budget {
@@ -726,6 +727,7 @@ enum ResourceType {
   cpu
   memory
   storage
+  gpu
 }
 
 enum PrivateCloudProductMemberRole {

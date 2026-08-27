@@ -17,6 +17,7 @@ import Quotas from '@/components/private-cloud/sections/Quotas';
 import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { canManageGpuQuota } from '@/helpers/quota-change';
 import { DecisionStatus, ProjectContext, RequestType } from '@/prisma/client';
 import { usePrivateProductState } from '@/states/global';
 import { RequestDecision } from '@/validation-schemas';
@@ -56,6 +57,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
   type PrivateCloudRequestDecisionOutput = z.output<typeof privateCloudRequestDecisionBodySchema>;
 
   const baseResolver = zodResolver(privateCloudRequestDecisionBodySchema);
+  const canManageGpu = canManageGpuQuota(session);
 
   const methods = useForm<PrivateCloudRequestDecisionInput, unknown, PrivateCloudRequestDecisionOutput>({
     resolver: async (values, context, options) => {
@@ -128,6 +130,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
         isGoldDR: snap.currentRequest?.originalData?.golddrEnabled ?? false,
         originalResourceRequests: snap.currentRequest?.originalData?.resourceRequests,
         quotaContactRequired: true,
+        canManageGpu: canManageGpu ?? false,
       },
     },
   ];
