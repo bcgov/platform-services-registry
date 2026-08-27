@@ -1,4 +1,4 @@
-FROM node:24.19.0-alpine AS build
+FROM node:24.20.0-alpine AS build
 WORKDIR /opt
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -11,7 +11,7 @@ RUN npm install -g turbo pnpm@11.23.0
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm --dir sandbox/m365mock build
 
-FROM node:24.19.0-alpine
+FROM node:24.20.0-alpine
 WORKDIR /opt
 
 COPY --from=build /opt/sandbox/m365mock/build ./sandbox/m365mock/build
