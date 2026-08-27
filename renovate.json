@@ -10,5 +10,15 @@
       "groupName": "prisma",
       "groupSlug": "prisma"
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update pnpm versions in Dockerfiles",
+      "managerFilePatterns": ["/(^|/)[Dd]ockerfile[^/]*$/"],
+      "matchStrings": ["pnpm@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "pnpm",
+      "datasourceTemplate": "npm"
+    }
   ]
 }
