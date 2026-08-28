@@ -5,7 +5,7 @@ import { createColumnHelper } from '@tanstack/table-core';
 import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/utils/js';
 import { dataTableFeatures } from './features';
 import Pagination from './Pagination';
@@ -15,6 +15,26 @@ export interface ColumnDefinition<TData> {
   value: string;
   cellFormatter?: (item: TData, attribute: string) => React.ReactNode;
   align?: 'left' | 'center' | 'right';
+}
+
+interface DataTableCellProps<TData> {
+  item: TData;
+  column: ColumnDefinition<TData>;
+  value: unknown;
+}
+
+function DataTableCell<TData>({ item, column, value }: DataTableCellProps<TData>) {
+  return (
+    <div
+      className={cn({
+        'text-left': column.align === 'left',
+        'text-right': column.align === 'right',
+        'text-center': column.align === 'center',
+      })}
+    >
+      {column.cellFormatter ? column.cellFormatter(item, column.value) : String(value)}
+    </div>
+  );
 }
 
 interface TableProps<TData> {
@@ -88,17 +108,7 @@ export default function DataTable<TData extends object>({
             </UnstyledButton>
           );
         },
-        cell: (info) => (
-          <div
-            className={cn({
-              'text-left': col.align === 'left',
-              'text-right': col.align === 'right',
-              'text-center': col.align === 'center',
-            })}
-          >
-            {col.cellFormatter ? col.cellFormatter(info.row.original, col.value) : String(info.getValue())}
-          </div>
-        ),
+        cell: (info) => <DataTableCell item={info.row.original} column={col} value={info.getValue()} />,
       });
     });
   }, [_columns, data, columnHelper]);
@@ -134,7 +144,9 @@ export default function DataTable<TData extends object>({
                 table.getRowModel().rows.map((row) => (
                   <tr key={row.id} className="bg-white even:bg-gray-50">
                     {row.getAllCells().map((cell) => (
-                      <td key={cell.id} className="p-2 border-b border-gray-200 align-center"></td>
+                      <td key={cell.id} className="p-2 border-b border-gray-200 align-center">
+                        <FlexRender cell={cell} />
+                      </td>
                     ))}
                   </tr>
                 ))

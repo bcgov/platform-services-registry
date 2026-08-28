@@ -4,9 +4,9 @@ import { dataTableFeatures } from './features';
 
 export default function Pagination<TData extends RowData>({
   table,
-}: {
+}: Readonly<{
   table: Table<typeof dataTableFeatures, TData>;
-}) {
+}>) {
   const pagination = table.atoms.pagination.get();
   return (
     <div className="flex items-center justify-between mt-4">
