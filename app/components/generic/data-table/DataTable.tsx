@@ -1,19 +1,13 @@
 import { UnstyledButton } from '@mantine/core';
 import { IconArrowDown, IconArrowsSort, IconArrowUp } from '@tabler/icons-react';
-import {
-  CellContext,
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { FlexRender, useTable } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/table-core';
 import _get from 'lodash-es/get';
 import _isString from 'lodash-es/isString';
 import _startCase from 'lodash-es/startCase';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/utils/js';
+import { dataTableFeatures } from './features';
 import Pagination from './Pagination';
 
 export interface ColumnDefinition<TData> {
@@ -23,6 +17,31 @@ export interface ColumnDefinition<TData> {
   align?: 'left' | 'center' | 'right';
 }
 
+interface DataTableCellProps<TData> {
+  item: TData;
+  column: ColumnDefinition<TData>;
+  value: unknown;
+}
+
+function DataTableCell<TData>({ item, column, value }: Readonly<DataTableCellProps<TData>>) {
+  return (
+    <div
+      className={cn({
+        'text-left': column.align === 'left',
+        'text-right': column.align === 'right',
+        'text-center': column.align === 'center',
+      })}
+    >
+      {column.cellFormatter ? column.cellFormatter(item, column.value) : String(value)}
+    </div>
+  );
+}
+
+function createCellRenderer<TData>(column: ColumnDefinition<TData>) {
+  return function DataTableCellRenderer(info: { row: { original: TData }; getValue: () => unknown }) {
+    return <DataTableCell item={info.row.original} column={column} value={info.getValue()} />;
+  };
+}
 interface TableProps<TData> {
   columns?: ColumnDefinition<TData>[];
   data: TData[];
@@ -38,7 +57,7 @@ export default function DataTable<TData extends object>({
   disablePagination = false,
   footer,
 }: TableProps<TData>) {
-  const columnHelper = createColumnHelper<TData>();
+  const columnHelper = createColumnHelper<typeof dataTableFeatures, TData>();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: disablePagination ? data.length : defaultPageSize,
@@ -94,30 +113,18 @@ export default function DataTable<TData extends object>({
             </UnstyledButton>
           );
         },
-        cell: (info: CellContext<TData, TData>) => (
-          <div
-            className={cn({
-              'text-left': col.align === 'left',
-              'text-right': col.align === 'right',
-              'text-center': col.align === 'center',
-            })}
-          >
-            {col.cellFormatter ? col.cellFormatter(info.row.original, col.value) : String(info.getValue())}
-          </div>
-        ),
+        cell: createCellRenderer(col),
       });
     });
   }, [_columns, data, columnHelper]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data,
     columns: columnDefs,
     state: {
       pagination,
     },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
   });
 
@@ -131,7 +138,7 @@ export default function DataTable<TData extends object>({
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th className="text-left p-2 border-b border-gray-200 bg-gray-100" key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : <FlexRender header={header} />}{' '}
                     </th>
                   ))}
                 </tr>
@@ -141,9 +148,9 @@ export default function DataTable<TData extends object>({
               {table.getRowModel().rows.length > 0 ? (
                 table.getRowModel().rows.map((row) => (
                   <tr key={row.id} className="bg-white even:bg-gray-50">
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getAllCells().map((cell) => (
                       <td key={cell.id} className="p-2 border-b border-gray-200 align-center">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        <FlexRender cell={cell} />
                       </td>
                     ))}
                   </tr>
