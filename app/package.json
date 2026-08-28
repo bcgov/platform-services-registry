@@ -47,7 +47,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/postcss": "^4.1.11",
     "@tanstack/react-query": "^5.84.1",
-    "@tanstack/react-table": "9.0.0",
+    "@tanstack/react-table": "9.2.3",
     "@tanstack/table-core": "9.2.3",
     "@tiptap/extension-blockquote": "^3.0.9",
     "@tiptap/extension-bold": "^3.0.9",

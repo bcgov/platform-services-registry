@@ -23,7 +23,7 @@ interface DataTableCellProps<TData> {
   value: unknown;
 }
 
-function DataTableCell<TData>({ item, column, value }: DataTableCellProps<TData>) {
+function DataTableCell<TData>({ item, column, value }: Readonly<DataTableCellProps<TData>>) {
   return (
     <div
       className={cn({
@@ -37,6 +37,11 @@ function DataTableCell<TData>({ item, column, value }: DataTableCellProps<TData>
   );
 }
 
+function createCellRenderer<TData>(column: ColumnDefinition<TData>) {
+  return function DataTableCellRenderer(info: { row: { original: TData }; getValue: () => unknown }) {
+    return <DataTableCell item={info.row.original} column={column} value={info.getValue()} />;
+  };
+}
 interface TableProps<TData> {
   columns?: ColumnDefinition<TData>[];
   data: TData[];
@@ -108,7 +113,7 @@ export default function DataTable<TData extends object>({
             </UnstyledButton>
           );
         },
-        cell: (info) => <DataTableCell item={info.row.original} column={col} value={info.getValue()} />,
+        cell: createCellRenderer(col),
       });
     });
   }, [_columns, data, columnHelper]);
