@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@badeball/cypress-cucumber-preprocessor':
-        specifier: ^26.0.0
-        version: 26.0.0(@babel/core@7.29.7(supports-color@8.1.1))(cypress@14.5.4)(supports-color@8.1.1)(typescript@6.0.3)
+        specifier: ^27.0.0
+        version: 27.0.0(@babel/core@7.29.7(supports-color@8.1.1))(cypress@14.5.4)(supports-color@8.1.1)
       '@bahmutov/cypress-esbuild-preprocessor':
         specifier: ^2.2.5
         version: 2.2.8(esbuild@0.28.2)(supports-color@8.1.1)
@@ -798,12 +798,12 @@ packages:
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
 
-  '@badeball/cypress-cucumber-preprocessor@26.0.0':
-    resolution: {integrity: sha512-pAY1MrN/H0DztwQkLoiRA8GSduDiJOjCD17Tn525v3GxL5pzXSXsQoalzo77jCVXg8CAl75QoZ/5PsJF34WPsA==}
+  '@badeball/cypress-cucumber-preprocessor@27.0.0':
+    resolution: {integrity: sha512-emn9wgqlVkamoQYZd9SVXeca9CSYfgcM2m+EPSqyTGQ1va7CrIDjcdJSF6wc/i5hUGTe2C5bUWshd4RIQkYjMQ==}
     engines: {node: ^20.12.0 || ^21.7.0 || >=22}
     hasBin: true
     peerDependencies:
-      cypress: ^12.0.0 || ^13.0.0 || ^14.0.0 || >=15.0.0 <=15.17.0 || ^15.18.0
+      cypress: ^12.0.0 || ^13.0.0 || ^14.0.0 || ~15.16.0 || ~15.17.0 || ^15.18.0
 
   '@bahmutov/cypress-esbuild-preprocessor@2.2.8':
     resolution: {integrity: sha512-pN90es4T1DYcQbBuDEpa7yotC/VhE+BgfHIEGpS0uxibTIqt7g4ZITQZbTFcaQATZh3QmPIMMkeZyBE7PWf1LA==}
@@ -953,8 +953,8 @@ packages:
   '@cucumber/ci-environment@13.0.0':
     resolution: {integrity: sha512-cs+3NzfNkGbcmHPddjEv4TKFiBpZRQ6WJEEufB9mw+ExS22V/4R/zpDSEG+fsJ/iSNCd6A2sATdY8PFOyY3YnA==}
 
-  '@cucumber/ci-environment@14.0.0':
-    resolution: {integrity: sha512-CJbjPPGuk1fArPRVKB6FU2q9FHxOQOeq7IEJcB2NLNhOhV97uazLxvwD5ucAJb/flky+czOLhvaYaRAF6l5QYQ==}
+  '@cucumber/ci-environment@15.0.0':
+    resolution: {integrity: sha512-9zIy0YIn7Tkws4pNJElf/kOnPy/6yxWZPWH6eMNW8s/BsV3d10+Xs1yjp2HwEMPElnrFEVHQlUs4XGQ1M3q2Nw==}
 
   '@cucumber/cucumber-expressions@19.0.1':
     resolution: {integrity: sha512-tJrTgCZ5/vgDBfAs2pQu0fu88gPJIGQ40AC/3ftg5/i/BwnhX/W1MbaFF8A+tanY1zbUWWarGFJ2QMKItPQ/QQ==}
@@ -985,16 +985,16 @@ packages:
   '@cucumber/gherkin@39.1.0':
     resolution: {integrity: sha512-pqmSO2bUWxJm3TbNrKXlDaHjL6c77+ez9kWmfCd9oRPeTRPEVH3spZvpAqdXYWOZYSNYwWFCAAeZ4RGpkauNoQ==}
 
-  '@cucumber/gherkin@41.0.0':
-    resolution: {integrity: sha512-pKGx1EzNjtWbpw74kEevKDMj71dF3ZSaFJpLYuWVvRZKe+Cwoq5iEkuMaELIg1jxIu8jH/A2HPMpMR8UBvdG0w==}
+  '@cucumber/gherkin@42.0.1':
+    resolution: {integrity: sha512-Kqg0ULhWqbXp/a1c04ND4sS4KTlIL831tQ0NhZLXWdEhT6LiNsZ5LFRzy/lBy7QQpcKhroKp/i3C2WdEnRBKNg==}
 
   '@cucumber/html-formatter@23.1.0':
     resolution: {integrity: sha512-DcCSFoGs6jbwzXPgX1CwgJKEE+ZMcIEzq/0Memg0o24maNn9NJizBFHmoFWG4iv/OxHza+mvc+56cTHetfHndw==}
     peerDependencies:
       '@cucumber/messages': '>=18'
 
-  '@cucumber/html-formatter@24.0.0':
-    resolution: {integrity: sha512-F+3Y2yXZBjj8kYhUg++8LjHhfne0ddm8KS9bYf29nF5f9D3g3elZjWnxa9eMKfkIQGlW5EcmzMYyu6iEF+dV5g==}
+  '@cucumber/html-formatter@24.1.1':
+    resolution: {integrity: sha512-N7Y0P74qrIYM9pazsMKQ1KRnNg0u7LSHbX32Fs3dW9Afmjm2NNBXIEolT+rrDIZKxTAKHJOitJeE6YroB0uW0Q==}
     peerDependencies:
       '@cucumber/messages': '>=18'
 
@@ -1016,8 +1016,8 @@ packages:
   '@cucumber/messages@32.3.1':
     resolution: {integrity: sha512-yNQq1KoXRYaEKrWMFmpUQX7TdeQuU9jeGgJAZ3dArTsC/T4NpJ6DnqaJIIgwPnz/wtQIQTNX7/h0rOuF5xY4qQ==}
 
-  '@cucumber/messages@33.0.4':
-    resolution: {integrity: sha512-i6P1a0bnmhecOHfvIW0rhMxv/gMKfBKwDMxmD9/Uo1HSqpQ17ocHms1JwWW6uTMLAopqqWlcz7l6Pax+qUOTzg==}
+  '@cucumber/messages@34.2.1':
+    resolution: {integrity: sha512-aj2iCAG9ZOpMVcMxcgShifv5fbR96b7SMgdWcPXXh2QbFp7OEcAnQ5MC5YfWUDSDasmw7FU5NJEsOrXdTQOU1A==}
 
   '@cucumber/pretty-formatter@3.3.1':
     resolution: {integrity: sha512-wy8M/Poaqnoom+YP1mzZMfHEE3pP9/0JAYajkjpHTtanp4KJGpAXdukuUYbmmgFjRXUmUSK3s5I+I5+f+q2blA==}
@@ -1039,8 +1039,8 @@ packages:
     peerDependencies:
       '@cucumber/messages': '*'
 
-  '@cucumber/tag-expressions@10.0.0':
-    resolution: {integrity: sha512-uap3XSQFxj5HYAHQIShGeS2zotMEnUmnEVjyuhp39j7tDUvaU64ArHzRkLPSWRavEI8ycdeNdwef1pcM/n6pSQ==}
+  '@cucumber/tag-expressions@11.0.1':
+    resolution: {integrity: sha512-x0AssM2HKLoxw8gSeAsYo0QK9wImODYBNDO423/K1Pfk2vwA/MdecRS1ky5i3Rl84kohaG0uUXhIBR+HTu/Qjg==}
 
   '@cucumber/tag-expressions@9.1.0':
     resolution: {integrity: sha512-bvHjcRFZ+J1TqIa9eFNO1wGHqwx4V9ZKV3hYgkuK/VahHx73uiP4rKV3JVrvWSMrwrFvJG6C8aEwnCWSvbyFdQ==}
@@ -3871,12 +3871,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
 
-  '@typescript-eslint/project-service@8.67.0':
-    resolution: {integrity: sha512-cvE8c7ulYeXN9fYuszhCeCsbzyVEXuhrRCybnBre7TUmqb5nRmBfQAwCj0O3WJFDeyAZt4VYv51vMCC9LHSdYw==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '>=4.8.4 <6.1.0'
-
   '@typescript-eslint/project-service@8.68.0':
     resolution: {integrity: sha512-5GQtWZCXFcFYux955pvoS02WLc49pXNlvIxocKjS0clvwo3in1RdlzVKyiqQH9vE5AKWFLTaUgeQkOrTS+0Qxw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -3886,12 +3880,6 @@ packages:
   '@typescript-eslint/scope-manager@8.68.0':
     resolution: {integrity: sha512-T5eXpcaJNg8bhjHJ8Rjp68Vq/QBteYtTKY8TZqVNPaUbuz0f6jI9t6aDkylwvalpAB9XTTFeFOjrjXAZ3YvmVA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/tsconfig-utils@8.67.0':
-    resolution: {integrity: sha512-vV+LUSv5njUWsknE71fqKTlXUva+R76SaeORd6Zojcunk/6DvKFXONU3BrAs2H49mbygUXt6gbYunzwqNwlhdg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '>=4.8.4 <6.1.0'
 
   '@typescript-eslint/tsconfig-utils@8.68.0':
     resolution: {integrity: sha512-F7zrGQfiJHojPwi8vhxZQC1tWtJzvL74cK/nqri2lk8YUXvYaYwl263xOJ69jDWPUk1hmcdoayFwk9lX09npVw==}
@@ -3906,19 +3894,9 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
 
-  '@typescript-eslint/types@8.67.0':
-    resolution: {integrity: sha512-sBtgslww8nsMYUjhdPBiSyUqSzT8uR6g93A2QXnQC8+cGdjz0CyaOdqHDRJb1AtORbZCNUJBBeFA/tNR2uQmww==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@typescript-eslint/types@8.68.0':
     resolution: {integrity: sha512-9RnpsGJjrAllCMefGVVsImJM24YurhC0Q1h4UbvivtvOqXmR/vEJge2OoE++z9m6hyg8T1Q8t5SNT6tHSbrxcg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/typescript-estree@8.67.0':
-    resolution: {integrity: sha512-EKQBCE9yNlRJYm7jdTW5AhDacDUmSwQb0FAJAmK2EKYrNXIsa2vxcSZx6PvJ/dEdI6lS+Y9W+EXckLj0iPFGcw==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: '>=4.8.4 <6.1.0'
 
   '@typescript-eslint/typescript-estree@8.68.0':
     resolution: {integrity: sha512-OKKsD0tYmoNiU5PW2zehO1yO56jYOm1ShYlxon/Z0SJNidAkdVg86eg9ruRuoXf8xfnuWZGbwDsStkoXbZtIIA==}
@@ -3932,10 +3910,6 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '>=4.8.4 <6.1.0'
-
-  '@typescript-eslint/visitor-keys@8.67.0':
-    resolution: {integrity: sha512-fkv8dHRDqfGtTHuJeebdrQ7cX6Ad4WAS00rgHh9UGvMycF1mjBfsxry1XsLIFhWZ6Judlh6UdzK+TYlbpCXgnA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/visitor-keys@8.68.0':
     resolution: {integrity: sha512-YR65gGdGvTUAWLldC3xLOvOzamdGzB4A5/N8rehEaHs3Zvoe39BhgY+u0SPch1OvrVTfLcc55wsSgK2NcnTS/A==}
@@ -4158,10 +4132,6 @@ packages:
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
-
-  ansi-regex@6.2.2:
-    resolution: {integrity: sha512-Bq3SmSpyFHaWjPk8If9yc6svM8c56dB5BAtW4Qbw5jHTwwXXcTLoRMkpDJp6VL0XzlWaCHTXrkFURMYmD0sLqg==}
-    engines: {node: '>=12'}
 
   ansi-regex@6.3.0:
     resolution: {integrity: sha512-WpDfL7NO6j7tH88IDBNVdUJxDh9nmCteAVW9dsep846XdwF4naCBK+/tGLX3KJgcpgMRXCFlTM2hKGoK9FsdrQ==}
@@ -4486,15 +4456,8 @@ packages:
   brace-expansion@1.1.16:
     resolution: {integrity: sha512-IDw48K2/2kRkg9LdJxurvq3lV3aBgq0REY89duEqFRthjlPdXHKMj7EnQOXVckxzgisinf3nHfrcE2FufFLXMw==}
 
-  brace-expansion@2.1.2:
-    resolution: {integrity: sha512-w5JZcKgdhDOgOwm8H+KgbosopHMuGcl6qbulwjtz3SM7I7P3yW1eAjzMPLrIE+NQ9vjgANKHWeMHnrT0OXW1oA==}
-
   brace-expansion@2.1.4:
     resolution: {integrity: sha512-hGfVzPxthbf3+2yjg/RBs60cB0FhqBS/zvdV/4wn4/BmN0bNMMHPc4V/BbFieqf1TKAGGAHnY4eSjajCl0f2Xg==}
-
-  brace-expansion@5.0.7:
-    resolution: {integrity: sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==}
-    engines: {node: 18 || 20 || >=22}
 
   brace-expansion@5.0.9:
     resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
@@ -4994,6 +4957,10 @@ packages:
       '@types/node': '*'
       cosmiconfig: '>=9'
       typescript: '>=5'
+
+  cosmiconfig@10.0.0:
+    resolution: {integrity: sha512-RYs2EfrIoS16yh6j/MLgF753u5rROFFw3XGjcJXM4UQJm1iGXX7gKNyk4O/bCkyfi9Qfo+fVdd3FrnviZv830g==}
+    engines: {node: ^22.18 || >= 24}
 
   cosmiconfig@7.1.0:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
@@ -6887,10 +6854,6 @@ packages:
     resolution: {integrity: sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==}
     hasBin: true
 
-  js-yaml@4.2.0:
-    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
-    hasBin: true
-
   js-yaml@4.3.0:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
@@ -7406,10 +7369,6 @@ packages:
 
   minimalistic-crypto-utils@1.0.1:
     resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
-
-  minimatch@10.2.5:
-    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
-    engines: {node: 18 || 20 || >=22}
 
   minimatch@10.2.6:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
@@ -9226,11 +9185,6 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsx@4.23.11:
-    resolution: {integrity: sha512-Ry2oTEUnhBdeEdWIztY8kf3/nBGnPnjMLVGL0YfdRXMORuPER5NlKmayqxtxRxwB1xBN+RivRaJfe7PM1rtiyw==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
-
   tsx@4.23.12:
     resolution: {integrity: sha512-FDf4L4sYzKtzWYhU/Xm0AQFdTjdIxNo9ElTf2mxXM6k8YMHXzYUe4yODVaXP4V9uMFbVg8c0qyBccK2OOxb45Q==}
     engines: {node: '>=18.0.0'}
@@ -9276,10 +9230,6 @@ packages:
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
-
-  type-fest@5.7.0:
-    resolution: {integrity: sha512-1URUxUqfHFM1c+zfSPsa3gnkO7Aq21qyH75SIduNYz4SzY964rn1X2vCMQaHSHhktiw+0kPa2iyb6PUpXqB6Vg==}
-    engines: {node: '>=20'}
 
   type-fest@5.8.0:
     resolution: {integrity: sha512-YGYEVz3Fm5iy/AybuA0oyNFq7H4CgQNfRp/qfe8nurE1kuCeNm3/vfm9X4Mtl+qLyaKJUh5xrFZwogr41SMjYA==}
@@ -10102,22 +10052,22 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@badeball/cypress-cucumber-preprocessor@26.0.0(@babel/core@7.29.7(supports-color@8.1.1))(cypress@14.5.4)(supports-color@8.1.1)(typescript@6.0.3)':
+  '@badeball/cypress-cucumber-preprocessor@27.0.0(@babel/core@7.29.7(supports-color@8.1.1))(cypress@14.5.4)(supports-color@8.1.1)':
     dependencies:
-      '@cucumber/ci-environment': 14.0.0
+      '@cucumber/ci-environment': 15.0.0
       '@cucumber/cucumber': 13.0.0
       '@cucumber/cucumber-expressions': 20.0.0
-      '@cucumber/gherkin': 41.0.0
-      '@cucumber/html-formatter': 24.0.0(@cucumber/messages@33.0.4)
-      '@cucumber/message-streams': 5.0.1(@cucumber/messages@33.0.4)
-      '@cucumber/messages': 33.0.4
-      '@cucumber/pretty-formatter': 4.0.0(@cucumber/messages@33.0.4)
-      '@cucumber/tag-expressions': 10.0.0
+      '@cucumber/gherkin': 42.0.1
+      '@cucumber/html-formatter': 24.1.1(@cucumber/messages@34.2.1)
+      '@cucumber/message-streams': 5.0.1(@cucumber/messages@34.2.1)
+      '@cucumber/messages': 34.2.1
+      '@cucumber/pretty-formatter': 4.0.0(@cucumber/messages@34.2.1)
+      '@cucumber/tag-expressions': 11.0.1
       '@jridgewell/trace-mapping': 0.3.31
       base64-js: 1.5.1
       cli-table: 0.3.11
       common-ancestor-path: 2.0.0
-      cosmiconfig: 9.0.2(typescript@6.0.3)
+      cosmiconfig: 10.0.0
       cypress: 14.5.4
       debug: 4.4.3(supports-color@8.1.1)
       error-stack-parser: 2.1.4
@@ -10132,7 +10082,6 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
-      - typescript
 
   '@bahmutov/cypress-esbuild-preprocessor@2.2.8(esbuild@0.28.2)(supports-color@8.1.1)':
     dependencies:
@@ -10301,7 +10250,7 @@ snapshots:
 
   '@cucumber/ci-environment@13.0.0': {}
 
-  '@cucumber/ci-environment@14.0.0': {}
+  '@cucumber/ci-environment@15.0.0': {}
 
   '@cucumber/cucumber-expressions@19.0.1':
     dependencies:
@@ -10343,7 +10292,7 @@ snapshots:
       semver: 7.8.1
       string-argv: 0.3.2
       supports-color: 10.2.2
-      type-fest: 5.7.0
+      type-fest: 5.8.0
       util-arity: 1.1.0
       yaml: 2.9.0
       yup: 1.7.1
@@ -10372,17 +10321,17 @@ snapshots:
     dependencies:
       '@cucumber/messages': 32.3.1
 
-  '@cucumber/gherkin@41.0.0':
+  '@cucumber/gherkin@42.0.1':
     dependencies:
-      '@cucumber/messages': 33.0.4
+      '@cucumber/messages': 34.2.1
 
   '@cucumber/html-formatter@23.1.0(@cucumber/messages@32.3.1)':
     dependencies:
       '@cucumber/messages': 32.3.1
 
-  '@cucumber/html-formatter@24.0.0(@cucumber/messages@33.0.4)':
+  '@cucumber/html-formatter@24.1.1(@cucumber/messages@34.2.1)':
     dependencies:
-      '@cucumber/messages': 33.0.4
+      '@cucumber/messages': 34.2.1
 
   '@cucumber/junit-xml-formatter@0.13.3(@cucumber/messages@32.3.1)':
     dependencies:
@@ -10397,9 +10346,9 @@ snapshots:
       '@cucumber/messages': 32.3.1
       mime: 3.0.0
 
-  '@cucumber/message-streams@5.0.1(@cucumber/messages@33.0.4)':
+  '@cucumber/message-streams@5.0.1(@cucumber/messages@34.2.1)':
     dependencies:
-      '@cucumber/messages': 33.0.4
+      '@cucumber/messages': 34.2.1
       mime: 4.1.0
 
   '@cucumber/messages@32.3.1':
@@ -10407,7 +10356,7 @@ snapshots:
       class-transformer: 0.5.1
       reflect-metadata: 0.2.2
 
-  '@cucumber/messages@33.0.4': {}
+  '@cucumber/messages@34.2.1': {}
 
   '@cucumber/pretty-formatter@3.3.1(@cucumber/messages@32.3.1)':
     dependencies:
@@ -10415,10 +10364,10 @@ snapshots:
       '@cucumber/query': 15.0.1(@cucumber/messages@32.3.1)
       luxon: 3.7.2
 
-  '@cucumber/pretty-formatter@4.0.0(@cucumber/messages@33.0.4)':
+  '@cucumber/pretty-formatter@4.0.0(@cucumber/messages@34.2.1)':
     dependencies:
-      '@cucumber/messages': 33.0.4
-      '@cucumber/query': 16.0.0(@cucumber/messages@33.0.4)
+      '@cucumber/messages': 34.2.1
+      '@cucumber/query': 16.0.0(@cucumber/messages@34.2.1)
       luxon: 3.7.2
 
   '@cucumber/query@15.0.1(@cucumber/messages@32.3.1)':
@@ -10427,13 +10376,13 @@ snapshots:
       '@teppeis/multimaps': 3.0.0
       lodash.sortby: 4.7.0
 
-  '@cucumber/query@16.0.0(@cucumber/messages@33.0.4)':
+  '@cucumber/query@16.0.0(@cucumber/messages@34.2.1)':
     dependencies:
-      '@cucumber/messages': 33.0.4
+      '@cucumber/messages': 34.2.1
       '@teppeis/multimaps': 3.0.0
       lodash.sortby: 4.7.0
 
-  '@cucumber/tag-expressions@10.0.0': {}
+  '@cucumber/tag-expressions@11.0.1': {}
 
   '@cucumber/tag-expressions@9.1.0': {}
 
@@ -12956,21 +12905,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.67.0(supports-color@8.1.1)(typescript@5.9.3)':
-    dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.67.0
-      debug: 4.4.3(supports-color@8.1.1)
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@typescript-eslint/project-service@8.68.0(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.68.0(typescript@6.0.3)
       '@typescript-eslint/types': 8.68.0
       debug: 4.4.3(supports-color@10.2.2)
       typescript: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/project-service@8.68.0(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@typescript-eslint/tsconfig-utils': 8.68.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.68.0
+      debug: 4.4.3(supports-color@8.1.1)
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -12988,7 +12937,7 @@ snapshots:
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/visitor-keys': 8.68.0
 
-  '@typescript-eslint/tsconfig-utils@8.67.0(typescript@5.9.3)':
+  '@typescript-eslint/tsconfig-utils@8.68.0(typescript@5.9.3)':
     dependencies:
       typescript: 5.9.3
 
@@ -13020,24 +12969,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/types@8.67.0': {}
-
   '@typescript-eslint/types@8.68.0': {}
-
-  '@typescript-eslint/typescript-estree@8.67.0(supports-color@8.1.1)(typescript@5.9.3)':
-    dependencies:
-      '@typescript-eslint/project-service': 8.67.0(supports-color@8.1.1)(typescript@5.9.3)
-      '@typescript-eslint/tsconfig-utils': 8.67.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.67.0
-      '@typescript-eslint/visitor-keys': 8.67.0
-      debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 10.2.6
-      semver: 7.8.5
-      tinyglobby: 0.2.17
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@typescript-eslint/typescript-estree@8.68.0(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
@@ -13051,6 +12983,21 @@ snapshots:
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/typescript-estree@8.68.0(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@typescript-eslint/project-service': 8.68.0(supports-color@8.1.1)(typescript@5.9.3)
+      '@typescript-eslint/tsconfig-utils': 8.68.0(typescript@5.9.3)
+      '@typescript-eslint/types': 8.68.0
+      '@typescript-eslint/visitor-keys': 8.68.0
+      debug: 4.4.3(supports-color@8.1.1)
+      minimatch: 10.2.6
+      semver: 7.8.5
+      tinyglobby: 0.2.17
+      ts-api-utils: 2.5.0(typescript@5.9.3)
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -13090,11 +13037,6 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  '@typescript-eslint/visitor-keys@8.67.0':
-    dependencies:
-      '@typescript-eslint/types': 8.67.0
-      eslint-visitor-keys: 5.0.1
 
   '@typescript-eslint/visitor-keys@8.68.0':
     dependencies:
@@ -13285,8 +13227,6 @@ snapshots:
       type-fest: 0.21.3
 
   ansi-regex@5.0.1: {}
-
-  ansi-regex@6.2.2: {}
 
   ansi-regex@6.3.0: {}
 
@@ -13672,17 +13612,9 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@2.1.2:
-    dependencies:
-      balanced-match: 1.0.2
-
   brace-expansion@2.1.4:
     dependencies:
       balanced-match: 1.0.2
-
-  brace-expansion@5.0.7:
-    dependencies:
-      balanced-match: 4.0.4
 
   brace-expansion@5.0.9:
     dependencies:
@@ -14159,6 +14091,11 @@ snapshots:
       jiti: 2.6.1
       typescript: 6.0.3
 
+  cosmiconfig@10.0.0:
+    dependencies:
+      env-paths: 2.2.1
+      js-yaml: 4.3.0
+
   cosmiconfig@7.1.0:
     dependencies:
       '@types/parse-json': 4.0.2
@@ -14171,7 +14108,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 6.0.3
@@ -14497,7 +14434,7 @@ snapshots:
 
   detective-typescript@14.1.2(supports-color@8.1.1)(typescript@5.9.3):
     dependencies:
-      '@typescript-eslint/typescript-estree': 8.67.0(supports-color@8.1.1)(typescript@5.9.3)
+      '@typescript-eslint/typescript-estree': 8.68.0(supports-color@8.1.1)(typescript@5.9.3)
       ast-module-types: 6.0.2
       node-source-walk: 7.0.2
       typescript: 5.9.3
@@ -15566,13 +15503,13 @@ snapshots:
       console.table: 0.10.0
       debug: 4.4.3(supports-color@8.1.1)
       find-test-names: 1.29.19(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       pluralize: 8.0.0
       require-and-forget: 1.0.1(supports-color@8.1.1)
       shelljs: 0.10.0
       spec-change: 1.11.21(supports-color@8.1.1)
       tinyglobby: 0.2.17
-      tsx: 4.23.11
+      tsx: 4.23.12
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -15886,7 +15823,7 @@ snapshots:
 
   has-ansi@6.0.2:
     dependencies:
-      ansi-regex: 6.2.2
+      ansi-regex: 6.3.0
 
   has-bigints@1.1.0: {}
 
@@ -16752,10 +16689,6 @@ snapshots:
       argparse: 1.0.10
       esprima: 4.0.1
 
-  js-yaml@4.2.0:
-    dependencies:
-      argparse: 2.0.1
-
   js-yaml@4.3.0:
     dependencies:
       argparse: 2.0.1
@@ -17210,10 +17143,6 @@ snapshots:
 
   minimalistic-crypto-utils@1.0.1: {}
 
-  minimatch@10.2.5:
-    dependencies:
-      brace-expansion: 5.0.7
-
   minimatch@10.2.6:
     dependencies:
       brace-expansion: 5.0.9
@@ -17228,7 +17157,7 @@ snapshots:
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 2.1.2
+      brace-expansion: 2.1.4
 
   minimist@1.2.8: {}
 
@@ -17257,7 +17186,7 @@ snapshots:
       glob: 10.5.0
       he: 1.2.0
       is-path-inside: 3.0.3
-      js-yaml: 4.2.0
+      js-yaml: 4.3.0
       log-symbols: 4.1.0
       minimatch: 9.0.9
       ms: 2.1.3
@@ -19416,12 +19345,6 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsx@4.23.11:
-    dependencies:
-      esbuild: 0.28.2
-    optionalDependencies:
-      fsevents: 2.3.3
-
   tsx@4.23.12:
     dependencies:
       esbuild: 0.28.2
@@ -19459,10 +19382,6 @@ snapshots:
   type-fest@2.19.0: {}
 
   type-fest@4.41.0: {}
-
-  type-fest@5.7.0:
-    dependencies:
-      tagged-tag: 1.0.0
 
   type-fest@5.8.0:
     dependencies:
