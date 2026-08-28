@@ -1,4 +1,5 @@
 import { Badge } from '@mantine/core';
+import IdBadge from '@/components/shared/IdBadge';
 import LicencePlateBadge from '@/components/shared/LicencePlateBadge';
 import { ProjectStatus } from '@/prisma/client';
 import { PublicCloudProduct } from '@/prisma/client';
@@ -8,7 +9,7 @@ export default function ProductBadge({
   data,
   className,
 }: {
-  data: Pick<PublicCloudProduct, 'licencePlate' | 'provider' | 'status'>;
+  data: Pick<PublicCloudProduct, 'licencePlate' | 'provider' | 'status' | 'id'>;
   className?: string;
 }) {
   let color = 'gray';
@@ -35,6 +36,7 @@ export default function ProductBadge({
     <div className={cn('inline-block', className)}>
       <LicencePlateBadge licencePlate={data.licencePlate} />
       {statusBadge}
+      <IdBadge id={data.id} />
     </div>
   );
 }
