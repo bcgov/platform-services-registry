@@ -10,7 +10,6 @@
  */
 import prisma from '../core/prisma';
 import { Provider } from '../prisma/client';
-import { elapsedCompleteFyMonths } from '../services/public-cloud-finance/ingest/missing-periods';
 import {
   countDemoPublicCloudProducts,
   removeDemoPublicCloudProducts,
@@ -90,35 +89,11 @@ function forgeProductConfig(target: ForgeFinanceTarget): DemoProductConfig {
   };
 }
 
-async function ensureForgeRollupPlaceholders(licencePlate: string, provider: ForgeFinanceTarget['provider']) {
-  for (const period of elapsedCompleteFyMonths()) {
-    await prisma.monthlyProductSpendRollup.upsert({
-      where: {
-        licencePlate_provider_year_month: {
-          licencePlate,
-          provider,
-          year: period.year,
-          month: period.month,
-        },
-      },
-      create: {
-        licencePlate,
-        provider,
-        year: period.year,
-        month: period.month,
-        amountCad: 0,
-      },
-      update: {},
-    });
-  }
-}
-
 export async function seedForgeFinanceProducts() {
   const targets = requireForgeFinanceTargets();
   const products: Awaited<ReturnType<typeof seedDemoPublicCloudProduct>>[] = [];
   for (const target of targets) {
     const product = await seedDemoPublicCloudProduct(forgeProductConfig(target));
-    await ensureForgeRollupPlaceholders(product.licencePlate, target.provider);
     products.push(product);
   }
   return products;

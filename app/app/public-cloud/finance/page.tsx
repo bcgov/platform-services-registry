@@ -22,7 +22,11 @@ import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
-import { getFinanceSnapshot, triggerFinanceIngestDag } from '@/services/backend/public-cloud/finance';
+import {
+  getFinanceIngestPlan,
+  getFinanceSnapshot,
+  triggerFinanceIngestDag,
+} from '@/services/backend/public-cloud/finance';
 
 type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
 
@@ -56,6 +60,25 @@ function formatVarianceCell(actual: number | null, forecast: number) {
 function ingestButtonLabel(isPending: boolean) {
   if (isPending) return 'Queueing ingest…';
   return 'Ingest missing months';
+}
+
+function formatIngestPeriod(period: { year: number; month: number }) {
+  return `${period.year}-${String(period.month).padStart(2, '0')}`;
+}
+
+function formatIngestPlanLine(
+  plan:
+    | {
+        providers: Array<{ provider: string; periods: Array<{ year: number; month: number }> }>;
+      }
+    | undefined,
+) {
+  if (!plan?.providers.length) {
+    return 'Queues the Airflow worker for the last complete month and any earlier fiscal-year month with no successful ingest.';
+  }
+  return plan.providers
+    .map((item) => `${formatForecastProviderLabel(item.provider)} ${item.periods.map(formatIngestPeriod).join(', ')}`)
+    .join(' · ');
 }
 
 function fytdForecastHint(excludedCount: number) {
@@ -95,11 +118,17 @@ export default publicCloudFinancePage(({ session }) => {
     queryFn: () => getFinanceSnapshot(provider),
     enabled: Boolean(session?.previews.publicCloudFinance),
   });
+  const { data: ingestPlan } = useQuery({
+    queryKey: ['finance-ingest-plan'],
+    queryFn: () => getFinanceIngestPlan(),
+    enabled: Boolean(session?.previews.publicCloudFinance),
+  });
   const ingestMutation = useMutation({
     mutationFn: () => triggerFinanceIngestDag(),
     onSuccess: async () => {
       success({ message: 'Ingest queued. Refresh freshness in a few minutes.' });
       await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
+      await queryClient.invalidateQueries({ queryKey: ['finance-ingest-plan'] });
       await queryClient.invalidateQueries({ queryKey: ['finance-anomalies'] });
       await queryClient.invalidateQueries({ queryKey: ['finance-unmatched'] });
       await queryClient.invalidateQueries({ queryKey: ['finance-rankings'] });
@@ -146,11 +175,11 @@ export default publicCloudFinancePage(({ session }) => {
         {data && (
           <FinanceSnapshotBody
             data={data}
+            ingestPlanLine={formatIngestPlanLine(ingestPlan)}
             ingestPending={ingestMutation.isPending}
             onIngest={async () => {
               const { state } = await openConfirmModal({
-                content:
-                  'This queues the Airflow worker for the last complete month and any earlier fiscal-year month with no successful ingest.',
+                content: `This queues the Airflow worker for: ${formatIngestPlanLine(ingestPlan)}`,
               });
               if (state.confirmed) ingestMutation.mutate();
             }}
@@ -163,10 +192,12 @@ export default publicCloudFinancePage(({ session }) => {
 
 function FinanceSnapshotBody({
   data,
+  ingestPlanLine,
   ingestPending,
   onIngest,
 }: Readonly<{
   data: Awaited<ReturnType<typeof getFinanceSnapshot>>;
+  ingestPlanLine: string;
   ingestPending: boolean;
   onIngest: () => void;
 }>) {
@@ -393,10 +424,7 @@ function FinanceSnapshotBody({
             {ingestButtonLabel(ingestPending)}
           </Button>
         </div>
-        <p className="text-xs text-gray-500">
-          Queues the Airflow worker for the last complete month and any earlier fiscal-year month with no successful
-          ingest.
-        </p>
+        <p className="text-xs text-gray-500">{ingestPlanLine}</p>
       </div>
     </div>
   );

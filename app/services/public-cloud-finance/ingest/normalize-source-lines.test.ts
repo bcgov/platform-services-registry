@@ -44,16 +44,14 @@ describe('normalizeSourceLines', () => {
     ]);
   });
 
-  it('drops zero-amount lines and respects an account allowlist', async () => {
+  it('drops zero-amount lines', async () => {
     const lines = await normalizeSourceLines(
       [
         { accountIdentifier: 'keep', serviceLine: 'A', amount: 5, currency: 'CAD' },
-        { accountIdentifier: 'drop', serviceLine: 'B', amount: 9, currency: 'CAD' },
         { accountIdentifier: 'keep', serviceLine: 'C', amount: 0, currency: 'CAD' },
       ],
       Provider.AZURE,
       period,
-      { accountIdentifiers: ['keep'] },
     );
     expect(lines).toEqual([expect.objectContaining({ accountIdentifier: 'keep', serviceLine: 'A', amountCad: 5 })]);
   });

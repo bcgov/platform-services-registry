@@ -80,6 +80,9 @@ The **registry app does not fetch Azure or AWS billing**. Airflow task pods call
 
 ```
 Airflow (schedule or snapshot "Ingest missing months")
+  ├─ GET /api/public-cloud/finance/ingest/missing
+  │    └─ current FY months through last complete month with no unscoped SUCCESS IngestionRun
+  │       (always re-fetches the last complete month)
   ├─ AWS Cost Explorer (LZA)     ← keys in airflow-variables (or local env)
   ├─ Azure Cost Management       ← SP in airflow-variables (or local env)
   └─ Keycloak client_credentials (finance SA)

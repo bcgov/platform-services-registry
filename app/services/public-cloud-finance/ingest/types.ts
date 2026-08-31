@@ -27,13 +27,6 @@ export type SourceBillingLine = {
   month?: number;
 };
 
-export type BillingFetchScope = {
-  /** Limit persist / supersede / rollups to these licence plates. */
-  licencePlates?: string[];
-  /** Limit persist to these account / subscription identifiers. */
-  accountIdentifiers?: string[];
-};
-
 export function periodKey(period: BillingPeriod) {
   return `${period.year}-${String(period.month).padStart(2, '0')}`;
 }

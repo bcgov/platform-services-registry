@@ -70,6 +70,68 @@ def _fetch_provider_rows(provider: str, year: int, month: int) -> list[dict]:
     raise RuntimeError(f"Classic AWS ingest is not supported for real billing data. Use AWS_LZA. Got {provider}.")
 
 
+def _rows_or_fetch_failure(provider: str, year: int, month: int) -> tuple[list[dict] | None, str]:
+    try:
+        return _fetch_provider_rows(provider, year, month), ""
+    except RuntimeError as error:
+        if "no non-zero rows" in str(error):
+            return [], ""
+        return None, str(error)[:500]
+
+
+def _ingest_provider_period(
+    session: requests.Session,
+    url: str,
+    headers: dict,
+    provider: str,
+    year: int,
+    month: int,
+) -> dict:
+    result = {
+        "provider": provider,
+        "year": year,
+        "month": month,
+        "status": "ok",
+        "http_status": None,
+        "body": "",
+        "error": "",
+    }
+    rows, fetch_error = _rows_or_fetch_failure(provider, year, month)
+    if rows is None:
+        result["status"] = "fetch_failed"
+        result["error"] = fetch_error
+        return result
+    try:
+        lines = _to_ingest_lines(rows)
+    except RuntimeError as error:
+        result["status"] = "fetch_failed"
+        result["error"] = str(error)[:500]
+        return result
+    response = post_ingest_lines(
+        session,
+        url,
+        headers,
+        {"provider": provider, "year": year, "month": month, "lines": lines},
+    )
+    result["http_status"] = response.status_code
+    result["body"] = response.text[:500]
+    if response.ok:
+        return result
+    result["status"] = "persist_failed"
+    result["error"] = response.text[:500]
+    return result
+
+
+def _raise_if_provider_failures(results: list[dict]) -> None:
+    failures = [row for row in results if row.get("status") != "ok"]
+    if not failures:
+        return
+    summary = ", ".join(
+        f"{row['provider']} {row['year']}-{row['month']}: {row.get('error') or row.get('status')}" for row in failures
+    )
+    raise RuntimeError(f"Finance ingest failed for {len(failures)} provider-month(s): {summary}"[:2000])
+
+
 def months_inclusive(start_year: int, start_month: int, end_year: int, end_month: int) -> list[dict]:
     periods = []
     year, month = start_year, start_month
@@ -137,39 +199,17 @@ def trigger_finance_ingest(
         missing_response.raise_for_status()
         plan = missing_response.json()
 
+    providers = plan.get("providers") if isinstance(plan, dict) else None
+    if not isinstance(providers, list) or not providers:
+        raise RuntimeError(f"Missing ingest plan has no providers: {plan!r}"[:500])
+
     results = []
     lines_url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest/lines"
-    for item in plan.get("providers", []):
+    for item in providers:
         provider = item["provider"]
         for period in item.get("periods", [{"year": year, "month": month}]):
-            period_year = period["year"]
-            period_month = period["month"]
-            try:
-                rows = _fetch_provider_rows(provider, period_year, period_month)
-            except RuntimeError as error:
-                if "no non-zero rows" not in str(error):
-                    raise
-                rows = []
-            response = post_ingest_lines(
-                session,
-                lines_url,
-                headers,
-                {
-                    "provider": provider,
-                    "year": period_year,
-                    "month": period_month,
-                    "lines": _to_ingest_lines(rows),
-                },
-            )
             results.append(
-                {
-                    "provider": provider,
-                    "year": period_year,
-                    "month": period_month,
-                    "status": response.status_code,
-                    "body": response.text[:500],
-                }
+                _ingest_provider_period(session, lines_url, headers, provider, period["year"], period["month"])
             )
-            response.raise_for_status()
-
+    _raise_if_provider_failures(results)
     return results

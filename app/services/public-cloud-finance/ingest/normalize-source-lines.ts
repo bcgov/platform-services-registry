@@ -1,7 +1,7 @@
 import { Provider } from '@/prisma/client';
 import { convertCurrencyAmount, type CurrencyCode } from '@/services/exchange-rates';
 import { ensureMonthlyUsdCadRate } from '@/services/public-cloud-finance/monthly-fx-rate';
-import type { BillingFetchScope, BillingPeriod, NormalizedBillingLine, SourceBillingLine } from './types';
+import type { BillingPeriod, NormalizedBillingLine, SourceBillingLine } from './types';
 
 type FxContext = { rate: number; rateDate: Date };
 
@@ -39,15 +39,10 @@ export async function normalizeSourceLines(
   rows: SourceBillingLine[],
   provider: Provider,
   period: BillingPeriod,
-  scope?: BillingFetchScope,
 ): Promise<NormalizedBillingLine[]> {
-  if (scope?.accountIdentifiers?.length === 0) return [];
-  const accountFilter = scope?.accountIdentifiers?.length
-    ? new Set(scope.accountIdentifiers.map((id) => id.toLowerCase()))
-    : null;
-  const filtered = rows
-    .filter((row) => (!row.year || row.year === period.year) && (!row.month || row.month === period.month))
-    .filter((row) => !accountFilter || accountFilter.has(row.accountIdentifier.toLowerCase()));
+  const filtered = rows.filter(
+    (row) => (!row.year || row.year === period.year) && (!row.month || row.month === period.month),
+  );
   const fx = await resolvePeriodFx(period, filtered);
 
   return filtered

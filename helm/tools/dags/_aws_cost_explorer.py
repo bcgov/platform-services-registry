@@ -5,8 +5,6 @@ from __future__ import annotations
 import calendar
 import os
 
-import boto3
-
 AWS_LINKED_ACCOUNT_CHUNK = 100
 
 
@@ -59,6 +57,8 @@ def collect_rows(response: dict, year: int, month: int) -> list[dict]:
 
 
 def fetch_aws_cost_explorer_rows(year: int, month: int, linked_account_ids: list[str] | None = None) -> list[dict]:
+    import boto3
+
     region = os.getenv("FINANCE_AWS_REGION") or "us-east-1"
     client = boto3.client("ce", region_name=region)
     start, end, _end_day = period_bounds(year, month)

@@ -60,6 +60,10 @@ export async function downloadFinanceExport(params: {
   return result;
 }
 
+export async function getFinanceIngestPlan(params?: { year?: number; month?: number }) {
+  return financeInstance.get('/ingest/missing', { params }).then((res) => res.data);
+}
+
 export async function triggerFinanceIngestDag() {
   return financeInstance.post('/ingest/trigger').then((res) => res.data);
 }

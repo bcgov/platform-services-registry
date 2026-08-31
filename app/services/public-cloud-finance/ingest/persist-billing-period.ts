@@ -10,7 +10,7 @@ import { acquireIngestLock, releaseIngestLock } from './ingest-lock';
 import { assertClassicAwsRealIngestAllowed, elapsedCompleteFyMonths } from './missing-periods';
 import { normalizeSourceLines } from './normalize-source-lines';
 import { partitionMatchedUnmatched } from './partition-lines';
-import type { BillingFetchScope, BillingPeriod, NormalizedBillingLine, SourceBillingLine } from './types';
+import type { BillingPeriod, NormalizedBillingLine, SourceBillingLine } from './types';
 import { planUnmatchedReconcile } from './unmatched-reconcile';
 
 const WRITE_BATCH_SIZE = 25;
@@ -26,7 +26,6 @@ export type PersistBillingPeriodOptions = {
   period: BillingPeriod;
   triggeredBy: string;
   lines: SourceBillingLine[];
-  scope?: BillingFetchScope;
 };
 
 export type IngestResult = {
@@ -109,26 +108,13 @@ async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod
   });
 }
 
-function resolveSupersedeLicencePlateFilter(
-  scope?: BillingFetchScope,
-): { licencePlate: { in: string[] } } | Record<string, never> {
-  if (scope?.licencePlates?.length) {
-    return { licencePlate: { in: scope.licencePlates } };
-  }
-  return {};
-}
-
 async function resolveRollupPlates(
   provider: Provider,
   period: BillingPeriod,
   matchedPlates: string[],
-  scope?: BillingFetchScope,
 ): Promise<string[]> {
   const products = await prisma.publicCloudProduct.findMany({
-    where: {
-      provider,
-      ...(scope?.licencePlates?.length ? { licencePlate: { in: scope.licencePlates } } : {}),
-    },
+    where: { provider },
     select: { licencePlate: true, createdAt: true },
   });
   const billingStartedByPlate = await loadProductBillingStartByPlate(products.map((product) => product.licencePlate));
@@ -147,9 +133,8 @@ async function writeMatchedAndSupersede(options: {
   period: BillingPeriod;
   runId: string;
   matched: Array<NormalizedBillingLine & { licencePlate: string }>;
-  scope?: BillingFetchScope;
 }) {
-  const { provider, period, runId, matched, scope } = options;
+  const { provider, period, runId, matched } = options;
 
   const existing = await prisma.actualSpend.findMany({
     where: {
@@ -159,7 +144,6 @@ async function writeMatchedAndSupersede(options: {
           provider,
           year: period.year,
           month: period.month,
-          ...resolveSupersedeLicencePlateFilter(scope),
         },
       ],
     },
@@ -215,18 +199,11 @@ async function writeUnmatched(
   period: BillingPeriod,
   runId: string,
   unmatched: NormalizedBillingLine[],
-  scope?: BillingFetchScope,
 ) {
   const existing = await prisma.unmatchedBillingLine.findMany({
     where: { provider, year: period.year, month: period.month },
   });
-  const scopedAccounts = scope?.accountIdentifiers?.length
-    ? new Set(scope.accountIdentifiers.map((id) => id.toLowerCase()))
-    : null;
-  const existingInScope = scopedAccounts
-    ? existing.filter((row) => scopedAccounts.has(row.accountIdentifier.toLowerCase()))
-    : existing;
-  const plan = planUnmatchedReconcile(existingInScope, unmatched);
+  const plan = planUnmatchedReconcile(existing, unmatched);
 
   if (plan.staleIds.length > 0) {
     await prisma.unmatchedBillingLine.deleteMany({
@@ -264,7 +241,7 @@ async function writeUnmatched(
 }
 
 /**
- * Idempotent month ingest: supersede prior active lines for the provider/period (scoped),
+ * Idempotent month ingest: supersede prior active lines for the provider/period,
  * write new lines, refresh rollups, evaluate flags.
  */
 async function evaluateFlagsForPeriodAndLater(period: BillingPeriod) {
@@ -287,11 +264,9 @@ async function executeIngestRun(options: {
   period: BillingPeriod;
   triggeredBy: string;
   lines: SourceBillingLine[];
-  scope?: BillingFetchScope;
 }): Promise<IngestResult> {
-  const { provider, period, triggeredBy, scope } = options;
+  const { provider, period, triggeredBy } = options;
   const { periodStart, periodEnd } = periodBounds(period);
-  const isScoped = Boolean(scope?.licencePlates?.length || scope?.accountIdentifiers?.length);
   const lockKey = await acquireIngestLock(provider, period);
 
   let run: { id: string } | undefined;
@@ -303,7 +278,7 @@ async function executeIngestRun(options: {
         periodEnd,
         status: FinanceIngestionStatus.RUNNING,
         triggeredBy,
-        isScoped,
+        isScoped: false,
       },
     });
     const products = await loadProductsForAccountMap();
@@ -312,7 +287,7 @@ async function executeIngestRun(options: {
       logger.warn('Duplicate billing account links omitted from ingest join', { collisions });
     }
 
-    const lines = await normalizeSourceLines(options.lines, provider, period, scope);
+    const lines = await normalizeSourceLines(options.lines, provider, period);
 
     const { matched, unmatched } = partitionMatchedUnmatched(
       lines,
@@ -327,11 +302,10 @@ async function executeIngestRun(options: {
       period,
       runId: run.id,
       matched,
-      scope,
     });
-    await writeUnmatched(provider, period, run.id, unmatched, scope);
+    await writeUnmatched(provider, period, run.id, unmatched);
 
-    const rollupPlates = await resolveRollupPlates(provider, period, matchedPlates, scope);
+    const rollupPlates = await resolveRollupPlates(provider, period, matchedPlates);
     await refreshRollupsForPeriod(provider, period, rollupPlates);
     const flagsRaised = await evaluateFlagsForPeriodAndLater(period);
 

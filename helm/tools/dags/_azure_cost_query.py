@@ -7,7 +7,6 @@ import re
 import time
 
 import requests
-from azure.identity import ClientSecretCredential
 
 from _aws_cost_explorer import period_bounds
 
@@ -159,6 +158,8 @@ def _azure_access_token() -> str:
         raise RuntimeError(
             "Unable to acquire an Azure management token. Configure AZURE_CLIENT_ID / AZURE_TENANT_ID / AZURE_CLIENT_SECRET."
         )
+    from azure.identity import ClientSecretCredential
+
     credential = ClientSecretCredential(tenant_id=tenant, client_id=client_id, client_secret=secret)
     token = credential.get_token(AZURE_COST_MANAGEMENT_SCOPE)
     if not token or not token.token:
