@@ -1,5 +1,8 @@
 /**
- * Full local dev seed: ministries, users, demo products, forecast demo data.
+ * Demo seed: ministries, users, invented public-cloud products, forecast data.
+ * Use this for UI / forecast / filter testing. For live billing joins, use
+ * `pnpm run seed-forge-finance-local` instead.
+ *
  * Run: pnpm run seed-all-local [--reset]
  */
 import prisma from '../core/prisma';
@@ -10,14 +13,13 @@ import {
   expectedMonthlyForecastRollup,
   seedDemoPublicCloudProducts,
 } from './seed-demo-products';
-import { seedFinanceActualsLocal } from './seed-finance-local';
 import { FORECAST_SEED_PROFILES, seedForecastForProduct } from './seed-forecast-local';
 import { seedFoundation } from './seed-foundation';
 
 async function main() {
   const reset = process.argv.includes('--reset');
 
-  console.log('=== Local full seed ===\n');
+  console.log('=== Local demo seed ===\n');
 
   console.log('1. Foundation (organizations, users)...');
   await seedFoundation();
@@ -44,10 +46,9 @@ async function main() {
     await seedForecastForProduct(licencePlate, { reset });
   }
 
-  console.log('\n4. Finance actuals (simulated)...');
-  await seedFinanceActualsLocal({ reset });
-
-  console.log('\n=== Seed complete ===');
+  console.log('\n=== Demo seed complete ===');
+  console.log('These products use invented account IDs. Live ingest will not match them.');
+  console.log('For Forge billing tests: pnpm run seed-forge-finance-local -- --reset');
   console.log(`Login: admin.system@gov.bc.ca`);
   console.log('Azure products:');
   for (const plate of AZURE_DEMO_PLATES) {

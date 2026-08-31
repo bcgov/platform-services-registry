@@ -2,25 +2,15 @@ import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Provider } from '@/prisma/client';
 import { activeActualSpendWhere, unresolvedUnmatchedWhere } from '../active-spend';
-import {
-  buildAccountToLicencePlateMap,
-  collectKnownAccountIds,
-  resolveBillingAccountIdentifiers,
-} from '../billing-account-links';
-import { defaultFinanceBillingSource } from '../constants';
+import { buildAccountToLicencePlateMap, collectKnownAccountIds } from '../billing-account-links';
 import { loadProductBillingStartByPlate, platesToRollupForPeriod } from '../product-billing-start';
 import { evaluateSpendFlagsForPeriod } from './evaluate-flags';
+import { isUniqueConstraintError } from './ingest-errors';
 import { acquireIngestLock, releaseIngestLock } from './ingest-lock';
-import {
-  assertClassicAwsRealIngestAllowed,
-  assertScopedAccountsResolved,
-  elapsedCompleteFyMonths,
-  SCHEDULED_INGEST_PROVIDERS,
-} from './missing-periods';
+import { assertClassicAwsRealIngestAllowed, elapsedCompleteFyMonths } from './missing-periods';
+import { normalizeSourceLines } from './normalize-source-lines';
 import { partitionMatchedUnmatched } from './partition-lines';
-import { createAwsBillingSource, createAzureBillingSource } from './real-sources';
-import { createSimulatedBillingSource } from './simulated-source';
-import type { BillingFetchScope, BillingPeriod, BillingSource, NormalizedBillingLine } from './types';
+import type { BillingFetchScope, BillingPeriod, NormalizedBillingLine, SourceBillingLine } from './types';
 import { planUnmatchedReconcile } from './unmatched-reconcile';
 
 const WRITE_BATCH_SIZE = 25;
@@ -31,11 +21,11 @@ async function mapInBatches<T>(items: T[], fn: (item: T) => Promise<unknown>) {
   }
 }
 
-export type IngestOptions = {
+export type PersistBillingPeriodOptions = {
   provider: Provider;
   period: BillingPeriod;
   triggeredBy: string;
-  source?: BillingSource;
+  lines: SourceBillingLine[];
   scope?: BillingFetchScope;
 };
 
@@ -53,16 +43,6 @@ function periodBounds(period: BillingPeriod) {
   return { periodStart, periodEnd };
 }
 
-export function resolveBillingSource(provider: Provider, forced?: BillingSource): BillingSource {
-  if (forced) return forced;
-  if (defaultFinanceBillingSource() === 'simulated') {
-    return createSimulatedBillingSource();
-  }
-  if (provider === Provider.AZURE) return createAzureBillingSource();
-  if (provider === Provider.AWS_LZA) return createAwsBillingSource(Provider.AWS_LZA);
-  throw new Error('Classic AWS ingest is not supported for real billing data. Use AWS_LZA.');
-}
-
 async function loadProductsForAccountMap() {
   // Include INACTIVE so residual billing after archive still attaches to historical products.
   return prisma.publicCloudProduct.findMany({
@@ -74,20 +54,6 @@ async function loadProductsForAccountMap() {
       azureSubscriptions: true,
     },
   });
-}
-
-function accountIdentifiersForPlates(
-  products: Awaited<ReturnType<typeof loadProductsForAccountMap>>,
-  licencePlates: string[],
-) {
-  const wanted = new Set(licencePlates);
-  return [
-    ...new Set(
-      products
-        .filter((product) => wanted.has(product.licencePlate))
-        .flatMap((product) => resolveBillingAccountIdentifiers(product).map((link) => link.accountIdentifier)),
-    ),
-  ];
 }
 
 async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod, licencePlates: string[]) {
@@ -111,26 +77,35 @@ async function refreshRollupsForPeriod(provider: Provider, period: BillingPeriod
   });
   const amountByPlate = new Map(groups.map((group) => [group.licencePlate, group._sum.amountCad ?? 0]));
 
-  await mapInBatches(plates, (licencePlate) => {
+  await mapInBatches(plates, async (licencePlate) => {
     const amountCad = amountByPlate.get(licencePlate) ?? 0;
-    return prisma.monthlyProductSpendRollup.upsert({
-      where: {
-        licencePlate_provider_year_month: {
-          licencePlate,
-          provider,
-          year: period.year,
-          month: period.month,
-        },
-      },
-      create: {
+    const where = {
+      licencePlate_provider_year_month: {
         licencePlate,
         provider,
         year: period.year,
         month: period.month,
-        amountCad,
       },
-      update: { amountCad },
-    });
+    };
+    try {
+      await prisma.monthlyProductSpendRollup.upsert({
+        where,
+        create: {
+          licencePlate,
+          provider,
+          year: period.year,
+          month: period.month,
+          amountCad,
+        },
+        update: { amountCad },
+      });
+    } catch (error) {
+      if (!isUniqueConstraintError(error)) throw error;
+      await prisma.monthlyProductSpendRollup.update({
+        where,
+        data: { amountCad },
+      });
+    }
   });
 }
 
@@ -307,14 +282,16 @@ async function evaluateFlagsForPeriodAndLater(period: BillingPeriod) {
   return flagsRaised;
 }
 
-export async function ingestBillingPeriod(options: IngestOptions): Promise<IngestResult> {
-  const { provider, period, triggeredBy } = options;
-  const simulated =
-    options.source?.name === 'simulated' || (!options.source && defaultFinanceBillingSource() === 'simulated');
-  assertClassicAwsRealIngestAllowed(provider, { simulated });
-  const source = resolveBillingSource(provider, options.source);
+async function executeIngestRun(options: {
+  provider: Provider;
+  period: BillingPeriod;
+  triggeredBy: string;
+  lines: SourceBillingLine[];
+  scope?: BillingFetchScope;
+}): Promise<IngestResult> {
+  const { provider, period, triggeredBy, scope } = options;
   const { periodStart, periodEnd } = periodBounds(period);
-  const isScoped = Boolean(options.scope?.licencePlates?.length || options.scope?.accountIdentifiers?.length);
+  const isScoped = Boolean(scope?.licencePlates?.length || scope?.accountIdentifiers?.length);
   const lockKey = await acquireIngestLock(provider, period);
 
   let run: { id: string } | undefined;
@@ -335,26 +312,7 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
       logger.warn('Duplicate billing account links omitted from ingest join', { collisions });
     }
 
-    const scope: BillingFetchScope | undefined = options.scope?.licencePlates?.length
-      ? {
-          ...options.scope,
-          accountIdentifiers: [
-            ...new Set([
-              ...(options.scope.accountIdentifiers ?? []),
-              ...accountIdentifiersForPlates(products, options.scope.licencePlates),
-            ]),
-          ],
-        }
-      : options.scope;
-    assertScopedAccountsResolved(provider, options.scope, scope);
-
-    let lines = await source.fetchBillingLines(period, scope);
-    lines = lines.filter((line) => line.provider === provider);
-
-    if (scope?.accountIdentifiers?.length) {
-      const allowed = new Set(scope.accountIdentifiers.map((id) => id.toLowerCase()));
-      lines = lines.filter((line) => allowed.has(line.accountIdentifier.toLowerCase()));
-    }
+    const lines = await normalizeSourceLines(options.lines, provider, period, scope);
 
     const { matched, unmatched } = partitionMatchedUnmatched(
       lines,
@@ -412,31 +370,8 @@ export async function ingestBillingPeriod(options: IngestOptions): Promise<Inges
   }
 }
 
-/** Ingest Apr–current month (or through July for stable demos) for all providers via simulated/real source. */
-export async function ingestFiscalYearToDate(options: {
-  triggeredBy: string;
-  throughMonth?: { year: number; month: number };
-  source?: BillingSource;
-  scope?: BillingFetchScope;
-  providers?: Provider[];
-}) {
-  const now = new Date();
-  const through = options.throughMonth ?? { year: now.getFullYear(), month: now.getMonth() + 1 };
-  const periods = elapsedCompleteFyMonths(through);
-  const providers = options.providers ?? [...SCHEDULED_INGEST_PROVIDERS];
-  const results: IngestResult[] = [];
-  for (const period of periods) {
-    for (const provider of providers) {
-      results.push(
-        await ingestBillingPeriod({
-          provider,
-          period,
-          triggeredBy: options.triggeredBy,
-          source: options.source,
-          scope: options.scope,
-        }),
-      );
-    }
-  }
-  return results;
+/** Persist already-fetched provider lines. Airflow (and tests) call this after fetch. */
+export async function persistBillingPeriod(options: PersistBillingPeriodOptions): Promise<IngestResult> {
+  assertClassicAwsRealIngestAllowed(options.provider);
+  return executeIngestRun(options);
 }

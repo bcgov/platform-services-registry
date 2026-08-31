@@ -6,8 +6,7 @@ import {
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Provider } from '@/prisma/client';
-import { defaultFinanceBillingSource } from '../constants';
-import type { BillingFetchScope, BillingPeriod } from './types';
+import type { BillingPeriod } from './types';
 
 export const SCHEDULED_INGEST_PROVIDERS = [Provider.AWS_LZA, Provider.AZURE] as const;
 
@@ -58,32 +57,9 @@ export async function listScheduledIngestPlan(through: BillingPeriod = lastCompl
   return { through, providers };
 }
 
-export function isScopedAzureFetch(scope?: BillingFetchScope) {
-  return Boolean(scope?.licencePlates?.length || scope?.accountIdentifiers?.length);
-}
-
-export function assertScopedAccountsResolved(
-  provider: Provider,
-  requested?: BillingFetchScope,
-  resolved?: BillingFetchScope,
-) {
-  const scoped = Boolean(requested?.licencePlates?.length || requested?.accountIdentifiers !== undefined);
-  if (!scoped) return;
-  if (resolved?.accountIdentifiers?.length) return;
-  throw new Error(`Scoped ${provider} ingest resolved no billing account IDs for the given licence plates.`);
-}
-
-/**
- * Real billing is AWS_LZA + Azure only. Classic AWS shares the LZA Cost Explorer
- * estate and must not be ingested as a second provider. Simulated demo data may
- * still invent AWS rows.
- */
-export function assertClassicAwsRealIngestAllowed(
-  provider: Provider,
-  options: { simulated?: boolean; billingSource?: 'simulated' | 'real' } = {},
-) {
-  const simulated = options.simulated ?? (options.billingSource ?? defaultFinanceBillingSource()) === 'simulated';
-  if (provider === Provider.AWS && !simulated) {
+/** Classic AWS shares the LZA Cost Explorer estate and must not be ingested as a second provider. */
+export function assertClassicAwsRealIngestAllowed(provider: Provider) {
+  if (provider === Provider.AWS) {
     throw new Error('Classic AWS ingest is not supported for real billing data. Use AWS_LZA.');
   }
 }

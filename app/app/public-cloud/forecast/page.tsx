@@ -12,6 +12,7 @@ import {
   elapsedLikeForLikeTotals,
   formatCadAmount,
   isCurrentCalendarMonth,
+  varianceToneClass,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceQueryError from '@/components/public-cloud/finance/FinanceQueryError';
 import {
@@ -384,6 +385,11 @@ function PlatformForecastGrid({
           const hasOptional = fiscalYearChunkHasOptionalMonths(fyChunk);
           const other =
             showOtherRow && showActualVariance ? otherRowResiduals(fyChunk, visibleProducts, actuals) : null;
+          const yearLikeForLike = elapsedLikeForLikeTotals(
+            fyChunk.months,
+            fyChunk.months.map((_, i) => actuals[fyChunk.startIndex + i]),
+            fyChunk.months.map((month) => month.amount),
+          );
 
           return (
             <div key={fyChunk.label} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -521,13 +527,19 @@ function PlatformForecastGrid({
                                     return (
                                       <td
                                         key={`var-${product.licencePlate}-${monthKey(v.year, v.month)}`}
-                                        className="px-2 py-2 text-center text-sm text-gray-700"
+                                        className={`px-2 py-2 text-center text-sm ${
+                                          varianceToneClass(variance) || 'text-gray-700'
+                                        }`}
                                       >
                                         {formatVarianceCell(variance)}
                                       </td>
                                     );
                                   })}
-                                  <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
+                                  <td
+                                    className={`px-3 py-2 text-center bg-amber-50/60 ${
+                                      varianceToneClass(productYearLikeForLike.variance) || 'text-gray-800'
+                                    }`}
+                                  >
                                     {formatVarianceCell(productYearLikeForLike.variance)}
                                   </td>
                                 </tr>
@@ -596,15 +608,24 @@ function PlatformForecastGrid({
                               <td className="px-3 py-2 sticky left-0 bg-white border-r border-gray-100">
                                 <div className="pl-3 text-xs text-gray-500">Variance</div>
                               </td>
-                              {fyChunk.months.map((month, i) => (
-                                <td
-                                  key={`other-var-${monthKey(month.year, month.month)}`}
-                                  className="px-2 py-2 text-center text-sm text-gray-700"
-                                >
-                                  {formatVarianceCell(calculateVariance(other.actuals[i], other.forecasts[i]))}
-                                </td>
-                              ))}
-                              <td className="px-3 py-2 text-center bg-amber-50/60 text-gray-800">
+                              {fyChunk.months.map((month, i) => {
+                                const variance = calculateVariance(other.actuals[i], other.forecasts[i]);
+                                return (
+                                  <td
+                                    key={`other-var-${monthKey(month.year, month.month)}`}
+                                    className={`px-2 py-2 text-center text-sm ${
+                                      varianceToneClass(variance) || 'text-gray-700'
+                                    }`}
+                                  >
+                                    {formatVarianceCell(variance)}
+                                  </td>
+                                );
+                              })}
+                              <td
+                                className={`px-3 py-2 text-center bg-amber-50/60 ${
+                                  varianceToneClass(other.year.variance) || 'text-gray-800'
+                                }`}
+                              >
                                 {formatVarianceCell(other.year.variance)}
                               </td>
                             </tr>
@@ -651,13 +672,7 @@ function PlatformForecastGrid({
                             );
                           })}
                           <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
-                            {formatCadAmount(
-                              elapsedLikeForLikeTotals(
-                                fyChunk.months,
-                                fyChunk.months.map((_, i) => actuals[fyChunk.startIndex + i]),
-                                fyChunk.months.map((month) => month.amount),
-                              ).actual,
-                            )}
+                            {formatCadAmount(yearLikeForLike.actual)}
                           </td>
                         </tr>
                         <tr className={showProducts ? 'bg-amber-50/20 font-semibold' : ''}>
@@ -669,20 +684,18 @@ function PlatformForecastGrid({
                             return (
                               <td
                                 key={`var-total-${monthKey(v.year, v.month)}`}
-                                className="px-2 py-2 text-center text-gray-900"
+                                className={`px-2 py-2 text-center ${varianceToneClass(variance) || 'text-gray-900'}`}
                               >
                                 {formatVarianceCell(variance)}
                               </td>
                             );
                           })}
-                          <td className="px-3 py-2 text-center font-bold bg-amber-50 text-gray-900">
-                            {formatVarianceCell(
-                              elapsedLikeForLikeTotals(
-                                fyChunk.months,
-                                fyChunk.months.map((_, i) => actuals[fyChunk.startIndex + i]),
-                                fyChunk.months.map((month) => month.amount),
-                              ).variance,
-                            )}
+                          <td
+                            className={`px-3 py-2 text-center font-bold bg-amber-50 ${
+                              varianceToneClass(yearLikeForLike.variance) || 'text-gray-900'
+                            }`}
+                          >
+                            {formatVarianceCell(yearLikeForLike.variance)}
                           </td>
                         </tr>
                       </>

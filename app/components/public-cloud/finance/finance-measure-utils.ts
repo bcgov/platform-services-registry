@@ -22,6 +22,12 @@ export function calculateVariance(
   return { amount, percent: (amount / forecast) * 100 };
 }
 
+/** Over forecast is red; at or under forecast is green. */
+export function varianceToneClass(variance: VarianceResult | null | undefined) {
+  if (variance == null) return '';
+  return variance.amount > 0 ? 'text-red-700' : 'text-green-700';
+}
+
 export function formatCadAmount(amount: number | null | undefined, opts?: { treatMissingAsDash?: boolean }): string {
   if (amount == null) return opts?.treatMissingAsDash === false ? 'CA$0.00' : '—';
   if (amount === 0) return 'CA$0.00';

@@ -1,6 +1,7 @@
 import {
   buildIngestionFreshness,
   calculateVariance,
+  varianceToneClass,
   elapsedLikeForLikeTotals,
   failedIngestProviders,
   formatCadAmount,
@@ -33,6 +34,13 @@ describe('finance measure utils', () => {
 
   it('calculates variance amount and percent', () => {
     expect(calculateVariance(125, 100)).toEqual({ amount: 25, percent: 25 });
+  });
+
+  it('colours over-forecast red and at-or-under green', () => {
+    expect(varianceToneClass({ amount: 10, percent: 5 })).toBe('text-red-700');
+    expect(varianceToneClass({ amount: 0, percent: 0 })).toBe('text-green-700');
+    expect(varianceToneClass({ amount: -10, percent: -5 })).toBe('text-green-700');
+    expect(varianceToneClass(null)).toBe('');
   });
 
   it('sums forecast only for the requested months', () => {

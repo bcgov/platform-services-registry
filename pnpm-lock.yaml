@@ -71,12 +71,6 @@ importers:
 
   app:
     dependencies:
-      '@aws-sdk/client-cost-explorer':
-        specifier: ^3.1107.0
-        version: 3.1117.0
-      '@aws-sdk/credential-providers':
-        specifier: ^3.1107.0
-        version: 3.1117.0
       '@azure/identity':
         specifier: ^4.11.1
         version: 4.13.2(supports-color@10.2.2)
@@ -565,10 +559,6 @@ packages:
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
-
-  '@aws-sdk/client-cost-explorer@3.1117.0':
-    resolution: {integrity: sha512-uaoUTiwbBiwhkQaOOyUQTgq7M5dCiCNVujiOBPUp8cr2spazVNYHF5SbcAlxibnC1GvdGv3TyRPZucTlsUWkNw==}
-    engines: {node: '>=20.0.0'}
 
   '@aws-sdk/core@3.977.9':
     resolution: {integrity: sha512-reqPFEQrZxDZpeGj4PFMepBeR5LGYHRqq/L0motTzgFkCRBA4rFdaVXDSLYyGHhxVz7sT2PDnPN9CluGSfgyJA==}
@@ -9847,17 +9837,6 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
-  '@aws-sdk/client-cost-explorer@3.1117.0':
-    dependencies:
-      '@aws-sdk/core': 3.977.9
-      '@aws-sdk/credential-provider-node': 3.972.81
-      '@aws-sdk/types': 3.974.5
-      '@smithy/core': 3.33.3
-      '@smithy/fetch-http-handler': 5.7.2
-      '@smithy/node-http-handler': 4.11.3
-      '@smithy/types': 4.17.2
-      tslib: 2.8.1
-
   '@aws-sdk/core@3.977.9':
     dependencies:
       '@aws-sdk/types': 3.974.5
@@ -9868,6 +9847,7 @@ snapshots:
       '@smithy/types': 4.17.2
       bowser: 2.14.1
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-cognito-identity@3.972.69':
     dependencies:
@@ -9876,6 +9856,7 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-env@3.972.70':
     dependencies:
@@ -9884,6 +9865,7 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-http@3.972.72':
     dependencies:
@@ -9894,6 +9876,7 @@ snapshots:
       '@smithy/node-http-handler': 4.11.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-ini@3.973.15':
     dependencies:
@@ -9910,6 +9893,7 @@ snapshots:
       '@smithy/credential-provider-imds': 4.5.2
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-login@3.972.77':
     dependencies:
@@ -9919,6 +9903,7 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-node@3.972.81':
     dependencies:
@@ -9933,6 +9918,7 @@ snapshots:
       '@smithy/credential-provider-imds': 4.5.2
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-process@3.972.70':
     dependencies:
@@ -9941,6 +9927,7 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-sso@3.973.14':
     dependencies:
@@ -9951,6 +9938,7 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-provider-web-identity@3.972.76':
     dependencies:
@@ -9960,6 +9948,7 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/credential-providers@3.1117.0':
     dependencies:
@@ -9979,6 +9968,7 @@ snapshots:
       '@smithy/credential-provider-imds': 4.5.2
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/nested-clients@3.997.44':
     dependencies:
@@ -9990,6 +9980,7 @@ snapshots:
       '@smithy/node-http-handler': 4.11.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/signature-v4-multi-region@3.996.46':
     dependencies:
@@ -9997,6 +9988,7 @@ snapshots:
       '@smithy/signature-v4': 5.7.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/token-providers@3.1116.0':
     dependencies:
@@ -10006,18 +9998,22 @@ snapshots:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/types@3.974.5':
     dependencies:
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@aws-sdk/xml-builder@3.972.40':
     dependencies:
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
-  '@aws/lambda-invoke-store@0.3.0': {}
+  '@aws/lambda-invoke-store@0.3.0':
+    optional: true
 
   '@azure/abort-controller@2.2.0':
     dependencies:
@@ -12603,34 +12599,40 @@ snapshots:
     dependencies:
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/credential-provider-imds@4.5.2':
     dependencies:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/fetch-http-handler@5.7.2':
     dependencies:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/node-http-handler@4.11.3':
     dependencies:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/signature-v4@5.7.3':
     dependencies:
       '@smithy/core': 3.33.3
       '@smithy/types': 4.17.2
       tslib: 2.8.1
+    optional: true
 
   '@smithy/types@4.17.2':
     dependencies:
       tslib: 2.8.1
+    optional: true
 
   '@so-ric/colorspace@1.1.6':
     dependencies:
@@ -13970,7 +13972,8 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  bowser@2.14.1: {}
+  bowser@2.14.1:
+    optional: true
 
   brace-expansion@1.1.16:
     dependencies:

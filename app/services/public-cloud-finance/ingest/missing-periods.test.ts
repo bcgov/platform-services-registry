@@ -1,11 +1,5 @@
 import { Provider } from '@/prisma/client';
-import {
-  assertClassicAwsRealIngestAllowed,
-  assertScopedAccountsResolved,
-  filterMissingIngestPeriods,
-  isScopedAzureFetch,
-  periodsToIngest,
-} from './missing-periods';
+import { assertClassicAwsRealIngestAllowed, filterMissingIngestPeriods, periodsToIngest } from './missing-periods';
 
 describe('missing ingest periods', () => {
   it('returns elapsed months with no successful run', () => {
@@ -46,34 +40,9 @@ describe('missing ingest periods', () => {
     ]);
   });
 
-  it('rejects classic AWS for every real ingest path', () => {
-    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { billingSource: 'real' })).toThrow(/AWS_LZA/);
-    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { simulated: false })).toThrow(/AWS_LZA/);
-    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS_LZA, { billingSource: 'real' })).not.toThrow();
-    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { simulated: true })).not.toThrow();
-    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS, { billingSource: 'simulated' })).not.toThrow();
-  });
-
-  it('rejects scoped ingest when no account IDs resolved', () => {
-    expect(() =>
-      assertScopedAccountsResolved(Provider.AWS_LZA, { licencePlates: ['abc123'] }, { accountIdentifiers: [] }),
-    ).toThrow(/no billing account IDs/);
-    expect(() =>
-      assertScopedAccountsResolved(
-        Provider.AWS_LZA,
-        { licencePlates: ['abc123'] },
-        { accountIdentifiers: ['111122223333'] },
-      ),
-    ).not.toThrow();
-    expect(() => assertScopedAccountsResolved(Provider.AWS_LZA, undefined, undefined)).not.toThrow();
-  });
-
-  it('does not treat FINANCE_LIVE_TEST_ACCOUNT_IDS as a scoped fetch', () => {
-    const previous = process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS;
-    process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS = 'sub-1';
-    expect(isScopedAzureFetch(undefined)).toBe(false);
-    expect(isScopedAzureFetch({ licencePlates: ['abc'] })).toBe(true);
-    if (previous === undefined) delete process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS;
-    else process.env.FINANCE_LIVE_TEST_ACCOUNT_IDS = previous;
+  it('rejects classic AWS', () => {
+    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS)).toThrow(/AWS_LZA/);
+    expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS_LZA)).not.toThrow();
+    expect(() => assertClassicAwsRealIngestAllowed(Provider.AZURE)).not.toThrow();
   });
 });

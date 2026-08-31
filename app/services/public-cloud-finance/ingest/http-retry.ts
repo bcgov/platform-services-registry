@@ -76,65 +76,10 @@ export async function fetchWithRetry(
     if (response.ok || !isRetryableStatus(response.status) || attempt === maxAttempts) {
       return response;
     }
-    let delayMs = retryAfterDelayMs(response.headers, attempt);
-    // Cost Management often returns 429 with no Retry-After; a 10s floor avoids burning the quota.
-    if (
-      response.status === 429 &&
-      delayMs < 10_000 &&
-      !response.headers.get('retry-after') &&
-      !response.headers.get('retry-after-ms')
-    ) {
-      delayMs = Math.min(10_000 * 2 ** (attempt - 1), 60_000);
-    }
+    const delayMs = retryAfterDelayMs(response.headers, attempt);
     options.onRetry?.({ status: response.status, attempt, delayMs, url });
     await sleepFn(delayMs);
   }
 
   throw new Error(`fetchWithRetry exhausted attempts for ${url}`);
-}
-
-export type RequestPacer = {
-  wait: () => Promise<void>;
-};
-
-/** Space outbound calls so we do not burst a quota (Azure Cost Management especially). */
-export function createRequestPacer(
-  minIntervalMs: number,
-  sleepFn: (ms: number) => Promise<void> = sleep,
-): RequestPacer {
-  let nextAllowedAt = 0;
-  return {
-    async wait() {
-      const waitMs = nextAllowedAt - Date.now();
-      if (waitMs > 0) await sleepFn(waitMs);
-      nextAllowedAt = Date.now() + minIntervalMs;
-    },
-  };
-}
-
-export async function retryOnThrow<T>(
-  operation: () => Promise<T>,
-  options: {
-    maxAttempts?: number;
-    sleepFn?: (ms: number) => Promise<void>;
-    isRetryable?: (error: unknown) => boolean;
-    delayMs?: (attempt: number, error: unknown) => number;
-  } = {},
-): Promise<T> {
-  const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
-  const sleepFn = options.sleepFn ?? sleep;
-  const isRetryable = options.isRetryable ?? ((error) => /429|throttl|too many requests/i.test(String(error)));
-
-  let lastError: unknown;
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error;
-      if (!isRetryable(error) || attempt === maxAttempts) throw error;
-      const delayMs = options.delayMs?.(attempt, error) ?? retryAfterDelayMs(new Headers(), attempt);
-      await sleepFn(delayMs);
-    }
-  }
-  throw lastError;
 }

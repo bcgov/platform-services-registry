@@ -10,6 +10,7 @@ import {
   isCurrentCalendarMonth,
   expectedPastActualMonths,
   sumKnownActualsOrNull,
+  varianceToneClass,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import ProductVarianceNotes from '@/components/public-cloud/finance/ProductVarianceNotes';
 import { createPublicCloudForecast, updatePublicCloudForecast } from '@/services/backend/public-cloud/forecast';
@@ -474,7 +475,10 @@ export default function ProjectBudgetForecastPanel({
                             const actual = actualByKey.has(key) ? actualByKey.get(key) : null;
                             const variance = calculateVariance(actual, v.amount);
                             return (
-                              <td key={`var-${key}`} className="px-2 py-2 text-center text-sm">
+                              <td
+                                key={`var-${key}`}
+                                className={`px-2 py-2 text-center text-sm ${varianceToneClass(variance)}`}
+                              >
                                 {formatVarianceCell(variance)}
                               </td>
                             );
@@ -490,7 +494,11 @@ export default function ProjectBudgetForecastPanel({
                                 }),
                                 expected.map((month) => month.amount),
                               );
-                              return likeForLike.variance == null ? '—' : formatCadAmount(likeForLike.variance.amount);
+                              return (
+                                <span className={varianceToneClass(likeForLike.variance)}>
+                                  {likeForLike.variance == null ? '—' : formatCadAmount(likeForLike.variance.amount)}
+                                </span>
+                              );
                             })()}
                           </td>
                         </tr>

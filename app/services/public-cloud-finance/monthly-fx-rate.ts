@@ -1,6 +1,7 @@
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { fetchUsdCadExchangeRateForMonth } from '@/services/bank-of-canada/usd-cad-rate';
+import { isUniqueConstraintError } from '@/services/public-cloud-finance/ingest/ingest-errors';
 
 export const USD_CAD_PAIR = 'USD_CAD';
 
@@ -43,27 +44,34 @@ async function upsertMonthlyUsdCadRate(data: {
   rateDate: Date;
   source: string;
 }): Promise<StoredMonthlyFxRate> {
-  // upsert keeps the first writer under concurrent ingest (update is a no-op).
-  const row = await prisma.monthlyFxRate.upsert({
-    where: { pair_year_month: { pair: USD_CAD_PAIR, year: data.year, month: data.month } },
-    create: {
-      pair: USD_CAD_PAIR,
-      year: data.year,
-      month: data.month,
-      rate: data.rate,
-      rateDate: data.rateDate,
-      source: data.source,
-    },
-    update:
-      data.source === 'FINANCE_USD_CAD_RATE'
-        ? {}
-        : {
-            rate: data.rate,
-            rateDate: data.rateDate,
-            source: data.source,
-          },
-  });
-  return toStored(row);
+  const where = { pair_year_month: { pair: USD_CAD_PAIR, year: data.year, month: data.month } };
+  try {
+    const row = await prisma.monthlyFxRate.upsert({
+      where,
+      create: {
+        pair: USD_CAD_PAIR,
+        year: data.year,
+        month: data.month,
+        rate: data.rate,
+        rateDate: data.rateDate,
+        source: data.source,
+      },
+      update:
+        data.source === 'FINANCE_USD_CAD_RATE'
+          ? {}
+          : {
+              rate: data.rate,
+              rateDate: data.rateDate,
+              source: data.source,
+            },
+    });
+    return toStored(row);
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) throw error;
+    const existing = await prisma.monthlyFxRate.findUnique({ where });
+    if (existing) return toStored(existing);
+    throw error;
+  }
 }
 
 /**

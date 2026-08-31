@@ -12,6 +12,7 @@ import {
   formatCadAmount,
   formatIngestionFreshnessLine,
   formatPercent,
+  varianceToneClass,
   ytdActualHint,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
@@ -21,19 +22,20 @@ import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
-import {
-  getFinanceIngestPlan,
-  getFinanceSnapshot,
-  triggerFinanceIngest,
-} from '@/services/backend/public-cloud/finance';
+import { getFinanceSnapshot, triggerFinanceIngestDag } from '@/services/backend/public-cloud/finance';
 
 type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
 
-function SummaryCard({ label, value, hint }: Readonly<{ label: string; value: string; hint?: string }>) {
+function SummaryCard({
+  label,
+  value,
+  hint,
+  valueClassName,
+}: Readonly<{ label: string; value: string; hint?: string; valueClassName?: string }>) {
   return (
     <div className="rounded-lg border border-gray-200 p-4 bg-white">
       <div className="text-sm text-gray-500">{label}</div>
-      <div className="text-2xl font-bold">{value}</div>
+      <div className={`text-2xl font-bold ${valueClassName ?? ''}`}>{value}</div>
       {hint && <div className="text-xs text-gray-500 mt-1">{hint}</div>}
     </div>
   );
@@ -51,25 +53,9 @@ function formatVarianceCell(actual: number | null, forecast: number) {
   return `${formatCadAmount(variance.amount)} (${formatPercent(variance.percent, 0)})`;
 }
 
-type IngestJob = { provider: string; year: number; month: number };
-
-function formatIngestJob(job: IngestJob) {
-  return `${formatForecastProviderLabel(job.provider)} ${job.year}-${String(job.month).padStart(2, '0')}`;
-}
-
-function ingestButtonLabel(progress: { job: IngestJob; current: number; total: number } | null, isPending: boolean) {
-  if (progress) {
-    return `Ingesting ${formatIngestJob(progress.job)} (${progress.current} of ${progress.total})`;
-  }
-  if (isPending) return 'Preparing ingest…';
+function ingestButtonLabel(isPending: boolean) {
+  if (isPending) return 'Queueing ingest…';
   return 'Ingest missing months';
-}
-
-function ingestHint(progress: { job: IngestJob } | null) {
-  const base =
-    'Re-runs the last complete month and any earlier fiscal-year month with no successful ingest. Can take several minutes.';
-  if (!progress) return base;
-  return `${base} Now ${formatIngestJob(progress.job)}.`;
 }
 
 function fytdForecastHint(excludedCount: number) {
@@ -87,11 +73,6 @@ function fytdVarianceValue(lowCoverage: boolean, variance: { amount: number; per
 function fytdVarianceHint(lowCoverage: boolean, lastComplete: { year: number; month: number }) {
   if (lowCoverage) return 'No data — coverage too low';
   return `Actual − forecast through ${lastComplete.year}-${String(lastComplete.month).padStart(2, '0')}`;
-}
-
-function ingestFinishedMessage(jobs: IngestJob[]) {
-  if (jobs.length === 0) return 'Nothing to ingest.';
-  return `Ingest finished: ${jobs.map(formatIngestJob).join(', ')}.`;
 }
 
 function ingestErrorMessage(error: unknown) {
@@ -114,35 +95,16 @@ export default publicCloudFinancePage(({ session }) => {
     queryFn: () => getFinanceSnapshot(provider),
     enabled: Boolean(session?.previews.publicCloudFinance),
   });
-  const [ingestProgress, setIngestProgress] = useState<{ job: IngestJob; current: number; total: number } | null>(null);
   const ingestMutation = useMutation({
-    mutationFn: async () => {
-      const plan = await getFinanceIngestPlan();
-      const jobs: IngestJob[] = plan.providers.flatMap(
-        (item: { provider: string; periods: Array<{ year: number; month: number }> }) =>
-          item.periods.map((period) => ({
-            provider: item.provider,
-            year: period.year,
-            month: period.month,
-          })),
-      );
-      if (jobs.length === 0) return jobs;
-      for (const [index, job] of jobs.entries()) {
-        setIngestProgress({ job, current: index + 1, total: jobs.length });
-        await triggerFinanceIngest(job);
-      }
-      return jobs;
-    },
-    onSuccess: async (jobs) => {
-      setIngestProgress(null);
-      success({ message: ingestFinishedMessage(jobs) });
+    mutationFn: () => triggerFinanceIngestDag(),
+    onSuccess: async () => {
+      success({ message: 'Ingest queued. Refresh freshness in a few minutes.' });
       await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
       await queryClient.invalidateQueries({ queryKey: ['finance-anomalies'] });
       await queryClient.invalidateQueries({ queryKey: ['finance-unmatched'] });
       await queryClient.invalidateQueries({ queryKey: ['finance-rankings'] });
     },
     onError: async (error) => {
-      setIngestProgress(null);
       failure({ message: ingestErrorMessage(error) });
       await queryClient.invalidateQueries({ queryKey: ['finance-snapshot'] });
     },
@@ -184,12 +146,11 @@ export default publicCloudFinancePage(({ session }) => {
         {data && (
           <FinanceSnapshotBody
             data={data}
-            ingestProgress={ingestProgress}
             ingestPending={ingestMutation.isPending}
             onIngest={async () => {
               const { state } = await openConfirmModal({
                 content:
-                  'This re-runs the last complete month and any earlier fiscal-year month with no successful ingest. It calls AWS and Azure and can take several minutes.',
+                  'This queues the Airflow worker for the last complete month and any earlier fiscal-year month with no successful ingest.',
               });
               if (state.confirmed) ingestMutation.mutate();
             }}
@@ -202,12 +163,10 @@ export default publicCloudFinancePage(({ session }) => {
 
 function FinanceSnapshotBody({
   data,
-  ingestProgress,
   ingestPending,
   onIngest,
 }: Readonly<{
   data: Awaited<ReturnType<typeof getFinanceSnapshot>>;
-  ingestProgress: { job: IngestJob; current: number; total: number } | null;
   ingestPending: boolean;
   onIngest: () => void;
 }>) {
@@ -244,6 +203,7 @@ function FinanceSnapshotBody({
           label="FYTD variance"
           value={fytdVarianceValue(data.lowCoverage, data.fytdVariance)}
           hint={fytdVarianceHint(data.lowCoverage, data.lastCompleteMonth)}
+          valueClassName={data.lowCoverage ? undefined : varianceToneClass(data.fytdVariance)}
         />
         <SummaryCard
           label="Full-year forecast"
@@ -301,7 +261,13 @@ function FinanceSnapshotBody({
                     <td className="px-3 py-2">{row.label}</td>
                     <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
                     <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
-                    <td className="px-3 py-2 text-right text-gray-700">
+                    <td
+                      className={`px-3 py-2 text-right ${
+                        data.lowCoverage
+                          ? 'text-gray-700'
+                          : varianceToneClass(calculateVariance(row.actual, row.forecast)) || 'text-gray-700'
+                      }`}
+                    >
                       {data.lowCoverage ? '—' : formatVarianceCell(row.actual, row.forecast)}
                     </td>
                     <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
@@ -424,10 +390,13 @@ function FinanceSnapshotBody({
             disabled={ingestPending}
             onClick={onIngest}
           >
-            {ingestButtonLabel(ingestProgress, ingestPending)}
+            {ingestButtonLabel(ingestPending)}
           </Button>
         </div>
-        <p className="text-xs text-gray-500">{ingestHint(ingestProgress)}</p>
+        <p className="text-xs text-gray-500">
+          Queues the Airflow worker for the last complete month and any earlier fiscal-year month with no successful
+          ingest.
+        </p>
       </div>
     </div>
   );

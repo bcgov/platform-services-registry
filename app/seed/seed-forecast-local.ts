@@ -26,13 +26,20 @@ const DEFAULT_MONTHLY_FORECAST_AZURE = 5000;
 const DEFAULT_MONTHLY_FORECAST_AWS = 4000;
 
 /** How a demo product’s forecast should be seeded for local testing. */
-export type ForecastSeedProfile = 'complete' | 'with-past' | 'incomplete-required' | 'sparse-optional' | 'missing';
+export type ForecastSeedProfile =
+  | 'complete'
+  | 'with-past'
+  | 'from-may'
+  | 'incomplete-required'
+  | 'sparse-optional'
+  | 'missing';
 
 /**
  * Explicit demo plates with non-default forecasts.
  * Re-seed with --reset to apply after changing these.
  *
  * - with-past: existing projects that already had Apr–(current-1) forecasted
+ * - from-may: May–(current-2) at the default amount, last past month low so actuals are over, April blank
  * - complete (default): new-project style — past months blank
  */
 export const FORECAST_SEED_PROFILES: Record<string, ForecastSeedProfile> = {
@@ -97,6 +104,22 @@ export function applyPastFiscalMonths(values: MonthlyValue[], now = new Date()):
   );
 }
 
+/** Like with-past, but leave April (FY start) at 0. */
+export function applyPastFiscalMonthsFromMay(values: MonthlyValue[], now = new Date()): MonthlyValue[] {
+  return applyPastFiscalMonths(values, now).map((value) =>
+    value.month === 4 && isPastMonth(value.year, value.month, now) ? { ...value, amount: 0 } : value,
+  );
+}
+
+/** Drop the last past forecast so live actuals land over forecast for that month. */
+export function applyLastPastMonthLowForecast(values: MonthlyValue[], amount = 50, now = new Date()): MonthlyValue[] {
+  const lastPast = [...values].reverse().find((value) => isPastMonth(value.year, value.month, now) && value.amount > 0);
+  if (!lastPast) return values;
+  return values.map((value) =>
+    value.year === lastPast.year && value.month === lastPast.month ? { ...value, amount } : value,
+  );
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const flags = new Set(args.filter((a) => a.startsWith('--')));
@@ -148,6 +171,8 @@ async function ensureForecast(
     monthlyValues = applySparseOptionalMonth(monthlyValues);
   } else if (profile === 'with-past') {
     monthlyValues = applyPastFiscalMonths(monthlyValues);
+  } else if (profile === 'from-may') {
+    monthlyValues = applyLastPastMonthLowForecast(applyPastFiscalMonthsFromMay(monthlyValues));
   }
 
   const forecast = await createProductForecast(licencePlate, monthlyValues, FISCAL_FORECAST_HORIZON_MONTHS);
@@ -182,17 +207,22 @@ function printWalkthrough(licencePlate: string) {
 
 export async function seedForecastForProduct(
   licencePlate: string,
-  options: { reset?: boolean; skipForecast?: boolean; showWalkthrough?: boolean } = {},
+  options: {
+    reset?: boolean;
+    skipForecast?: boolean;
+    showWalkthrough?: boolean;
+    profile?: ForecastSeedProfile;
+  } = {},
 ) {
   const { reset = false, skipForecast = false, showWalkthrough = false } = options;
-  const profile = getForecastSeedProfile(licencePlate);
+  const profile = options.profile ?? getForecastSeedProfile(licencePlate);
 
   console.log(`Seeding forecast demo data for ${licencePlate} (profile: ${profile})...`);
 
   const product = await prisma.publicCloudProduct.findFirst({ where: { licencePlate } });
   if (!product) {
     throw new Error(
-      `No product found for licence plate "${licencePlate}". Run pnpm run seed-all-local or create a product first.`,
+      `No product found for licence plate "${licencePlate}". Run pnpm run seed-all-local or pnpm run seed-forge-finance-local first.`,
     );
   }
 

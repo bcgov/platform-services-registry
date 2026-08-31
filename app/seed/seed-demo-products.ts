@@ -10,6 +10,10 @@ export type DemoProductConfig = {
   provider: typeof Provider.AZURE | typeof Provider.AWS_LZA;
   description: string;
   budget: { dev: number; test: number; prod: number; tools: number };
+  /** Real AWS account or Azure subscription ID. Invented links are used when omitted. */
+  accountIdentifier?: string;
+  /** When set, product createdAt is this date so ingested months stay in finance scope. */
+  billingStartedAt?: Date;
 };
 
 function monthlyBudgetTotal(budget: DemoProductConfig['budget']) {
@@ -130,10 +134,48 @@ async function requireUser(email: string) {
   return user;
 }
 
-async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
-  const billingAccountLinks = inventDemoBillingLinks(config.licencePlate, config.provider);
-  const azureSubscriptions =
-    config.provider === Provider.AZURE ? inventDemoAzureSubscriptions(config.licencePlate) : undefined;
+function billingLinksFor(config: DemoProductConfig) {
+  if (config.accountIdentifier) {
+    return [
+      {
+        provider: config.provider,
+        accountIdentifier: config.accountIdentifier,
+        environment: 'production' as const,
+      },
+    ];
+  }
+  return inventDemoBillingLinks(config.licencePlate, config.provider);
+}
+
+function azureSubscriptionsFor(config: DemoProductConfig) {
+  if (config.provider !== Provider.AZURE) return undefined;
+  if (config.accountIdentifier) {
+    return [
+      {
+        environment: 'production' as const,
+        name: `${config.licencePlate}-prod`,
+        subscriptionId: config.accountIdentifier,
+      },
+    ];
+  }
+  return inventDemoAzureSubscriptions(config.licencePlate);
+}
+
+function awsAccountsFor(config: DemoProductConfig) {
+  if (config.provider !== Provider.AWS_LZA || !config.accountIdentifier) return undefined;
+  return [
+    {
+      environment: 'production' as const,
+      name: `${config.licencePlate}-prod`,
+      accountId: config.accountIdentifier,
+    },
+  ];
+}
+
+export async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
+  const billingAccountLinks = billingLinksFor(config);
+  const azureSubscriptions = azureSubscriptionsFor(config);
+  const awsAccounts = awsAccountsFor(config);
   const existing = await prisma.publicCloudProduct.findFirst({
     where: { licencePlate: config.licencePlate },
   });
@@ -144,7 +186,9 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
       existing.name !== config.name ||
       existing.description !== config.description ||
       !existing.billingAccountLinks ||
-      (config.provider === Provider.AZURE && !existing.azureSubscriptions);
+      Boolean(config.accountIdentifier) ||
+      (config.provider === Provider.AZURE && !existing.azureSubscriptions) ||
+      (config.billingStartedAt != null && existing.createdAt.getTime() !== config.billingStartedAt.getTime());
 
     if (needsUpdate) {
       const updated = await prisma.publicCloudProduct.update({
@@ -156,6 +200,8 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
           providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
           billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
           ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
+          ...(awsAccounts ? { awsAccounts: awsAccounts as unknown as Prisma.InputJsonValue } : {}),
+          ...(config.billingStartedAt ? { createdAt: config.billingStartedAt } : {}),
         },
       });
       console.log(
@@ -209,8 +255,10 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
       providerSelectionReasons: ['Cost Efficiency'],
       providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
       environmentsEnabled,
+      ...(config.billingStartedAt ? { createdAt: config.billingStartedAt } : {}),
       billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
       ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
+      ...(awsAccounts ? { awsAccounts: awsAccounts as unknown as Prisma.InputJsonValue } : {}),
       members: [
         { userId: projectOwner.id, roles: [PublicCloudProductMemberRole.EDITOR] },
         { userId: primaryTechnicalLead.id, roles: [PublicCloudProductMemberRole.EDITOR] },
@@ -245,6 +293,33 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
     ).toLocaleString()}/mo)`,
   );
   return product;
+}
+
+export async function removeDemoPublicCloudProducts() {
+  const plates = DEMO_PRODUCTS.map((product) => product.licencePlate);
+  const [billings, forecasts, spend, rollups, flags, products] = await Promise.all([
+    prisma.publicCloudBilling.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.cloudCostForecast.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.actualSpend.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.monthlyProductSpendRollup.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.spendFlag.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.publicCloudProduct.deleteMany({ where: { licencePlate: { in: plates } } }),
+  ]);
+  const removed = products.count;
+  if (removed === 0) {
+    console.log('  no invented demo products to remove');
+    return 0;
+  }
+  console.log(
+    `  removed ${removed} invented demo products (${billings.count} billings, ${forecasts.count} forecasts, ${spend.count} spend rows, ${rollups.count} rollups, ${flags.count} flags)`,
+  );
+  return removed;
+}
+
+export async function countDemoPublicCloudProducts() {
+  return prisma.publicCloudProduct.count({
+    where: { licencePlate: { in: DEMO_PRODUCTS.map((product) => product.licencePlate) } },
+  });
 }
 
 export async function seedDemoPublicCloudProducts() {

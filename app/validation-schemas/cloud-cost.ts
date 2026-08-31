@@ -61,12 +61,18 @@ export const varianceNoteBodySchema = z.object({
   supersedesNoteId: objectId.optional(),
 });
 
-export const financeIngestBodySchema = z.object({
-  provider: z.enum(['AWS', 'AWS_LZA', 'AZURE']),
+export const financeIngestLineSchema = z.object({
+  accountIdentifier: z.string().min(1),
+  serviceLine: z.string().min(1),
+  amount: z.number().finite(),
+  currency: z.enum(['USD', 'CAD']),
+});
+
+export const financeIngestLinesBodySchema = z.object({
+  provider: z.enum(['AWS_LZA', 'AZURE']),
   year: z.number().int().min(2000).max(2100),
   month: z.number().int().min(1).max(12),
-  licencePlates: z.array(z.string()).optional(),
-  useSimulated: z.boolean().optional(),
+  lines: z.array(financeIngestLineSchema),
 });
 
 export const financeIngestMissingQuerySchema = z.object({

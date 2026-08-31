@@ -1,13 +1,18 @@
-"""Shared helper to trigger public-cloud finance ingest via the registry API."""
+"""Fetch Azure / AWS LZA billing in Airflow, then persist via the registry API."""
 
 from __future__ import annotations
 
+import time
 from datetime import datetime, timezone
 
 import requests
+from _aws_cost_explorer import fetch_aws_cost_explorer_rows
+from _azure_cost_query import fetch_azure_cost_query_pages
 from _keycloak import Keycloak
 
 PROVIDERS = ("AWS_LZA", "AZURE")
+PERSIST_CONFLICT_STATUS = 409
+PERSIST_CONFLICT_ATTEMPTS = 8
 
 
 def previous_complete_month(today: datetime) -> tuple[int, int]:
@@ -19,13 +24,89 @@ def previous_complete_month(today: datetime) -> tuple[int, int]:
     return year, month
 
 
+def _to_ingest_lines(rows: list[dict]) -> list[dict]:
+    lines = []
+    for row in rows:
+        currency = str(row.get("currency") or "CAD").upper()
+        if currency not in ("USD", "CAD"):
+            raise RuntimeError(f"Unsupported billing currency: {currency}")
+        lines.append(
+            {
+                "accountIdentifier": row["accountIdentifier"],
+                "serviceLine": row["serviceLine"],
+                "amount": row["amount"],
+                "currency": currency,
+            }
+        )
+    return lines
+
+
+def _conflict_delay_seconds(response: requests.Response, attempt: int) -> float:
+    retry_after = response.headers.get("retry-after")
+    if retry_after:
+        try:
+            return min(float(retry_after), 30.0)
+        except ValueError:
+            pass
+    return min(2**attempt, 30)
+
+
+def post_ingest_lines(session: requests.Session, url: str, headers: dict, payload: dict, timeout: int = 120):
+    """POST persist; retry 409 while another run holds the provider/month lock."""
+    response = session.post(url, headers=headers, json=payload, timeout=timeout)
+    for attempt in range(1, PERSIST_CONFLICT_ATTEMPTS):
+        if response.status_code != PERSIST_CONFLICT_STATUS:
+            return response
+        time.sleep(_conflict_delay_seconds(response, attempt))
+        response = session.post(url, headers=headers, json=payload, timeout=timeout)
+    return response
+
+
+def _fetch_provider_rows(provider: str, year: int, month: int) -> list[dict]:
+    if provider == "AWS_LZA":
+        return fetch_aws_cost_explorer_rows(year, month)
+    if provider == "AZURE":
+        return fetch_azure_cost_query_pages(year, month)
+    raise RuntimeError(f"Classic AWS ingest is not supported for real billing data. Use AWS_LZA. Got {provider}.")
+
+
+def months_inclusive(start_year: int, start_month: int, end_year: int, end_month: int) -> list[dict]:
+    periods = []
+    year, month = start_year, start_month
+    while (year, month) <= (end_year, end_month):
+        periods.append({"year": year, "month": month})
+        month += 1
+        if month == 13:
+            month = 1
+            year += 1
+    return periods
+
+
+def _dag_run_conf() -> dict:
+    try:
+        from airflow.sdk import get_current_context
+
+        dag_run = get_current_context().get("dag_run")
+        conf = getattr(dag_run, "conf", None) or {}
+        return conf if isinstance(conf, dict) else {}
+    except Exception:
+        return {}
+
+
+def backfill_periods(through_year: int, through_month: int, conf: dict | None = None) -> list[dict] | None:
+    payload = conf if conf is not None else _dag_run_conf()
+    start = payload.get("backfill_from") if isinstance(payload, dict) else None
+    if not isinstance(start, dict) or "year" not in start or "month" not in start:
+        return None
+    return months_inclusive(int(start["year"]), int(start["month"]), through_year, through_month)
+
+
 def trigger_finance_ingest(
     base_url: str,
     kc_auth_url: str,
     kc_realm: str,
     kc_client_id: str,
     kc_client_secret: str,
-    use_simulated: bool = False,
 ):
     """
     Ingest the previous complete calendar month, plus any earlier FY months with no
@@ -42,38 +123,49 @@ def trigger_finance_ingest(
     headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
     session = requests.Session()
-    missing_url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest/missing"
-    missing_response = session.get(
-        missing_url,
-        headers=headers,
-        params={"year": year, "month": month},
-        timeout=60,
-    )
-    missing_response.raise_for_status()
-    plan = missing_response.json()
+    backfill = backfill_periods(year, month)
+    if backfill:
+        plan = {"providers": [{"provider": provider, "periods": backfill} for provider in PROVIDERS]}
+    else:
+        missing_url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest/missing"
+        missing_response = session.get(
+            missing_url,
+            headers=headers,
+            params={"year": year, "month": month},
+            timeout=60,
+        )
+        missing_response.raise_for_status()
+        plan = missing_response.json()
 
     results = []
-    ingest_url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest"
+    lines_url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest/lines"
     for item in plan.get("providers", []):
         provider = item["provider"]
         for period in item.get("periods", [{"year": year, "month": month}]):
-            response = session.post(
-                ingest_url,
-                headers=headers,
-                json={
+            period_year = period["year"]
+            period_month = period["month"]
+            try:
+                rows = _fetch_provider_rows(provider, period_year, period_month)
+            except RuntimeError as error:
+                if "no non-zero rows" not in str(error):
+                    raise
+                rows = []
+            response = post_ingest_lines(
+                session,
+                lines_url,
+                headers,
+                {
                     "provider": provider,
-                    "year": period["year"],
-                    "month": period["month"],
-                    "useSimulated": use_simulated,
+                    "year": period_year,
+                    "month": period_month,
+                    "lines": _to_ingest_lines(rows),
                 },
-                # Match the OpenShift route (600s). Estate-scope Azure fits; per-sub fallback does not.
-                timeout=600,
             )
             results.append(
                 {
                     "provider": provider,
-                    "year": period["year"],
-                    "month": period["month"],
+                    "year": period_year,
+                    "month": period_month,
                     "status": response.status_code,
                     "body": response.text[:500],
                 }

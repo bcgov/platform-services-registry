@@ -1,4 +1,4 @@
-import { createRequestPacer, fetchWithRetry, isRetryableStatus, retryAfterDelayMs, retryOnThrow } from './http-retry';
+import { fetchWithRetry, isRetryableStatus, retryAfterDelayMs } from './http-retry';
 
 function jsonResponse(status: number, headers?: Record<string, string>, body = '') {
   return {
@@ -67,29 +67,5 @@ describe('http-retry', () => {
 
     expect(response.status).toBe(429);
     expect(fetchImpl).toHaveBeenCalledTimes(3);
-  });
-
-  it('paces sequential calls', async () => {
-    const nowSpy = jest.spyOn(Date, 'now');
-    nowSpy.mockReturnValueOnce(1_000).mockReturnValueOnce(1_000).mockReturnValueOnce(1_400).mockReturnValue(1_400);
-    const sleepFn = jest.fn().mockResolvedValue(undefined);
-    const pacer = createRequestPacer(500, sleepFn);
-
-    await pacer.wait();
-    await pacer.wait();
-
-    expect(sleepFn).toHaveBeenCalledWith(100);
-    nowSpy.mockRestore();
-  });
-
-  it('retries thrown 429-like errors', async () => {
-    const sleepFn = jest.fn().mockResolvedValue(undefined);
-    const operation = jest
-      .fn()
-      .mockRejectedValueOnce(new Error('az rest failed (1): 429 Too Many Requests'))
-      .mockResolvedValueOnce('ok');
-
-    await expect(retryOnThrow(operation, { sleepFn, maxAttempts: 3 })).resolves.toBe('ok');
-    expect(operation).toHaveBeenCalledTimes(2);
   });
 });

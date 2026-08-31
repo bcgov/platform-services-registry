@@ -1,5 +1,6 @@
 import prisma from '@/core/prisma';
-import { Prisma, Provider } from '@/prisma/client';
+import { Provider } from '@/prisma/client';
+import { IngestAlreadyRunningError, isUniqueConstraintError } from './ingest-errors';
 import type { BillingPeriod } from './types';
 
 /** Longer than Airflow's 600s ingest timeout so a live run is not reclaimed. */
@@ -18,14 +19,23 @@ export async function acquireIngestLock(provider: Provider, period: BillingPerio
   await prisma.ingestionLock.deleteMany({
     where: { key, createdAt: { lt: new Date(Date.now() - INGEST_LOCK_TTL_MS) } },
   });
+
+  let created: { id: string };
   try {
-    await prisma.ingestionLock.create({ data: { key } });
+    created = await prisma.ingestionLock.create({ data: { key } });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      throw new Error(`Ingest already running for ${provider} ${period.year}-${period.month}`);
+    if (isUniqueConstraintError(error)) {
+      throw new IngestAlreadyRunningError(provider, period.year, period.month);
     }
     throw error;
   }
+
+  const holders = await prisma.ingestionLock.count({ where: { key } });
+  if (holders > 1) {
+    await prisma.ingestionLock.deleteMany({ where: { id: created.id } });
+    throw new IngestAlreadyRunningError(provider, period.year, period.month);
+  }
+
   return key;
 }
 

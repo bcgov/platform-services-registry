@@ -11,8 +11,6 @@ KEYCLOAK_AUTH_URL = "https://dev.loginproxy.gov.bc.ca/auth"
 KEYCLOAK_REALM = "platform-services"
 FINANCE_SA_ID = os.getenv("DEV_FINANCE_SA_ID")
 FINANCE_SA_SECRET = os.getenv("DEV_FINANCE_SA_SECRET")
-# Dev has no real billing behind it — keep simulated.
-USE_SIMULATED = True
 
 with DAG(
     dag_id="public_cloud_finance_ingest_dev",
@@ -32,7 +30,7 @@ with DAG(
             "kc_realm": KEYCLOAK_REALM,
             "kc_client_id": FINANCE_SA_ID,
             "kc_client_secret": FINANCE_SA_SECRET,
-            "use_simulated": USE_SIMULATED,
         },
+        execution_timeout=timedelta(minutes=20),
         on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),
     )

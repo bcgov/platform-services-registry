@@ -1,0 +1,48 @@
+services:
+  airflow:
+    container_name: airflow
+    build:
+      context: ../tools/airflow
+      dockerfile: Dockerfile
+    ports:
+    - 8082:8080
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: admin:admin
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW__API__EXPOSE_CONFIG: 'true'
+      AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
+      LOCAL_REGISTRY_BASE_URL: http://host.docker.internal:3000
+      LOCAL_KEYCLOAK_AUTH_URL: http://keycloak:8080
+      LOCAL_KEYCLOAK_REALM: platform-services
+      LOCAL_FINANCE_SA_ID: provision-service-account-id
+      LOCAL_FINANCE_SA_SECRET: testsecret # pragma: allowlist secret
+      FINANCE_AWS_REGION: us-east-1
+      AWS_PROFILE: ${AWS_PROFILE:-}
+      AWS_SHARED_CREDENTIALS_FILE: /home/airflow/.aws/credentials
+      AWS_CONFIG_FILE: /home/airflow/.aws/config
+      AZURE_TENANT_ID: ${AZURE_TENANT_ID:-}
+      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID:-}
+      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET:-}
+      AZURE_ACCESS_TOKEN: ${AZURE_ACCESS_TOKEN:-}
+      FINANCE_AZURE_COST_SCOPE: ${FINANCE_AZURE_COST_SCOPE:-}
+    extra_hosts:
+    - host.docker.internal:host-gateway
+    volumes:
+    - ../helm/tools/dags:/opt/airflow/dags
+    - ./airflow/simple_auth_manager_passwords.json:/opt/airflow/simple_auth_manager_passwords.json:ro
+    - ${HOME}/.aws:/home/airflow/.aws:ro
+    depends_on:
+    - keycloak
+    command:
+    - bash
+    - -c
+    - cp /opt/airflow/simple_auth_manager_passwords.json /opt/airflow/simple_auth_manager_passwords.json.generated && exec airflow standalone
+    healthcheck:
+      test: [CMD-SHELL, python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/v2/version')"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s

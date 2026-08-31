@@ -1,13 +1,5 @@
-import { IS_DEV, IS_LOCAL, IS_PROD, IS_TEST } from '@/config';
+import { IS_PROD } from '@/config';
 import { SpendFlagRuleId } from '@/prisma/client';
-
-/** App/runtime default: simulated in local+dev; real in test+prod. */
-export function defaultFinanceBillingSource(): 'simulated' | 'real' {
-  const override = process.env.FINANCE_BILLING_SOURCE?.trim().toLowerCase();
-  if (override === 'simulated' || override === 'real') return override;
-  if (IS_TEST || IS_PROD) return 'real';
-  return 'simulated';
-}
 
 export const FINANCE_ANOMALY_THRESHOLDS = {
   /** Rule 1: month-over-month product spend increase. */
@@ -32,8 +24,4 @@ export const PUBLIC_CLOUD_FINANCE_PREVIEW_ENABLED = !IS_PROD || process.env.PUBL
 export function isPublicCloudFinancePreviewEnabled(isProd = IS_PROD) {
   if (!isProd) return true;
   return process.env.PUBLIC_CLOUD_FINANCE_PREVIEW === 'true';
-}
-
-export function isSimulatedFinanceEnv() {
-  return IS_LOCAL || IS_DEV || defaultFinanceBillingSource() === 'simulated';
 }
