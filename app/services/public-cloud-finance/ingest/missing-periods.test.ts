@@ -4,6 +4,7 @@ import {
   assertClassicAwsRealIngestAllowed,
   elapsedCompleteFyMonths,
   filterMissingIngestPeriods,
+  ingestRefreshTargets,
   listScheduledIngestPlan,
   periodsToIngest,
 } from './missing-periods';
@@ -74,6 +75,32 @@ describe('missing ingest periods', () => {
     ]);
   });
 
+  it('merges last-complete and current refresh targets', () => {
+    expect(
+      periodsToIngest(
+        [{ year: 2026, month: 4 }],
+        [
+          { year: 2026, month: 7 },
+          { year: 2026, month: 8 },
+        ],
+      ),
+    ).toEqual([
+      { year: 2026, month: 4 },
+      { year: 2026, month: 7 },
+      { year: 2026, month: 8 },
+    ]);
+  });
+
+  it('refreshes last complete only when planning through a later month', () => {
+    expect(ingestRefreshTargets({ year: 2026, month: 8 }, { year: 2026, month: 7 })).toEqual([
+      { year: 2026, month: 7 },
+      { year: 2026, month: 8 },
+    ]);
+    expect(ingestRefreshTargets({ year: 2026, month: 6 }, { year: 2026, month: 7 })).toEqual([
+      { year: 2026, month: 6 },
+    ]);
+  });
+
   it('rejects classic AWS', () => {
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS)).toThrow(/AWS_LZA/);
     expect(() => assertClassicAwsRealIngestAllowed(Provider.AWS_LZA)).not.toThrow();
@@ -81,12 +108,11 @@ describe('missing ingest periods', () => {
   });
 
   it('plans unscoped SUCCESS months as done and always refreshes the target month', async () => {
-    const findMany = jest.spyOn(prisma.ingestionRun, 'findMany').mockImplementation(async ({ where }) => {
-      if (where?.provider !== Provider.AWS_LZA) return [];
-      return [{ periodStart: new Date(Date.UTC(2026, 3, 1)) }] as Awaited<
-        ReturnType<typeof prisma.ingestionRun.findMany>
-      >;
-    });
+    const findMany = jest.spyOn(prisma.ingestionRun, 'findMany');
+    findMany.mockImplementation(((args?: { where?: { provider?: Provider } }) => {
+      const rows = args?.where?.provider === Provider.AWS_LZA ? [{ periodStart: new Date(Date.UTC(2026, 3, 1)) }] : [];
+      return Promise.resolve(rows);
+    }) as typeof prisma.ingestionRun.findMany);
 
     const plan = await listScheduledIngestPlan({ year: 2026, month: 6 });
     const aws = plan.providers.find((item) => item.provider === Provider.AWS_LZA);

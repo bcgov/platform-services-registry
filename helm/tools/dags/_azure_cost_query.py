@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import re
 import time
+from datetime import datetime, timezone
 
 import requests
 
@@ -42,8 +43,11 @@ def azure_cost_query_url(scope_path: str) -> str:
     )
 
 
-def azure_cost_query_body(year: int, month: int) -> dict:
+def azure_cost_query_body(year: int, month: int, now: datetime | None = None) -> dict:
     start, _end, end_day = period_bounds(year, month)
+    today = now or datetime.now(timezone.utc)
+    if year == today.year and month == today.month:
+        end_day = f"{today.year}-{today.month:02d}-{today.day:02d}"
     return {
         "type": "ActualCost",
         "timeframe": "Custom",

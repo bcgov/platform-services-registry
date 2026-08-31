@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { GET as getFinanceIngestMissing } from '@/app/api/public-cloud/finance/ingest/missing/route';
+import { currentCalendarMonth } from '@/components/public-cloud/finance/finance-measure-utils';
 import { GlobalRole } from '@/constants';
 import { Provider } from '@/prisma/client';
 import { createRoute, mockSessionByRole } from '@/services/api-test/core';
@@ -33,5 +34,14 @@ describe('GET /api/public-cloud/finance/ingest/missing', () => {
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual(plan);
     expect(mockPlan).toHaveBeenCalledWith({ year: 2026, month: 7 });
+  });
+
+  it('defaults through to the current calendar month', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+    mockPlan.mockResolvedValue({ through: currentCalendarMonth(), providers: [] });
+
+    const res = await getMissing();
+    expect(res.status).toBe(200);
+    expect(mockPlan).toHaveBeenCalledWith(currentCalendarMonth());
   });
 });

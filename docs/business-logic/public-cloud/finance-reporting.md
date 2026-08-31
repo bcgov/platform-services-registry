@@ -43,7 +43,7 @@ A month with no rollup is missing only if the account or subscription already ex
 | Create request `provisionedDate` | First month the account/sub could have spend (preferred) |
 | Product `createdAt`              | Fallback when provision date is absent                   |
 
-Months before that start are out of scope (`—`, not incomplete). After a successful provider-month ingest, products that existed in that month get a rollup, including **$0** when they had no billing lines. Estate FYTD coverage only expects elapsed months where at least one in-scope product existed. Snapshot service-line chips and rankings use the same complete-month set. Scheduled backfill stays at `IngestionRun` grain and still re-runs failed estate months.
+Months before that start are out of scope (`—`, not incomplete). After a successful provider-month ingest, products that existed in that month get a rollup, including **$0** when they had no billing lines. Estate FYTD coverage only expects closed months where at least one in-scope product existed. FYTD actuals, forecast, snapshot chips, and rankings include every rollup we have through today (current month is month-to-date). The current calendar month is shown as partial until it closes. Scheduled backfill stays at `IngestionRun` grain, always refreshes the current and last complete months, and still re-runs failed estate months.
 
 Concurrent ingest of the same provider/month is blocked by `IngestionLock` (required unique `key`). A second persist returns **409** (not 500); Airflow retries that POST until the lock is free. Push that model before running ingest; drop any leftover `IngestionRun.ingestLockKey` unique index from the earlier optional-field lock.
 
@@ -81,8 +81,8 @@ The **registry app does not fetch Azure or AWS billing**. Airflow task pods call
 ```
 Airflow (schedule or snapshot "Ingest missing months")
   ├─ GET /api/public-cloud/finance/ingest/missing
-  │    └─ current FY months through last complete month with no unscoped SUCCESS IngestionRun
-  │       (always re-fetches the last complete month)
+  │    └─ current FY months through the in-progress month with no unscoped SUCCESS IngestionRun
+  │       (always re-fetches the current month and last complete month)
   ├─ AWS Cost Explorer (LZA)     ← keys in airflow-variables (or local env)
   ├─ Azure Cost Management       ← SP in airflow-variables (or local env)
   └─ Keycloak client_credentials (finance SA)

@@ -58,8 +58,38 @@ export function lastCompleteMonth(now = new Date()): { year: number; month: numb
   return { year: d.getFullYear(), month: d.getMonth() + 1 };
 }
 
+/** In-progress calendar month (month-to-date). */
+export function currentCalendarMonth(now = new Date()): { year: number; month: number } {
+  return { year: now.getFullYear(), month: now.getMonth() + 1 };
+}
+
 export function isCurrentCalendarMonth(year: number, month: number, now = new Date()) {
   return year === now.getFullYear() && month === now.getMonth() + 1;
+}
+
+export function monthsThrough<T extends { year: number; month: number }>(
+  months: T[],
+  through: { year: number; month: number },
+) {
+  return months.filter(
+    (month) => month.year < through.year || (month.year === through.year && month.month <= through.month),
+  );
+}
+
+/** Chart/export actual: complete months, or current month once a rollup exists. */
+export function monthlyChartActual(options: {
+  year: number;
+  month: number;
+  actualTotal: number;
+  hasCompleteActual: boolean;
+  hasRollup: boolean;
+  now?: Date;
+}): number | null {
+  if (options.hasCompleteActual) return options.actualTotal;
+  if (isCurrentCalendarMonth(options.year, options.month, options.now) && options.hasRollup) {
+    return options.actualTotal;
+  }
+  return null;
 }
 
 export function fiscalYearMonths(fyStartYear: number) {
@@ -74,7 +104,7 @@ export function sumForecastForFiscalYear(values: MonthlyValue[], fyStartYear: nu
   return values.reduce((sum, v) => (keys.has(monthKey(v.year, v.month)) ? sum + v.amount : sum), 0);
 }
 
-/** Sum forecast amounts for an explicit month set (e.g. FYTD through last complete month). */
+/** Sum forecast amounts for an explicit month set (e.g. FYTD through today). */
 export function sumForecastForMonths(values: MonthlyValue[], months: Array<{ year: number; month: number }>) {
   const keys = new Set(months.map((m) => monthKey(m.year, m.month)));
   return values.reduce((sum, v) => (keys.has(monthKey(v.year, v.month)) ? sum + v.amount : sum), 0);
@@ -185,15 +215,23 @@ export function summarizeYtdActuals(
 
 export function ytdActualHint(
   coverage: Pick<YtdActualSummary, 'presentMonths' | 'expectedMonths' | 'elapsedMonths'>,
-  lastComplete: { year: number; month: number },
+  through: { year: number; month: number },
+  options?: { includesPartialCurrent?: boolean },
 ) {
   const elapsed = coverage.elapsedMonths ?? coverage.expectedMonths;
-  if (elapsed === 0) return 'No complete fiscal-year months yet';
-  if (coverage.expectedMonths === 0) return 'No products existed through last complete month';
-  if (coverage.presentMonths < coverage.expectedMonths) {
-    return `incomplete (${coverage.presentMonths} of ${coverage.expectedMonths} months)`;
+  const throughLabel = `${through.year}-${String(through.month).padStart(2, '0')}`;
+  if (elapsed === 0) return 'No fiscal-year months yet';
+  if (coverage.expectedMonths === 0) {
+    if (options?.includesPartialCurrent) return `Includes month-to-date ${throughLabel}`;
+    return 'No products existed in the fiscal year to date';
   }
-  return `Through last complete month ${lastComplete.year}-${String(lastComplete.month).padStart(2, '0')}`;
+  if (coverage.presentMonths < coverage.expectedMonths) {
+    return `incomplete (${coverage.presentMonths} of ${coverage.expectedMonths} closed months)`;
+  }
+  if (options?.includesPartialCurrent) {
+    return `Includes month-to-date ${throughLabel}`;
+  }
+  return `Through ${throughLabel}`;
 }
 
 export type IngestionRunStatus = 'RUNNING' | 'SUCCESS' | 'FAILED';

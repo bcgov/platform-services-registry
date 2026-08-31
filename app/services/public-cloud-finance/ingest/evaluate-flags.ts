@@ -1,3 +1,4 @@
+import { isCurrentCalendarMonth } from '@/components/public-cloud/finance/finance-measure-utils';
 import prisma from '@/core/prisma';
 import { Provider, SpendFlagRuleId } from '@/prisma/client';
 import { activeActualSpendWhere } from '../active-spend';
@@ -196,7 +197,13 @@ export function planSpendFlagReconcile(
   };
 }
 
+export function shouldEvaluateSpendFlags(period: BillingPeriod, now = new Date()) {
+  return !isCurrentCalendarMonth(period.year, period.month, now);
+}
+
 export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
+  if (!shouldEvaluateSpendFlags(period)) return 0;
+
   const { rollups, priorByKey, forecastByPlateMonth, currentLines, seenService } = await loadFlagEvaluationData(period);
 
   const flags = [

@@ -1,5 +1,5 @@
 import { Provider, SpendFlagRuleId } from '@/prisma/client';
-import { planSpendFlagReconcile } from './evaluate-flags';
+import { planSpendFlagReconcile, shouldEvaluateSpendFlags } from './evaluate-flags';
 
 const base = {
   licencePlate: 'abc123',
@@ -94,5 +94,13 @@ describe('planSpendFlagReconcile', () => {
     );
 
     expect(plan.toCreate).toEqual([]);
+  });
+});
+
+describe('shouldEvaluateSpendFlags', () => {
+  it('skips the in-progress calendar month', () => {
+    const now = new Date('2026-08-15T12:00:00');
+    expect(shouldEvaluateSpendFlags({ year: 2026, month: 8 }, now)).toBe(false);
+    expect(shouldEvaluateSpendFlags({ year: 2026, month: 7 }, now)).toBe(true);
   });
 });

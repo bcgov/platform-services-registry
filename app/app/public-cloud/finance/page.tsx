@@ -8,6 +8,7 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { failure, success } from '@/components/notification';
 import {
   calculateVariance,
+  currentCalendarMonth,
   failedIngestProviders,
   formatCadAmount,
   formatIngestionFreshnessLine,
@@ -74,7 +75,7 @@ function formatIngestPlanLine(
     | undefined,
 ) {
   if (!plan?.providers.length) {
-    return 'Queues the Airflow worker for the last complete month and any earlier fiscal-year month with no successful ingest.';
+    return 'Queues the Airflow worker for the current month (month-to-date), the last complete month, and any earlier fiscal-year month with no successful ingest.';
   }
   return plan.providers
     .map((item) => `${formatForecastProviderLabel(item.provider)} ${item.periods.map(formatIngestPeriod).join(', ')}`)
@@ -93,9 +94,12 @@ function fytdVarianceValue(lowCoverage: boolean, variance: { amount: number; per
   return `${formatCadAmount(variance.amount)} (${formatPercent(variance.percent, 1)})`;
 }
 
-function fytdVarianceHint(lowCoverage: boolean, lastComplete: { year: number; month: number }) {
+function fytdVarianceHint(lowCoverage: boolean, through: { year: number; month: number }) {
   if (lowCoverage) return 'No data — coverage too low';
-  return `Actual − forecast through ${lastComplete.year}-${String(lastComplete.month).padStart(2, '0')}`;
+  return `Actual − forecast through ${through.year}-${String(through.month).padStart(
+    2,
+    '0',
+  )} (current month is month-to-date)`;
 }
 
 function ingestErrorMessage(error: unknown) {
@@ -223,7 +227,7 @@ function FinanceSnapshotBody({
         <SummaryCard
           label={`FYTD actual (${data.fiscalYearLabel})`}
           value={formatCadAmount(data.fytdActual)}
-          hint={ytdActualHint(data.actualsCoverage, data.lastCompleteMonth)}
+          hint={ytdActualHint(data.actualsCoverage, currentCalendarMonth(), { includesPartialCurrent: true })}
         />
         <SummaryCard
           label="FYTD forecast"
@@ -233,7 +237,7 @@ function FinanceSnapshotBody({
         <SummaryCard
           label="FYTD variance"
           value={fytdVarianceValue(data.lowCoverage, data.fytdVariance)}
-          hint={fytdVarianceHint(data.lowCoverage, data.lastCompleteMonth)}
+          hint={fytdVarianceHint(data.lowCoverage, currentCalendarMonth())}
           valueClassName={data.lowCoverage ? undefined : varianceToneClass(data.fytdVariance)}
         />
         <SummaryCard

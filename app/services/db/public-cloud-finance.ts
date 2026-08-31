@@ -2,12 +2,15 @@ import {
   buildIngestionFreshness,
   calculateVariance,
   countMissingRequiredHorizonMonths,
+  currentCalendarMonth,
   currentFiscalYearBounds,
   fiscalYearMonths,
   hasForecastValuesForRequiredHorizon,
   isCurrentCalendarMonth,
   isLowForecastCoverage,
   lastCompleteMonth,
+  monthlyChartActual,
+  monthsThrough,
   likeForLikeMonths,
   monthKey,
   sumForecastForFiscalYear,
@@ -119,7 +122,13 @@ function buildMonthlyChart(options: {
       year: m.year,
       month: m.month,
       label: new Date(m.year, m.month - 1, 1).toLocaleString('en-CA', { month: 'short' }),
-      actual: completeMonthKeys.has(keySuffix) ? actualTotal : null,
+      actual: monthlyChartActual({
+        year: m.year,
+        month: m.month,
+        actualTotal,
+        hasCompleteActual: completeMonthKeys.has(keySuffix),
+        hasRollup: products.some((product) => actualByPlateMonth.has(`${product.licencePlate}:${keySuffix}`)),
+      }),
       forecast: forecastTotal,
       isElapsed: m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
       isCurrentPartial: isCurrentCalendarMonth(m.year, m.month),
@@ -151,6 +160,7 @@ export async function getDataFreshness() {
 export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   const fy = currentFiscalYearBounds();
   const complete = lastCompleteMonth();
+  const through = currentCalendarMonth();
   // Include ACTIVE and INACTIVE so archived products keep historical FY actuals/forecasts.
   const products = await prisma.publicCloudProduct.findMany({
     where: { ...providerWhere(provider) },
@@ -172,9 +182,8 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   const forecastByPlate = new Map(forecasts.map((f) => [f.licencePlate, f.monthlyValues as MonthlyValue[]]));
 
   const fyMonths = fiscalYearMonths(fy.startYear);
-  const ytdMonths = fyMonths.filter(
-    (m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
-  );
+  const ytdMonths = monthsThrough(fyMonths, through);
+  const closedYtdMonths = ytdMonths.filter((month) => !isCurrentCalendarMonth(month.year, month.month));
 
   const rollups = await prisma.monthlyProductSpendRollup.findMany({
     where: {
@@ -191,18 +200,18 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
   }
   const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
   const { expectedMonths: expectedYtdMonths, completeMonths: completeYtdMonths } = likeForLikeMonths(
-    ytdMonths,
+    closedYtdMonths,
     products,
     billingStartedByPlate,
     rollups,
   );
   const completeMonthKeys = new Set(completeYtdMonths.map((month) => monthKey(month.year, month.month)));
-  const { fytdActual } = summarizeYtdActuals(completeYtdMonths, rollups);
+  const { fytdActual } = summarizeYtdActuals(ytdMonths, rollups);
   const presentMonths = completeYtdMonths.length;
   const expectedMonths = expectedYtdMonths.length;
 
   const serviceLines =
-    completeYtdMonths.length === 0
+    ytdMonths.length === 0
       ? []
       : await prisma.actualSpend.groupBy({
           by: ['serviceLine'],
@@ -210,7 +219,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
             AND: [
               activeActualSpendWhere,
               { licencePlate: { in: plates } },
-              { OR: completeYtdMonths.map((m) => ({ year: m.year, month: m.month })) },
+              { OR: ytdMonths.map((m) => ({ year: m.year, month: m.month })) },
               provider === 'ALL' ? {} : { provider },
             ],
           },
@@ -220,7 +229,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
         });
 
   const { fullYearForecast, fytdForecast, productsWithForecast, excludedFromForecastTotals } =
-    accumulateProductForecastTotals(products, forecastByPlate, fy.startYear, completeYtdMonths, actualByPlateMonth);
+    accumulateProductForecastTotals(products, forecastByPlate, fy.startYear, ytdMonths, actualByPlateMonth);
 
   const activeProducts = products.filter((product) => product.status === ProjectStatus.ACTIVE);
   const activeComplete = activeProducts.filter((product) => {
@@ -249,7 +258,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
       provider: p.provider,
       status: p.status,
       organizationName: p.organization.name,
-      amountCad: completeYtdMonths
+      amountCad: ytdMonths
         .filter((month) => {
           const startedAt = billingStartedByPlate.get(p.licencePlate);
           return startedAt ? productExistedDuringMonth(startedAt, month.year, month.month) : false;
@@ -273,8 +282,8 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     }),
     prisma.unmatchedBillingLine.count({
       where: {
-        year: complete.year,
-        month: complete.month,
+        year: through.year,
+        month: through.month,
         AND: [unresolvedUnmatchedWhere],
         ...(provider === 'ALL' ? {} : { provider }),
       },
@@ -289,7 +298,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     fytdActual,
     actualsCoverage: { presentMonths, expectedMonths, elapsedMonths: ytdMonths.length },
     fytdForecast,
-    /** FYTD actual vs FYTD forecast (same elapsed months through lastCompleteMonth). */
+    /** FYTD actual vs FYTD forecast (same months through today, including MTD). */
     fytdVariance,
     /** Alias of fytdVariance for export consumers. */
     variance: fytdVariance,
@@ -328,10 +337,9 @@ type RankingRollup = { licencePlate: string; year: number; month: number; amount
 function rankingMonthWindow(period?: 'ytd' | 'full-fy') {
   const fy = currentFiscalYearBounds();
   const complete = lastCompleteMonth();
+  const through = currentCalendarMonth();
   const fyMonths = fiscalYearMonths(fy.startYear);
-  const ytdMonths = fyMonths.filter(
-    (m) => m.year < complete.year || (m.year === complete.year && m.month <= complete.month),
-  );
+  const ytdMonths = monthsThrough(fyMonths, through);
   const fyEnded = complete.year > fy.startYear + 1 || (complete.year === fy.startYear + 1 && complete.month >= 3);
   return { fiscalYearLabel: fy.label, months: period === 'full-fy' && fyEnded ? fyMonths : ytdMonths };
 }
@@ -462,15 +470,13 @@ export async function getFinanceRankings(options: {
 
   const rollups = await findRollupsForMonths(plates, months, provider);
   const billingStartedByPlate = await loadProductBillingStartByPlate(plates);
-  const { completeMonths } = likeForLikeMonths(months, products, billingStartedByPlate, rollups);
-  const completeMonthKeys = new Set(completeMonths.map((month) => monthKey(month.year, month.month)));
-  const priorYearMonths = completeMonths.map((month) => ({ year: month.year - 1, month: month.month }));
+  const priorYearMonths = months.map((month) => ({ year: month.year - 1, month: month.month }));
   const priorRollups = await findRollupsForMonths(plates, priorYearMonths, provider);
-  const amountByPlate = sumRollupsByPlate(rollups, billingStartedByPlate, completeMonthKeys);
+  const amountByPlate = sumRollupsByPlate(rollups, billingStartedByPlate);
   const priorByPlate = sumRollupsByPlate(priorRollups, billingStartedByPlate);
   const { productTotal, products: productRows } = rankProducts(products, amountByPlate, priorByPlate, limit);
 
-  const serviceGroups = await findServiceLineGroups(plates, completeMonths, provider);
+  const serviceGroups = await findServiceLineGroups(plates, months, provider);
   const priorServiceGroups = await findServiceLineGroups(plates, priorYearMonths, provider);
   const priorService = new Map(priorServiceGroups.map((group) => [group.serviceLine, group._sum.amountCad ?? 0]));
 
@@ -577,9 +583,9 @@ export async function reviewSpendFlag(id: string, reviewerIdir: string, reviewNo
 }
 
 export async function getUnmatchedBilling(options?: { provider?: ProviderFilter; year?: number; month?: number }) {
-  const complete = lastCompleteMonth();
-  const year = options?.year ?? complete.year;
-  const month = options?.month ?? complete.month;
+  const current = currentCalendarMonth();
+  const year = options?.year ?? current.year;
+  const month = options?.month ?? current.month;
   const provider = options?.provider ?? 'ALL';
 
   const lines = await prisma.unmatchedBillingLine.findMany({

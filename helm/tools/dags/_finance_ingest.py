@@ -24,6 +24,10 @@ def previous_complete_month(today: datetime) -> tuple[int, int]:
     return year, month
 
 
+def current_calendar_month(today: datetime) -> tuple[int, int]:
+    return today.year, today.month
+
+
 def _to_ingest_lines(rows: list[dict]) -> list[dict]:
     lines = []
     for row in rows:
@@ -171,14 +175,14 @@ def trigger_finance_ingest(
     kc_client_secret: str,
 ):
     """
-    Ingest the previous complete calendar month, plus any earlier FY months with no
-    successful IngestionRun (so a failed night does not leave a permanent hole).
+    Ingest the current (partial) month and last complete month, plus any earlier FY
+    months with no successful IngestionRun (so a failed night does not leave a hole).
     """
     if not kc_client_id or not kc_client_secret:
         raise ValueError("Keycloak service account client id/secret are required for finance ingest")
 
     today = datetime.now(timezone.utc)
-    year, month = previous_complete_month(today)
+    year, month = current_calendar_month(today)
 
     kc = Keycloak(kc_auth_url, kc_realm, kc_client_id, kc_client_secret)
     access_token = kc.get_access_token()
@@ -193,7 +197,6 @@ def trigger_finance_ingest(
         missing_response = session.get(
             missing_url,
             headers=headers,
-            params={"year": year, "month": month},
             timeout=60,
         )
         missing_response.raise_for_status()

@@ -1,12 +1,13 @@
 import sys
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 DAGS = Path(__file__).resolve().parents[1] / "dags"
 if str(DAGS) not in sys.path:
     sys.path.insert(0, str(DAGS))
 
-from _azure_cost_query import parse_azure_cost_query_payload  # noqa: E402
+from _azure_cost_query import azure_cost_query_body, parse_azure_cost_query_payload  # noqa: E402
 
 SUB = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
 
@@ -100,6 +101,17 @@ class ParseAzureCostQueryPayloadTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["serviceLine"], "Bandwidth")
         self.assertEqual(rows[0]["amount"], 4)
+
+
+class AzureCostQueryBodyTests(unittest.TestCase):
+    def test_clamps_current_month_end_to_today(self):
+        body = azure_cost_query_body(2026, 8, now=datetime(2026, 8, 15, tzinfo=timezone.utc))
+        self.assertEqual(body["timePeriod"]["from"], "2026-08-01T00:00:00Z")
+        self.assertEqual(body["timePeriod"]["to"], "2026-08-15T23:59:59Z")
+
+    def test_keeps_closed_month_through_last_day(self):
+        body = azure_cost_query_body(2026, 7, now=datetime(2026, 8, 15, tzinfo=timezone.utc))
+        self.assertEqual(body["timePeriod"]["to"], "2026-07-31T23:59:59Z")
 
 
 if __name__ == "__main__":

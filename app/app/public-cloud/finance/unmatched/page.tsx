@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { openConfirmModal } from '@/components/modal/confirm';
 import { failure, success } from '@/components/notification';
-import { formatCadAmount, lastCompleteMonth } from '@/components/public-cloud/finance/finance-measure-utils';
+import { currentCalendarMonth, formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
@@ -19,10 +19,10 @@ const publicCloudFinanceUnmatchedPage = createClientPage({
 });
 
 export default publicCloudFinanceUnmatchedPage(({ session }) => {
-  const complete = lastCompleteMonth();
+  const current = currentCalendarMonth();
   const [provider, setProvider] = useState('ALL');
-  const [year, setYear] = useState(complete.year);
-  const [month, setMonth] = useState(complete.month);
+  const [year, setYear] = useState(current.year);
+  const [month, setMonth] = useState(current.month);
   const [resolvePlate, setResolvePlate] = useState<Record<string, string>>({});
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error, refetch } = useQuery({

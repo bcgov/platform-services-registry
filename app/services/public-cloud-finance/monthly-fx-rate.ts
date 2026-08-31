@@ -74,17 +74,37 @@ async function upsertMonthlyUsdCadRate(data: {
   }
 }
 
+/** True when the stored observation is late enough in the month to treat as invoice-close. */
+export function isLikelyMonthEndFxRate(rateDate: Date, year: number, month: number) {
+  const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  return (
+    rateDate.getUTCFullYear() === year && rateDate.getUTCMonth() + 1 === month && rateDate.getUTCDate() >= lastDay - 3
+  );
+}
+
+export function shouldReuseStoredUsdCadRate(
+  existing: { source: string; rateDate: Date } | null,
+  year: number,
+  month: number,
+  now = new Date(),
+) {
+  if (!existing || existing.source === 'FINANCE_USD_CAD_RATE') return false;
+  const openMonth = year === now.getFullYear() && month === now.getMonth() + 1;
+  if (openMonth) return false;
+  return isLikelyMonthEndFxRate(existing.rateDate, year, month);
+}
+
 /**
- * Ensure a month-end USD/CAD rate is persisted for invoice conversion.
- * Reuses an existing MonthlyFxRate row; otherwise fetches Bank of Canada Valet
- * for the calendar month and stores the last observation.
+ * Ensure a USD/CAD rate is persisted for conversion.
+ * Reuses a month-end Bank of Canada row for closed months. Refetches for the
+ * open month (MTD) and when a stored rate is still mid-month after close.
  */
 export async function ensureMonthlyUsdCadRate(year: number, month: number): Promise<StoredMonthlyFxRate> {
   const existing = await prisma.monthlyFxRate.findUnique({
     where: { pair_year_month: { pair: USD_CAD_PAIR, year, month } },
   });
 
-  if (existing && existing.source !== 'FINANCE_USD_CAD_RATE') {
+  if (existing && shouldReuseStoredUsdCadRate(existing, year, month)) {
     return toStored(existing);
   }
 

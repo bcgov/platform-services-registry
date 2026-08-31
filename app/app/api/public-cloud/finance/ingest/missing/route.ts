@@ -1,4 +1,4 @@
-import { lastCompleteMonth } from '@/components/public-cloud/finance/finance-measure-utils';
+import { currentCalendarMonth } from '@/components/public-cloud/finance/finance-measure-utils';
 import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
@@ -15,7 +15,9 @@ export const GET = createApiHandler({
   }
 
   const through =
-    queryParams.year && queryParams.month ? { year: queryParams.year, month: queryParams.month } : lastCompleteMonth();
+    queryParams.year && queryParams.month
+      ? { year: queryParams.year, month: queryParams.month }
+      : currentCalendarMonth();
 
   return OkResponse(await listScheduledIngestPlan(through));
 });

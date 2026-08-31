@@ -9,6 +9,8 @@ import {
   hasForecastValuesForRequiredHorizon,
   indexRollupPlatesByMonth,
   isLowForecastCoverage,
+  monthlyChartActual,
+  monthsThrough,
   likeForLikeMonths,
   monthsWithCompleteRollups,
   sumForecastForMonths,
@@ -90,7 +92,7 @@ describe('finance measure utils', () => {
       ],
     );
     expect(summary).toEqual({ fytdActual: 15, presentMonths: 1, expectedMonths: 3 });
-    expect(ytdActualHint(summary, { year: 2026, month: 6 })).toBe('incomplete (1 of 3 months)');
+    expect(ytdActualHint(summary, { year: 2026, month: 6 })).toBe('incomplete (1 of 3 closed months)');
   });
 
   it('does not treat pre-creation months as missing actuals', () => {
@@ -112,7 +114,7 @@ describe('finance measure utils', () => {
 
   it('explains empty expected months when elapsed FY months exist', () => {
     expect(ytdActualHint({ presentMonths: 0, expectedMonths: 0, elapsedMonths: 4 }, { year: 2026, month: 7 })).toBe(
-      'No products existed through last complete month',
+      'No products existed in the fiscal year to date',
     );
   });
 
@@ -225,6 +227,68 @@ describe('complete rollup months and like-for-like totals', () => {
     );
     expect(expectedMonths).toHaveLength(2);
     expect(completeMonths).toEqual([{ year: 2026, month: 4 }]);
+  });
+
+  it('includes the current month in a through-today window', () => {
+    expect(
+      monthsThrough(
+        [
+          { year: 2026, month: 7 },
+          { year: 2026, month: 8 },
+          { year: 2026, month: 9 },
+        ],
+        { year: 2026, month: 8 },
+      ),
+    ).toEqual([
+      { year: 2026, month: 7 },
+      { year: 2026, month: 8 },
+    ]);
+  });
+
+  it('labels FYTD that includes month-to-date', () => {
+    expect(
+      ytdActualHint(
+        { presentMonths: 4, expectedMonths: 4, elapsedMonths: 5 },
+        { year: 2026, month: 8 },
+        {
+          includesPartialCurrent: true,
+        },
+      ),
+    ).toBe('Includes month-to-date 2026-08');
+  });
+
+  it('shows current-month actuals only after a rollup exists', () => {
+    const now = new Date('2026-08-15T12:00:00');
+    expect(
+      monthlyChartActual({
+        year: 2026,
+        month: 8,
+        actualTotal: 40,
+        hasCompleteActual: false,
+        hasRollup: true,
+        now,
+      }),
+    ).toBe(40);
+    expect(
+      monthlyChartActual({
+        year: 2026,
+        month: 8,
+        actualTotal: 0,
+        hasCompleteActual: false,
+        hasRollup: false,
+        now,
+      }),
+    ).toBeNull();
+    expect(
+      monthlyChartActual({
+        year: 2026,
+        month: 7,
+        actualTotal: 90,
+        hasCompleteActual: true,
+        hasRollup: true,
+        now,
+      }),
+    ).toBe(90);
   });
 
   it('does not treat missing elapsed actuals as zero against a full-year forecast', () => {

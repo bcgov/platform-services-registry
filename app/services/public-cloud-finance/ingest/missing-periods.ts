@@ -1,4 +1,5 @@
 import {
+  currentCalendarMonth,
   currentFiscalYearBounds,
   fiscalYearMonths,
   lastCompleteMonth,
@@ -25,10 +26,27 @@ export function filterMissingIngestPeriods(
   return elapsed.filter((period) => !done.has(monthKey(period.year, period.month)));
 }
 
-export function periodsToIngest(missing: BillingPeriod[], target: BillingPeriod): BillingPeriod[] {
+export function periodsToIngest(missing: BillingPeriod[], target: BillingPeriod | BillingPeriod[]): BillingPeriod[] {
+  const targets = Array.isArray(target) ? target : [target];
   const keys = new Set(missing.map((period) => monthKey(period.year, period.month)));
-  const periods = keys.has(monthKey(target.year, target.month)) ? [...missing] : [...missing, target];
-  return periods.sort((left, right) => left.year - right.year || left.month - right.month);
+  for (const item of targets) keys.add(monthKey(item.year, item.month));
+  return [...keys]
+    .map((key) => {
+      const [year, month] = key.split('-').map(Number);
+      return { year, month };
+    })
+    .sort((left, right) => left.year - right.year || left.month - right.month);
+}
+
+/** Always refresh `through`. Also refresh last complete month so a mid-month SUCCESS does not freeze invoice close. */
+export function ingestRefreshTargets(
+  through: BillingPeriod,
+  complete: BillingPeriod = lastCompleteMonth(),
+): BillingPeriod[] {
+  if (complete.year < through.year || (complete.year === through.year && complete.month < through.month)) {
+    return [complete, through];
+  }
+  return [through];
 }
 
 export async function listMissingIngestPeriods(
@@ -47,11 +65,12 @@ export async function listMissingIngestPeriods(
   return filterMissingIngestPeriods(elapsed, successful);
 }
 
-export async function listScheduledIngestPlan(through: BillingPeriod = lastCompleteMonth()) {
+export async function listScheduledIngestPlan(through: BillingPeriod = currentCalendarMonth()) {
+  const targets = ingestRefreshTargets(through);
   const providers = await Promise.all(
     SCHEDULED_INGEST_PROVIDERS.map(async (provider) => {
       const missing = await listMissingIngestPeriods(provider, through);
-      return { provider, periods: periodsToIngest(missing, through) };
+      return { provider, periods: periodsToIngest(missing, targets) };
     }),
   );
   return { through, providers };
