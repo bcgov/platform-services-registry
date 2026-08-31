@@ -6,9 +6,14 @@ packages:
 - sandbox/m365mock
 - sandbox/nats-provision
 
+overrides:
+  conventional-changelog-conventionalcommits: ^10.0.0
+  eslint-plugin-react-hooks: ^7.0.0
+
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
+  '@parcel/watcher': true
   canvas: true
   core-js-pure: true
   prisma: true
