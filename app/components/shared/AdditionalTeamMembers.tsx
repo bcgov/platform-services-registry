@@ -38,7 +38,7 @@ export default function AdditionalTeamMembers<
         <Table.Td>
           <UserProfile
             data={member}
-            {...(!disabled && {
+            {...(disabled ? {} : {
               onClick: async () => {
                 const { state } = await openUserPickerModal(
                   {
