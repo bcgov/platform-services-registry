@@ -27,19 +27,25 @@ describe('triggerFinanceIngestDag', () => {
   });
 
   it('authenticates and triggers the finance DAG', async () => {
-    const fetchImpl = jest.fn(async (url: string) => {
+    let triggerUrl = '';
+    let triggerBody: { logical_date?: string } = {};
+    const fetchImpl = jest.fn(async (url: string, init?: RequestInit) => {
       if (url.endsWith('/auth/token')) {
         return new Response(JSON.stringify({ access_token: 'tok' }), { status: 200 });
       }
+      triggerUrl = url;
+      triggerBody = JSON.parse(String(init?.body));
       return new Response('{}', { status: 200 });
     });
 
-    const result = await triggerFinanceIngestDag({ triggeredBy: 'admin@example.gov', fetchImpl });
+    const result = await triggerFinanceIngestDag({
+      triggeredBy: 'admin@example.gov',
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+    });
     expect(result.dagId).toBe('public_cloud_finance_ingest_test');
     expect(result.dagRunId).toMatch(/^finance-manual-/);
     expect(fetchImpl).toHaveBeenCalledTimes(2);
-    expect(String(fetchImpl.mock.calls[1][0])).toContain('/api/v2/dags/public_cloud_finance_ingest_test/dagRuns');
-    const triggerBody = JSON.parse(String((fetchImpl.mock.calls[1][1] as RequestInit).body));
+    expect(triggerUrl).toContain('/api/v2/dags/public_cloud_finance_ingest_test/dagRuns');
     expect(triggerBody.logical_date).toEqual(expect.any(String));
   });
 

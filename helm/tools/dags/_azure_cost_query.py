@@ -28,7 +28,7 @@ def azure_cost_scope_from_env() -> str:
         return ""
     if raw.startswith("/"):
         return raw
-    if raw.startswith("providers/") or raw.startswith("subscriptions/"):
+    if raw.startswith(("providers/", "subscriptions/")):
         return f"/{raw}"
     if _SUBSCRIPTION_ID.match(raw):
         return f"/subscriptions/{raw}"
@@ -68,41 +68,66 @@ def _column_index(columns: list[str], *names: str) -> int:
     return -1
 
 
-def parse_azure_cost_query_payload(payload: dict, year: int, month: int) -> tuple[list[dict], str | None]:
+def _payload_table(payload: dict) -> tuple[list[str], list, str | None]:
     properties = payload.get("properties") or {}
     columns = [str(col.get("name") or "") for col in (properties.get("columns") or []) if isinstance(col, dict)]
-    cost_idx = _column_index(columns, "Cost", "PreTaxCost")
-    service_idx = _column_index(columns, "ServiceName")
-    currency_idx = _column_index(columns, "Currency")
-    subscription_idx = _column_index(columns, "SubscriptionId", "SubscriptionID")
     next_link = properties.get("nextLink") or payload.get("nextLink")
     payload_rows = properties.get("rows") or []
+    return columns, payload_rows, next_link if isinstance(next_link, str) and next_link else None
+
+
+def _require_azure_query_columns(payload_rows: list, currency_idx: int, subscription_idx: int) -> None:
     if payload_rows and currency_idx < 0:
         raise RuntimeError("Azure Cost Management response is missing the Currency column.")
     if payload_rows and subscription_idx < 0:
         raise RuntimeError("Azure Cost Management estate query did not return SubscriptionId")
 
+
+def _cell(row: list, index: int, default: object = "") -> object:
+    return row[index] if index >= 0 else default
+
+
+def _azure_row_from_cells(
+    row: object,
+    cost_idx: int,
+    service_idx: int,
+    subscription_idx: int,
+    currency_idx: int,
+    year: int,
+    month: int,
+) -> dict | None:
+    if not isinstance(row, list):
+        return None
+    amount = float(_cell(row, cost_idx, 0))
+    service_line = str(_cell(row, service_idx))
+    account_identifier = str(_cell(row, subscription_idx))
+    currency = str(_cell(row, currency_idx)).strip()
+    if not account_identifier or not service_line or amount == 0 or not currency:
+        return None
+    return {
+        "accountIdentifier": account_identifier,
+        "serviceLine": service_line,
+        "amount": amount,
+        "currency": currency,
+        "year": year,
+        "month": month,
+    }
+
+
+def parse_azure_cost_query_payload(payload: dict, year: int, month: int) -> tuple[list[dict], str | None]:
+    columns, payload_rows, next_link = _payload_table(payload)
+    cost_idx = _column_index(columns, "Cost", "PreTaxCost")
+    service_idx = _column_index(columns, "ServiceName")
+    currency_idx = _column_index(columns, "Currency")
+    subscription_idx = _column_index(columns, "SubscriptionId", "SubscriptionID")
+    _require_azure_query_columns(payload_rows, currency_idx, subscription_idx)
+
     rows: list[dict] = []
     for row in payload_rows:
-        if not isinstance(row, list):
-            continue
-        amount = float(row[cost_idx] if cost_idx >= 0 else 0)
-        service_line = str(row[service_idx] if service_idx >= 0 else "")
-        account_identifier = str(row[subscription_idx] if subscription_idx >= 0 else "")
-        currency = str(row[currency_idx] if currency_idx >= 0 else "").strip()
-        if not account_identifier or not service_line or amount == 0 or not currency:
-            continue
-        rows.append(
-            {
-                "accountIdentifier": account_identifier,
-                "serviceLine": service_line,
-                "amount": amount,
-                "currency": currency,
-                "year": year,
-                "month": month,
-            }
-        )
-    return rows, next_link if isinstance(next_link, str) and next_link else None
+        parsed = _azure_row_from_cells(row, cost_idx, service_idx, subscription_idx, currency_idx, year, month)
+        if parsed:
+            rows.append(parsed)
+    return rows, next_link
 
 
 def _retry_delay_seconds(response: requests.Response, attempt: int) -> float:
@@ -141,6 +166,40 @@ def _azure_access_token() -> str:
     return token.token
 
 
+def _raise_azure_query_failure(response: requests.Response) -> None:
+    status = response.status_code
+    detail = response.text[:500]
+    if status in SCOPE_FAIL_STATUS:
+        raise RuntimeError(
+            f"Azure estate cost scope is unavailable ({status}). Refusing per-subscription fallback. {detail}"
+        )
+    raise RuntimeError(f"Azure Cost Management query failed ({status}): {detail}")
+
+
+def _post_azure_cost_query(url: str, access_token: str, body: dict) -> requests.Response:
+    response = None
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        response = requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json",
+                "ClientType": AZURE_COST_QUERY_CLIENT_TYPE,
+            },
+            json=body,
+            timeout=120,
+        )
+        if response.ok or response.status_code not in RETRYABLE_STATUS or attempt == MAX_ATTEMPTS:
+            break
+        time.sleep(_retry_delay_seconds(response, attempt))
+
+    if response is None:
+        raise RuntimeError("Azure Cost Management query produced no response.")
+    if not response.ok:
+        _raise_azure_query_failure(response)
+    return response
+
+
 def fetch_azure_cost_query_pages(year: int, month: int) -> list[dict]:
     scope = azure_cost_scope_from_env()
     if not scope:
@@ -152,33 +211,7 @@ def fetch_azure_cost_query_pages(year: int, month: int) -> list[dict]:
     rows: list[dict] = []
 
     while url:
-        response = None
-        for attempt in range(1, MAX_ATTEMPTS + 1):
-            response = requests.post(
-                url,
-                headers={
-                    "Authorization": f"Bearer {access_token}",
-                    "Content-Type": "application/json",
-                    "ClientType": AZURE_COST_QUERY_CLIENT_TYPE,
-                },
-                json=body,
-                timeout=120,
-            )
-            if response.ok or response.status_code not in RETRYABLE_STATUS or attempt == MAX_ATTEMPTS:
-                break
-            time.sleep(_retry_delay_seconds(response, attempt))
-
-        if response is None:
-            raise RuntimeError("Azure Cost Management query produced no response.")
-        if not response.ok:
-            status = response.status_code
-            detail = response.text[:500]
-            if status in SCOPE_FAIL_STATUS:
-                raise RuntimeError(
-                    f"Azure estate cost scope is unavailable ({status}). Refusing per-subscription fallback. {detail}"
-                )
-            raise RuntimeError(f"Azure Cost Management query failed ({status}): {detail}")
-
+        response = _post_azure_cost_query(url, access_token, body)
         page_rows, next_link = parse_azure_cost_query_payload(response.json(), year, month)
         rows.extend(page_rows)
         url = next_link or ""

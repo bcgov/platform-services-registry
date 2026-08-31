@@ -29,28 +29,32 @@ def chunk_linked_account_ids(account_ids: list[str] | None) -> list[list[str] | 
     return [account_ids[i : i + AWS_LINKED_ACCOUNT_CHUNK] for i in range(0, len(account_ids), AWS_LINKED_ACCOUNT_CHUNK)]
 
 
+def _row_from_cost_group(group: dict, year: int, month: int) -> dict | None:
+    keys = group.get("Keys") or []
+    if len(keys) < 2:
+        return None
+    account_identifier, service_line = keys[0], keys[1]
+    metrics = (group.get("Metrics") or {}).get("UnblendedCost") or {}
+    amount = float(metrics.get("Amount") or 0)
+    if not account_identifier or not service_line or amount == 0:
+        return None
+    return {
+        "accountIdentifier": account_identifier,
+        "serviceLine": service_line,
+        "amount": amount,
+        "currency": metrics.get("Unit") or "USD",
+        "year": year,
+        "month": month,
+    }
+
+
 def collect_rows(response: dict, year: int, month: int) -> list[dict]:
     rows: list[dict] = []
     for result in response.get("ResultsByTime") or []:
         for group in result.get("Groups") or []:
-            keys = group.get("Keys") or []
-            if len(keys) < 2:
-                continue
-            account_identifier, service_line = keys[0], keys[1]
-            metrics = (group.get("Metrics") or {}).get("UnblendedCost") or {}
-            amount = float(metrics.get("Amount") or 0)
-            if not account_identifier or not service_line or amount == 0:
-                continue
-            rows.append(
-                {
-                    "accountIdentifier": account_identifier,
-                    "serviceLine": service_line,
-                    "amount": amount,
-                    "currency": metrics.get("Unit") or "USD",
-                    "year": year,
-                    "month": month,
-                }
-            )
+            row = _row_from_cost_group(group, year, month)
+            if row:
+                rows.append(row)
     return rows
 
 

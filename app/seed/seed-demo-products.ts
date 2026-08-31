@@ -172,6 +172,40 @@ function awsAccountsFor(config: DemoProductConfig) {
   ];
 }
 
+function demoProductNeedsUpdate(
+  existing: {
+    provider: string;
+    name: string;
+    description: string;
+    billingAccountLinks: unknown;
+    azureSubscriptions: unknown;
+    createdAt: Date;
+  },
+  config: DemoProductConfig,
+) {
+  return (
+    existing.provider !== config.provider ||
+    existing.name !== config.name ||
+    existing.description !== config.description ||
+    !existing.billingAccountLinks ||
+    Boolean(config.accountIdentifier) ||
+    (config.provider === Provider.AZURE && !existing.azureSubscriptions) ||
+    (config.billingStartedAt != null && existing.createdAt.getTime() !== config.billingStartedAt.getTime())
+  );
+}
+
+function optionalSeedFields(
+  azureSubscriptions: ReturnType<typeof azureSubscriptionsFor>,
+  awsAccounts: ReturnType<typeof awsAccountsFor>,
+  billingStartedAt?: Date,
+) {
+  return {
+    ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
+    ...(awsAccounts ? { awsAccounts: awsAccounts as unknown as Prisma.InputJsonValue } : {}),
+    ...(billingStartedAt ? { createdAt: billingStartedAt } : {}),
+  };
+}
+
 export async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
   const billingAccountLinks = billingLinksFor(config);
   const azureSubscriptions = azureSubscriptionsFor(config);
@@ -181,16 +215,7 @@ export async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
   });
 
   if (existing) {
-    const needsUpdate =
-      existing.provider !== config.provider ||
-      existing.name !== config.name ||
-      existing.description !== config.description ||
-      !existing.billingAccountLinks ||
-      Boolean(config.accountIdentifier) ||
-      (config.provider === Provider.AZURE && !existing.azureSubscriptions) ||
-      (config.billingStartedAt != null && existing.createdAt.getTime() !== config.billingStartedAt.getTime());
-
-    if (needsUpdate) {
+    if (demoProductNeedsUpdate(existing, config)) {
       const updated = await prisma.publicCloudProduct.update({
         where: { id: existing.id },
         data: {
@@ -199,9 +224,7 @@ export async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
           description: config.description,
           providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
           billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
-          ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
-          ...(awsAccounts ? { awsAccounts: awsAccounts as unknown as Prisma.InputJsonValue } : {}),
-          ...(config.billingStartedAt ? { createdAt: config.billingStartedAt } : {}),
+          ...optionalSeedFields(azureSubscriptions, awsAccounts, config.billingStartedAt),
         },
       });
       console.log(
@@ -255,10 +278,8 @@ export async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
       providerSelectionReasons: ['Cost Efficiency'],
       providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
       environmentsEnabled,
-      ...(config.billingStartedAt ? { createdAt: config.billingStartedAt } : {}),
       billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
-      ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
-      ...(awsAccounts ? { awsAccounts: awsAccounts as unknown as Prisma.InputJsonValue } : {}),
+      ...optionalSeedFields(azureSubscriptions, awsAccounts, config.billingStartedAt),
       members: [
         { userId: projectOwner.id, roles: [PublicCloudProductMemberRole.EDITOR] },
         { userId: primaryTechnicalLead.id, roles: [PublicCloudProductMemberRole.EDITOR] },

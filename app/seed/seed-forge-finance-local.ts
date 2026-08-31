@@ -115,7 +115,7 @@ async function ensureForgeRollupPlaceholders(licencePlate: string, provider: For
 
 export async function seedForgeFinanceProducts() {
   const targets = requireForgeFinanceTargets();
-  const products = [];
+  const products: Awaited<ReturnType<typeof seedDemoPublicCloudProduct>>[] = [];
   for (const target of targets) {
     const product = await seedDemoPublicCloudProduct(forgeProductConfig(target));
     await ensureForgeRollupPlaceholders(product.licencePlate, target.provider);
