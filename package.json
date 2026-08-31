@@ -35,22 +35,5 @@
     "typescript": "^6.0.0",
     "typescript-eslint": "^8.39.0",
     "wait-on": "^9.0.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "conventional-changelog-conventionalcommits": "^10.0.0",
-      "eslint-plugin-react-hooks": "^7.0.0"
-    },
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "canvas",
-      "core-js-pure",
-      "cypress",
-      "esbuild",
-      "prisma",
-      "sharp",
-      "unrs-resolver"
-    ]
   }
 }
