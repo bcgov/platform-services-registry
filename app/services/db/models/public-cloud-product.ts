@@ -92,21 +92,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
           PublicCloudProductMemberRole.VIEWER,
         ]),
     );
-  console.log({
-    status: doc.status,
-    isActive,
-    hasActiveRequest,
-    sessionUserId: session.user.id,
-    projectOwnerId: doc.projectOwnerId,
-    isMaintainer,
-    editAllPublicCloudProducts: session.permissions.editAllPublicCloudProducts,
-    organizationEditor: session.organizationIds.editor.includes(doc.organizationId),
-    members: doc.members,
-    memberIsEditor: members.some(
-      (member) =>
-        member.userId === session.user.id && arraysIntersect(member.roles, [PublicCloudProductMemberRole.EDITOR]),
-    ),
-  });
+
   const canEdit =
     isActive &&
     !hasActiveRequest &&
