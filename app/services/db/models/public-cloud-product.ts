@@ -92,21 +92,31 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
           PublicCloudProductMemberRole.VIEWER,
         ]),
     );
-
-  const canEdit =
-    (isActive &&
-      !hasActiveRequest &&
-      (session.permissions.editAllPublicCloudProducts ||
-        isMaintainer ||
-        session.organizationIds.editor.includes(doc.organizationId))) ||
-    members.some(
+  console.log({
+    status: doc.status,
+    isActive,
+    hasActiveRequest,
+    sessionUserId: session.user.id,
+    projectOwnerId: doc.projectOwnerId,
+    isMaintainer,
+    editAllPublicCloudProducts: session.permissions.editAllPublicCloudProducts,
+    organizationEditor: session.organizationIds.editor.includes(doc.organizationId),
+    members: doc.members,
+    memberIsEditor: members.some(
       (member) =>
         member.userId === session.user.id && arraysIntersect(member.roles, [PublicCloudProductMemberRole.EDITOR]),
-    );
-
-  const canViewHistroy =
-    session.permissions.viewAllPublicCloudProductsHistory ||
-    session.organizationIds.editor.includes(doc.organizationId);
+    ),
+  });
+  const canEdit =
+    isActive &&
+    !hasActiveRequest &&
+    (session.permissions.editAllPublicCloudProducts ||
+      isMaintainer ||
+      session.organizationIds.editor.includes(doc.organizationId) ||
+      members.some(
+        (member) =>
+          member.userId === session.user.id && arraysIntersect(member.roles, [PublicCloudProductMemberRole.EDITOR]),
+      ));
 
   const canReprovision = isActive && (session.isAdmin || session.isPublicAdmin);
 
@@ -142,16 +152,15 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     (canView || session.permissions.viewPublicCloudBilling || session.permissions.viewPublicCloudForecast);
 
   const canEditForecast = session.previews.publicCloudForecast && canEdit;
-
   decoratedDoc._permissions = {
     view: canView || canSignMou || canApproveMou,
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
     downloadMou: canDownloadMou,
-    manageMembers: [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
-      session.user.id,
-    ),
+    manageMembers:
+      isActive &&
+      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
     editAccountCoding:
       session.permissions.reviewPublicCloudBilling ||
       session.isBillingManager ||

@@ -75,19 +75,15 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     );
 
   const canEdit =
-    (isActive &&
-      !hasActiveRequest &&
-      (session.permissions.editAllPrivateCloudProducts ||
-        isMyProduct ||
-        session.organizationIds.editor.includes(doc.organizationId))) ||
-    members.some(
-      (member) =>
-        member.userId === session.user.id && arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR]),
-    );
-
-  const canViewHistroy =
-    session.permissions.viewAllPrivateCloudProductsHistory ||
-    session.organizationIds.editor.includes(doc.organizationId);
+    isActive &&
+    !hasActiveRequest &&
+    (session.permissions.editAllPrivateCloudProducts ||
+      isMyProduct ||
+      session.organizationIds.editor.includes(doc.organizationId) ||
+      members.some(
+        (member) =>
+          member.userId === session.user.id && arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR]),
+      ));
 
   const canReprovision = isActive && (session.isAdmin || session.isPrivateAdmin);
   const canToggleTemporary = isActive && (session.isAdmin || session.isPrivateAdmin);
@@ -113,9 +109,9 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
-    manageMembers: [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(
-      session.user.id,
-    ),
+    manageMembers:
+      isActive &&
+      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
     toggleTemporary: canToggleTemporary,
   };
 
