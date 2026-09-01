@@ -904,7 +904,7 @@ model SpendFlag {
   id               String          @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate     String
   provider         Provider
-  serviceLine      String?
+  serviceLine      String          @default("")
   year             Int
   month            Int
   ruleId           SpendFlagRuleId
@@ -915,6 +915,7 @@ model SpendFlag {
   reviewedAt       DateTime?
   reviewNote       String?
 
+  @@unique([licencePlate, provider, year, month, ruleId, serviceLine])
   @@index([reviewedAt])
   @@index([licencePlate, year, month])
   @@index([ruleId])

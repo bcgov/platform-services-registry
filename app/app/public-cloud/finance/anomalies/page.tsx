@@ -97,7 +97,7 @@ export default publicCloudFinanceAnomaliesPage(({ session }) => {
             <tbody>
               {data.flags.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-3 py-4 text-sm text-gray-500">
+                  <td colSpan={5} className="px-3 py-4 text-sm text-gray-500">
                     No flags in this queue.
                   </td>
                 </tr>

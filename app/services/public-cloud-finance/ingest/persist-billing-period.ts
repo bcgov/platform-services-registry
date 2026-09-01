@@ -267,7 +267,7 @@ async function executeIngestRun(options: {
 }): Promise<IngestResult> {
   const { provider, period, triggeredBy } = options;
   const { periodStart, periodEnd } = periodBounds(period);
-  const lockKey = await acquireIngestLock(provider, period);
+  const lock = await acquireIngestLock(provider, period);
 
   let run: { id: string } | undefined;
   try {
@@ -340,7 +340,7 @@ async function executeIngestRun(options: {
     }
     throw error;
   } finally {
-    await releaseIngestLock(lockKey);
+    await releaseIngestLock(lock.id);
   }
 }
 

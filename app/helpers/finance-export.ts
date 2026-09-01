@@ -1,5 +1,9 @@
 import ExcelJS from 'exceljs';
-import { formatCadAmount } from '@/components/public-cloud/finance/finance-measure-utils';
+import {
+  financePeriodMonths,
+  formatCadAmount,
+  monthKey,
+} from '@/components/public-cloud/finance/finance-measure-utils';
 import { getFinanceRankings, getFinanceSnapshot, type ProviderFilter } from '@/services/db/public-cloud-finance';
 import { getPlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 
@@ -24,29 +28,49 @@ function matchesProviderFilter(productProvider: ForecastProduct['provider'], pro
   return provider === 'ALL' || productProvider === provider;
 }
 
-function addForecastProductRows(sheet: ExcelJS.Worksheet, product: ForecastProduct, provider: ProviderFilter) {
+function monthWindowKeys(period: 'ytd' | 'full-fy') {
+  return new Set(financePeriodMonths(period).map((month) => monthKey(month.year, month.month)));
+}
+
+function inMonthWindow(year: number, month: number, keys: Set<string>) {
+  return keys.has(monthKey(year, month));
+}
+
+function addForecastProductRows(
+  sheet: ExcelJS.Worksheet,
+  product: ForecastProduct,
+  provider: ProviderFilter,
+  periodKeys: Set<string>,
+) {
   if (!product.hasForecast || !matchesProviderFilter(product.provider, provider)) return;
 
   const displayName = formatExportProductName(product);
   for (const month of product.monthlyTotals) {
+    if (!inMonthWindow(month.year, month.month, periodKeys)) continue;
     sheet.addRow([product.licencePlate, displayName, product.provider, month.year, month.month, month.amount]);
   }
 }
 
-function addForecastSheet(workbook: ExcelJS.Workbook, forecastSummary: ForecastSummary, provider: ProviderFilter) {
+function addForecastSheet(
+  workbook: ExcelJS.Workbook,
+  forecastSummary: ForecastSummary,
+  provider: ProviderFilter,
+  periodKeys: Set<string>,
+) {
   const sheet = workbook.addWorksheet('Forecast by month');
   sheet.addRow(['Project identifier', 'Name', 'Provider', 'Year', 'Month', 'Forecast CAD']);
   for (const group of forecastSummary.groups) {
     for (const product of group.products) {
-      addForecastProductRows(sheet, product, provider);
+      addForecastProductRows(sheet, product, provider, periodKeys);
     }
   }
 }
 
-function addActualsSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot) {
+function addActualsSheet(workbook: ExcelJS.Workbook, snapshot: Snapshot, periodKeys: Set<string>) {
   const sheet = workbook.addWorksheet('Actuals by month');
   sheet.addRow(['Year', 'Month', 'Actual CAD', 'Forecast CAD', 'Partial current month']);
   for (const row of snapshot.monthlyChart) {
+    if (!inMonthWindow(row.year, row.month, periodKeys)) continue;
     sheet.addRow([row.year, row.month, row.actual ?? '', row.forecast, row.isCurrentPartial ? 'yes' : '']);
   }
 }
@@ -106,6 +130,7 @@ export async function buildFinanceWorkbookBuffer(options: {
     limit: 100,
   });
   const forecastSummary = await getPlatformForecastSummary();
+  const periodKeys = monthWindowKeys(options.period);
 
   const meta = workbook.addWorksheet('Export metadata');
   meta.addRow(['Generated at', new Date().toISOString()]);
@@ -128,10 +153,10 @@ export async function buildFinanceWorkbookBuffer(options: {
   ]);
 
   if (options.datasets.includes('forecast')) {
-    addForecastSheet(workbook, forecastSummary, options.provider);
+    addForecastSheet(workbook, forecastSummary, options.provider, periodKeys);
   }
   if (options.datasets.includes('actuals')) {
-    addActualsSheet(workbook, snapshot);
+    addActualsSheet(workbook, snapshot, periodKeys);
   }
   if (options.datasets.includes('variance')) {
     addVarianceSheet(workbook, snapshot);
@@ -151,25 +176,15 @@ function csvNumber(value: number | null | undefined) {
   return value == null ? '' : String(value);
 }
 
-function appendForecastCsvRows(
-  rows: Array<Record<string, string>>,
-  forecastSummary: ForecastSummary,
-  provider: ProviderFilter,
-) {
-  for (const group of forecastSummary.groups) {
-    for (const product of group.products) {
-      appendForecastProductCsvRows(rows, product, provider);
-    }
-  }
-}
-
 function appendForecastProductCsvRows(
   rows: Array<Record<string, string>>,
   product: ForecastProduct,
   provider: ProviderFilter,
+  periodKeys: Set<string>,
 ) {
   if (!product.hasForecast || !matchesProviderFilter(product.provider, provider)) return;
   for (const month of product.monthlyTotals) {
+    if (!inMonthWindow(month.year, month.month, periodKeys)) continue;
     rows.push({
       dataset: 'forecast',
       project_identifier: product.licencePlate,
@@ -182,8 +197,22 @@ function appendForecastProductCsvRows(
   }
 }
 
-function appendActualsCsvRows(rows: Array<Record<string, string>>, snapshot: Snapshot) {
+function appendForecastCsvRows(
+  rows: Array<Record<string, string>>,
+  forecastSummary: ForecastSummary,
+  provider: ProviderFilter,
+  periodKeys: Set<string>,
+) {
+  for (const group of forecastSummary.groups) {
+    for (const product of group.products) {
+      appendForecastProductCsvRows(rows, product, provider, periodKeys);
+    }
+  }
+}
+
+function appendActualsCsvRows(rows: Array<Record<string, string>>, snapshot: Snapshot, periodKeys: Set<string>) {
   for (const row of snapshot.monthlyChart) {
+    if (!inMonthWindow(row.year, row.month, periodKeys)) continue;
     rows.push({
       dataset: 'actuals',
       year: String(row.year),
@@ -229,8 +258,13 @@ function appendServiceLineRankingCsvRows(rows: Array<Record<string, string>>, ra
   }
 }
 
-function appendSnapshotCsvRows(rows: Array<Record<string, string>>, snapshot: Snapshot, datasets: string[]) {
-  if (datasets.includes('actuals')) appendActualsCsvRows(rows, snapshot);
+function appendSnapshotCsvRows(
+  rows: Array<Record<string, string>>,
+  snapshot: Snapshot,
+  datasets: string[],
+  periodKeys: Set<string>,
+) {
+  if (datasets.includes('actuals')) appendActualsCsvRows(rows, snapshot, periodKeys);
   if (datasets.includes('variance')) appendVarianceCsvRows(rows, snapshot);
 }
 
@@ -271,9 +305,10 @@ export async function buildFinanceExportCsvRows(options: {
     ? await getFinanceRankings({ provider: options.provider, period: options.period, limit: 100 })
     : null;
   const forecastSummary = options.datasets.includes('forecast') ? await getPlatformForecastSummary() : null;
+  const periodKeys = monthWindowKeys(options.period);
 
-  if (forecastSummary) appendForecastCsvRows(rows, forecastSummary, options.provider);
-  if (snapshot) appendSnapshotCsvRows(rows, snapshot, options.datasets);
+  if (forecastSummary) appendForecastCsvRows(rows, forecastSummary, options.provider, periodKeys);
+  if (snapshot) appendSnapshotCsvRows(rows, snapshot, options.datasets, periodKeys);
   if (rankings) appendRankingCsvRows(rows, rankings, options.datasets);
 
   return rows.map((row) => Object.fromEntries(FINANCE_CSV_COLUMNS.map((column) => [column, row[column] ?? ''])));

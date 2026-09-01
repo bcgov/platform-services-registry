@@ -4,6 +4,7 @@ import {
   countMissingRequiredHorizonMonths,
   currentCalendarMonth,
   currentFiscalYearBounds,
+  financePeriodMonths,
   fiscalYearMonths,
   hasForecastValuesForRequiredHorizon,
   isCurrentCalendarMonth,
@@ -288,7 +289,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
         ...(provider === 'ALL' ? {} : { provider }),
       },
     }),
-    Promise.resolve(excludedFromForecastTotals),
+    Promise.resolve(activeProducts.filter((product) => !forecastByPlate.has(product.licencePlate)).length),
   ]);
 
   const freshness = await getDataFreshness();
@@ -336,12 +337,7 @@ type RankingRollup = { licencePlate: string; year: number; month: number; amount
 
 function rankingMonthWindow(period?: 'ytd' | 'full-fy') {
   const fy = currentFiscalYearBounds();
-  const complete = lastCompleteMonth();
-  const through = currentCalendarMonth();
-  const fyMonths = fiscalYearMonths(fy.startYear);
-  const ytdMonths = monthsThrough(fyMonths, through);
-  const fyEnded = complete.year > fy.startYear + 1 || (complete.year === fy.startYear + 1 && complete.month >= 3);
-  return { fiscalYearLabel: fy.label, months: period === 'full-fy' && fyEnded ? fyMonths : ytdMonths };
+  return { fiscalYearLabel: fy.label, months: financePeriodMonths(period ?? 'ytd') };
 }
 
 async function findRollupsForMonths(

@@ -79,11 +79,27 @@ def _payload_table(payload: dict) -> tuple[list[str], list, str | None]:
     return columns, payload_rows, next_link if isinstance(next_link, str) and next_link else None
 
 
-def _require_azure_query_columns(payload_rows: list, currency_idx: int, subscription_idx: int) -> None:
-    if payload_rows and currency_idx < 0:
-        raise RuntimeError("Azure Cost Management response is missing the Currency column.")
-    if payload_rows and subscription_idx < 0:
-        raise RuntimeError("Azure Cost Management estate query did not return SubscriptionId")
+def _require_azure_query_columns(
+    payload_rows: list,
+    cost_idx: int,
+    service_idx: int,
+    currency_idx: int,
+    subscription_idx: int,
+) -> None:
+    if not payload_rows:
+        return
+    missing = [
+        name
+        for name, index in (
+            ("Cost", cost_idx),
+            ("ServiceName", service_idx),
+            ("Currency", currency_idx),
+            ("SubscriptionId", subscription_idx),
+        )
+        if index < 0
+    ]
+    if missing:
+        raise RuntimeError(f"Azure Cost Management response is missing required column(s): {', '.join(missing)}.")
 
 
 def _cell(row: list, index: int, default: object = "") -> object:
@@ -123,7 +139,7 @@ def parse_azure_cost_query_payload(payload: dict, year: int, month: int) -> tupl
     service_idx = _column_index(columns, "ServiceName")
     currency_idx = _column_index(columns, "Currency")
     subscription_idx = _column_index(columns, "SubscriptionId", "SubscriptionID")
-    _require_azure_query_columns(payload_rows, currency_idx, subscription_idx)
+    _require_azure_query_columns(payload_rows, cost_idx, service_idx, currency_idx, subscription_idx)
 
     rows: list[dict] = []
     for row in payload_rows:

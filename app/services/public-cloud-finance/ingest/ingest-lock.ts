@@ -36,9 +36,9 @@ export async function acquireIngestLock(provider: Provider, period: BillingPerio
     throw new IngestAlreadyRunningError(provider, period.year, period.month);
   }
 
-  return key;
+  return created;
 }
 
-export async function releaseIngestLock(key: string) {
-  await prisma.ingestionLock.deleteMany({ where: { key } });
+export async function releaseIngestLock(id: string) {
+  await prisma.ingestionLock.deleteMany({ where: { id } });
 }

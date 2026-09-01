@@ -47,7 +47,13 @@ class RowsOrFetchFailureTests(unittest.TestCase):
         with patch("_finance_ingest._fetch_provider_rows", side_effect=RuntimeError("SSO token expired")):
             rows, error = _rows_or_fetch_failure("AWS_LZA", 2026, 7)
         self.assertIsNone(rows)
-        self.assertTrue("SSO token expired" in error)
+        self.assertRegex(error, r"SSO token expired")
+
+    def test_non_runtime_fetch_error_is_isolated(self):
+        with patch("_finance_ingest._fetch_provider_rows", side_effect=ConnectionError("endpoint timed out")):
+            rows, error = _rows_or_fetch_failure("AWS_LZA", 2026, 7)
+        self.assertIsNone(rows)
+        self.assertRegex(error, r"endpoint timed out")
 
 
 class ProviderIsolationTests(unittest.TestCase):
@@ -89,8 +95,9 @@ class CalendarMonthTests(unittest.TestCase):
 
 class ToIngestLinesTests(unittest.TestCase):
     def test_rejects_unsupported_currency(self):
+        row = {"accountIdentifier": "a", "serviceLine": "x", "amount": 1, "currency": "EUR"}
         with self.assertRaisesRegex(RuntimeError, "EUR"):
-            _to_ingest_lines([{"accountIdentifier": "a", "serviceLine": "x", "amount": 1, "currency": "EUR"}])
+            _to_ingest_lines([row])
 
 
 if __name__ == "__main__":

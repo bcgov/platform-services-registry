@@ -3,6 +3,7 @@ import prisma from '@/core/prisma';
 import { Provider, SpendFlagRuleId } from '@/prisma/client';
 import { activeActualSpendWhere } from '../active-spend';
 import { FINANCE_ANOMALY_THRESHOLDS } from '../constants';
+import { isUniqueConstraintError } from './ingest-errors';
 import type { BillingPeriod } from './types';
 
 type ServiceLineAmount = {
@@ -201,6 +202,34 @@ export function shouldEvaluateSpendFlags(period: BillingPeriod, now = new Date()
   return !isCurrentCalendarMonth(period.year, period.month, now);
 }
 
+function spendFlagCreateData(flag: SpendFlagInput) {
+  return { ...flag, serviceLine: flag.serviceLine ?? '' };
+}
+
+async function applySpendFlagPlan(plan: ReturnType<typeof planSpendFlagReconcile>) {
+  if (plan.staleIds.length > 0) {
+    await prisma.spendFlag.deleteMany({ where: { id: { in: plan.staleIds } } });
+  }
+  for (const flag of plan.toCreate) {
+    try {
+      await prisma.spendFlag.create({ data: spendFlagCreateData(flag) });
+    } catch (error) {
+      if (!isUniqueConstraintError(error)) throw error;
+    }
+  }
+  const batchSize = 25;
+  for (let index = 0; index < plan.toUpdate.length; index += batchSize) {
+    await Promise.all(
+      plan.toUpdate.slice(index, index + batchSize).map((row) =>
+        prisma.spendFlag.update({
+          where: { id: row.id },
+          data: { currentAmountCad: row.currentAmountCad, priorAmountCad: row.priorAmountCad },
+        }),
+      ),
+    );
+  }
+}
+
 export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
   if (!shouldEvaluateSpendFlags(period)) return 0;
 
@@ -216,25 +245,7 @@ export async function evaluateSpendFlagsForPeriod(period: BillingPeriod) {
   });
   const reviewedKeys = existing.filter((row) => row.reviewedAt).map(spendFlagKey);
   const unreviewed = existing.filter((row) => !row.reviewedAt);
-  const plan = planSpendFlagReconcile(unreviewed, flags, reviewedKeys);
-
-  if (plan.staleIds.length > 0) {
-    await prisma.spendFlag.deleteMany({ where: { id: { in: plan.staleIds } } });
-  }
-  if (plan.toCreate.length > 0) {
-    await prisma.spendFlag.createMany({ data: plan.toCreate });
-  }
-  const batchSize = 25;
-  for (let index = 0; index < plan.toUpdate.length; index += batchSize) {
-    await Promise.all(
-      plan.toUpdate.slice(index, index + batchSize).map((row) =>
-        prisma.spendFlag.update({
-          where: { id: row.id },
-          data: { currentAmountCad: row.currentAmountCad, priorAmountCad: row.priorAmountCad },
-        }),
-      ),
-    );
-  }
+  await applySpendFlagPlan(planSpendFlagReconcile(unreviewed, flags, reviewedKeys));
 
   return flags.length;
 }

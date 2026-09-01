@@ -81,6 +81,8 @@ def _rows_or_fetch_failure(provider: str, year: int, month: int) -> tuple[list[d
         if "no non-zero rows" in str(error):
             return [], ""
         return None, str(error)[:500]
+    except Exception as error:
+        return None, str(error)[:500]
 
 
 def _ingest_provider_period(

@@ -4,6 +4,7 @@ import {
   varianceToneClass,
   elapsedLikeForLikeTotals,
   failedIngestProviders,
+  financePeriodMonths,
   formatCadAmount,
   formatIngestionFreshnessLine,
   hasForecastValuesForRequiredHorizon,
@@ -302,5 +303,13 @@ describe('complete rollup months and like-for-like totals', () => {
     expect(result.complete).toBe(false);
     expect(result.variance).toBeNull();
     expect(result.actual).toBe(10);
+  });
+
+  it('uses YTD through today during the fiscal year, matching full-FY until March is complete', () => {
+    const midYear = new Date('2026-08-15T12:00:00Z');
+    const ytd = financePeriodMonths('ytd', midYear);
+    expect(ytd[0]).toEqual({ year: 2026, month: 4 });
+    expect(ytd[ytd.length - 1]).toEqual({ year: 2026, month: 8 });
+    expect(financePeriodMonths('full-fy', midYear)).toEqual(ytd);
   });
 });

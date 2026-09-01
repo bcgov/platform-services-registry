@@ -76,6 +76,17 @@ export function monthsThrough<T extends { year: number; month: number }>(
   );
 }
 
+/** Rankings/export window: YTD through today, or the closed FY once March is complete. */
+export function financePeriodMonths(period: 'ytd' | 'full-fy', now = new Date()) {
+  const fy = currentFiscalYearBounds(now);
+  const fyMonths = fiscalYearMonths(fy.startYear);
+  const ytdMonths = monthsThrough(fyMonths, currentCalendarMonth(now));
+  if (period !== 'full-fy') return ytdMonths;
+  const complete = lastCompleteMonth(now);
+  const fyEnded = complete.year > fy.startYear + 1 || (complete.year === fy.startYear + 1 && complete.month >= 3);
+  return fyEnded ? fyMonths : ytdMonths;
+}
+
 /** Chart/export actual: complete months, or current month once a rollup exists. */
 export function monthlyChartActual(options: {
   year: number;

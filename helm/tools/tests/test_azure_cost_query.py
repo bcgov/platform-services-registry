@@ -70,20 +70,24 @@ class ParseAzureCostQueryPayloadTests(unittest.TestCase):
         self.assertIsNone(next_link)
 
     def test_missing_currency_column_raises(self):
+        payload = query_payload(["Cost", "ServiceName", "SubscriptionId"], [[1, "Virtual Machines", SUB]])
         with self.assertRaisesRegex(RuntimeError, "Currency"):
-            parse_azure_cost_query_payload(
-                query_payload(["Cost", "ServiceName", "SubscriptionId"], [[1, "Virtual Machines", SUB]]),
-                2026,
-                7,
-            )
+            parse_azure_cost_query_payload(payload, 2026, 7)
 
     def test_missing_subscription_id_column_raises(self):
+        payload = query_payload(["Cost", "ServiceName", "Currency"], [[1, "Virtual Machines", "CAD"]])
         with self.assertRaisesRegex(RuntimeError, "SubscriptionId"):
-            parse_azure_cost_query_payload(
-                query_payload(["Cost", "ServiceName", "Currency"], [[1, "Virtual Machines", "CAD"]]),
-                2026,
-                7,
-            )
+            parse_azure_cost_query_payload(payload, 2026, 7)
+
+    def test_missing_cost_column_raises(self):
+        payload = query_payload(["ServiceName", "Currency", "SubscriptionId"], [["Virtual Machines", "CAD", SUB]])
+        with self.assertRaisesRegex(RuntimeError, "Cost"):
+            parse_azure_cost_query_payload(payload, 2026, 7)
+
+    def test_missing_service_name_column_raises(self):
+        payload = query_payload(["Cost", "Currency", "SubscriptionId"], [[1, "CAD", SUB]])
+        with self.assertRaisesRegex(RuntimeError, "ServiceName"):
+            parse_azure_cost_query_payload(payload, 2026, 7)
 
     def test_skips_empty_currency_and_zero_amount(self):
         rows, _next_link = parse_azure_cost_query_payload(
