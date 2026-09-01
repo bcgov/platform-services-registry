@@ -94,5 +94,5 @@ export function getAzureSubscriptionName(licencePlate: string, environment: Publ
 }
 
 export function getAzurePortalUrl(subscriptionId: string) {
-  return `https://portal.azure.com/#resource/subscriptions/${subscriptionId}`;
+  return `https://portal.azure.com/#@bcgov.onmicrosoft.com/resource/subscriptions/${subscriptionId}/overview`;
 }

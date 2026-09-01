@@ -65,7 +65,7 @@ export default function AccountEnvironmentsPublic({
 
   const isAzure = watch('provider') === Provider.AZURE;
   const showAwsConsoleLinks = watch('provider') === Provider.AWS_LZA && Array.isArray(awsAccounts);
-  const showAzurePortalLinks = watch('provider') === Provider.AZURE && Array.isArray(azureSubscriptions);
+  const showAzurePortalLinks = isAzure && Array.isArray(azureSubscriptions);
   const showProviderConsoleLinks = showAwsConsoleLinks || showAzurePortalLinks;
   const requiresNetworking = watch('requiresNetworking');
 
