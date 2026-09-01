@@ -1,4 +1,9 @@
-import { defaultAccountCoding } from '../constants/public-cloud';
+import {
+  defaultAccountCoding,
+  getAwsLzaAccountName,
+  getAzureSubscriptionName,
+  type PublicCloudEnvironmentKey,
+} from '../constants/public-cloud';
 import prisma from '../core/prisma';
 import { Prisma, ProjectStatus, Provider, PublicCloudProductMemberRole } from '../prisma/client';
 import { inventDemoAzureSubscriptions } from '../services/azure/subscriptions';
@@ -12,6 +17,8 @@ export type DemoProductConfig = {
   budget: { dev: number; test: number; prod: number; tools: number };
   /** Real AWS account or Azure subscription ID. Invented links are used when omitted. */
   accountIdentifier?: string;
+  /** Real env accounts for one licence plate. Wins over a single accountIdentifier. */
+  accountLinks?: Array<{ accountIdentifier: string; environment: PublicCloudEnvironmentKey }>;
   /** When set, product createdAt is this date so ingested months stay in finance scope. */
   billingStartedAt?: Date;
 };
@@ -134,42 +141,48 @@ async function requireUser(email: string) {
   return user;
 }
 
-function billingLinksFor(config: DemoProductConfig) {
+function resolvedAccountLinks(config: DemoProductConfig) {
+  if (config.accountLinks && config.accountLinks.length > 0) return config.accountLinks;
   if (config.accountIdentifier) {
-    return [
-      {
-        provider: config.provider,
-        accountIdentifier: config.accountIdentifier,
-        environment: 'production' as const,
-      },
-    ];
+    return [{ accountIdentifier: config.accountIdentifier, environment: 'production' as const }];
+  }
+  return [];
+}
+
+function billingLinksFor(config: DemoProductConfig) {
+  const links = resolvedAccountLinks(config);
+  if (links.length > 0) {
+    return links.map((link) => ({
+      provider: config.provider,
+      accountIdentifier: link.accountIdentifier,
+      environment: link.environment,
+    }));
   }
   return inventDemoBillingLinks(config.licencePlate, config.provider);
 }
 
 function azureSubscriptionsFor(config: DemoProductConfig) {
   if (config.provider !== Provider.AZURE) return undefined;
-  if (config.accountIdentifier) {
-    return [
-      {
-        environment: 'production' as const,
-        name: `${config.licencePlate}-prod`,
-        subscriptionId: config.accountIdentifier,
-      },
-    ];
+  const links = resolvedAccountLinks(config);
+  if (links.length > 0) {
+    return links.map((link) => ({
+      environment: link.environment,
+      name: getAzureSubscriptionName(config.licencePlate, link.environment),
+      subscriptionId: link.accountIdentifier,
+    }));
   }
   return inventDemoAzureSubscriptions(config.licencePlate);
 }
 
 function awsAccountsFor(config: DemoProductConfig) {
-  if (config.provider !== Provider.AWS_LZA || !config.accountIdentifier) return undefined;
-  return [
-    {
-      environment: 'production' as const,
-      name: `${config.licencePlate}-prod`,
-      accountId: config.accountIdentifier,
-    },
-  ];
+  if (config.provider !== Provider.AWS_LZA) return undefined;
+  const links = resolvedAccountLinks(config);
+  if (links.length === 0) return undefined;
+  return links.map((link) => ({
+    environment: link.environment,
+    name: getAwsLzaAccountName(config.licencePlate, link.environment),
+    accountId: link.accountIdentifier,
+  }));
 }
 
 function demoProductNeedsUpdate(
@@ -189,6 +202,7 @@ function demoProductNeedsUpdate(
     existing.description !== config.description ||
     !existing.billingAccountLinks ||
     Boolean(config.accountIdentifier) ||
+    (config.accountLinks?.length ?? 0) > 0 ||
     (config.provider === Provider.AZURE && !existing.azureSubscriptions) ||
     (config.billingStartedAt != null && existing.createdAt.getTime() !== config.billingStartedAt.getTime())
   );
