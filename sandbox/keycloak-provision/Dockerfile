@@ -7,7 +7,7 @@ COPY sandbox/types.ts ./sandbox/types.ts
 COPY sandbox/keycloak-provision ./sandbox/keycloak-provision
 COPY sandbox/_packages ./sandbox/_packages
 
-RUN npm install -g turbo pnpm@11.24.0
+RUN npm install -g turbo pnpm@11.25.0
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm --dir sandbox/_packages/keycloak-admin build
 RUN pnpm --dir sandbox/keycloak-provision build
