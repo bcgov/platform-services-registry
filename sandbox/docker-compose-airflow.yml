@@ -14,11 +14,11 @@ services:
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__API__EXPOSE_CONFIG: 'true'
       AIRFLOW__LOGGING__LOGGING_LEVEL: INFO
-      LOCAL_REGISTRY_BASE_URL: http://host.docker.internal:3000
-      LOCAL_KEYCLOAK_AUTH_URL: http://keycloak:8080
-      LOCAL_KEYCLOAK_REALM: platform-services
-      LOCAL_FINANCE_SA_ID: provision-service-account-id
-      LOCAL_FINANCE_SA_SECRET: testsecret # pragma: allowlist secret
+      DEV_REGISTRY_BASE_URL: http://host.docker.internal:3000
+      DEV_KEYCLOAK_AUTH_URL: http://keycloak:8080
+      DEV_KEYCLOAK_REALM: platform-services
+      DEV_FINANCE_SA_ID: provision-service-account-id
+      DEV_FINANCE_SA_SECRET: testsecret # pragma: allowlist secret
       FINANCE_AWS_REGION: us-east-1
       AWS_PROFILE: ${AWS_PROFILE:-}
       AWS_SHARED_CREDENTIALS_FILE: /home/airflow/.aws/credentials

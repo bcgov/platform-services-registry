@@ -61,14 +61,13 @@ If Valet is unreachable, ingest may fall back to `FINANCE_USD_CAD_RATE` and stil
 
 Every environment fetches billing in Airflow and persists via `POST /api/public-cloud/finance/ingest/lines`. The registry app never calls Cost Explorer or Cost Management.
 
-| Environment | DAG                                 |
-| ----------- | ----------------------------------- |
-| Local       | `public_cloud_finance_ingest_local` |
-| Dev         | `public_cloud_finance_ingest_dev`   |
-| Test        | `public_cloud_finance_ingest_test`  |
-| Prod        | `public_cloud_finance_ingest_prod`  |
+| Environment | DAG                                |
+| ----------- | ---------------------------------- |
+| Local / Dev | `public_cloud_finance_ingest_dev`  |
+| Test        | `public_cloud_finance_ingest_test` |
+| Prod        | `public_cloud_finance_ingest_prod` |
 
-Local Airflow is `make local-airflow` (port 8082, user `admin` / `admin`). That target sources `app/.env.local` and force-recreates the container. Set `AWS_PROFILE` and `FINANCE_AZURE_COST_SCOPE` there (do not commit real values). AWS uses host `~/.aws`; it checks SSO and tells you to `aws sso login --profile …` if expired. Azure loads `az account get-access-token` when `AZURE_ACCESS_TOKEN` is unset (`az login` first). The compose file sets `LOCAL_KEYCLOAK_AUTH_URL=http://keycloak:8080` and uses the sandbox provision SA. The local DAG ships in `helm/tools/dags` and stays paused in the tools cluster.
+Local Airflow is `make local-airflow` (port 8082, user `admin` / `admin`). That target sources `app/.env.local` and force-recreates the container. Set `AWS_PROFILE` and `FINANCE_AZURE_COST_SCOPE` there (do not commit real values). AWS uses host `~/.aws`; it checks SSO and tells you to `aws sso login --profile …` if expired. Azure loads `az account get-access-token` when `AZURE_ACCESS_TOKEN` is unset (`az login` first). Compose overrides the `_dev` DAG with `DEV_REGISTRY_BASE_URL`, `DEV_KEYCLOAK_AUTH_URL`, and the sandbox provision SA so local does not ship a separate DAG into the tools cluster. Drop any leftover `AIRFLOW_FINANCE_DAG_ID=public_cloud_finance_ingest_local` from `.env.local`.
 
 Local product seed is two modes. `pnpm seed-all-local` creates ~110 invented products for UI and forecast testing; ingest cannot join those IDs. `pnpm seed-forge-finance-local` seeds the Forge AWS / Azure test plates from `FINANCE_LIVE_TEST_LICENCE_PLATES` and `FINANCE_LIVE_TEST_ACCOUNT_IDS` in `.env.local`. Pass `--reset` on the Forge seed to drop the invented demo products first.
 
@@ -149,12 +148,11 @@ The Keycloak client must be configured as:
 -   `service_account_type` claim: `team`
 -   `roles` claim: `public-admin`
 
-| Env (Airflow / `airflow-variables`) | Purpose                 |
-| ----------------------------------- | ----------------------- |
-| `LOCAL_FINANCE_SA_ID` / `_SECRET`   | Local finance ingest SA |
-| `DEV_FINANCE_SA_ID` / `_SECRET`     | Dev                     |
-| `TEST_FINANCE_SA_ID` / `_SECRET`    | Test                    |
-| `PROD_FINANCE_SA_ID` / `_SECRET`    | Prod                    |
+| Env (Airflow / `airflow-variables`) | Purpose                                          |
+| ----------------------------------- | ------------------------------------------------ |
+| `DEV_FINANCE_SA_ID` / `_SECRET`     | Dev (local compose sets these to the sandbox SA) |
+| `TEST_FINANCE_SA_ID` / `_SECRET`    | Test                                             |
+| `PROD_FINANCE_SA_ID` / `_SECRET`    | Prod                                             |
 
 ### Registry → Airflow (snapshot button)
 

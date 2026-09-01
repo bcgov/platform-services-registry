@@ -1,12 +1,11 @@
-import { IS_DEV, IS_PROD, IS_TEST } from '@/config';
+import { IS_PROD, IS_TEST } from '@/config';
 
 export function financeIngestDagId() {
   const override = process.env.AIRFLOW_FINANCE_DAG_ID?.trim();
   if (override) return override;
   if (IS_PROD) return 'public_cloud_finance_ingest_prod';
   if (IS_TEST) return 'public_cloud_finance_ingest_test';
-  if (IS_DEV) return 'public_cloud_finance_ingest_dev';
-  return 'public_cloud_finance_ingest_local';
+  return 'public_cloud_finance_ingest_dev';
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

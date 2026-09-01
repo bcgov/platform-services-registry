@@ -22,7 +22,7 @@ describe('POST /api/public-cloud/finance/ingest/trigger', () => {
 
   it('queues the Airflow DAG', async () => {
     await mockSessionByRole(GlobalRole.Admin);
-    mockTrigger.mockResolvedValue({ dagId: 'public_cloud_finance_ingest_local', dagRunId: 'finance-manual-1' });
+    mockTrigger.mockResolvedValue({ dagId: 'public_cloud_finance_ingest_dev', dagRunId: 'finance-manual-1' });
     const res = await postTrigger();
     expect(res.status).toBe(200);
     expect(mockTrigger).toHaveBeenCalled();

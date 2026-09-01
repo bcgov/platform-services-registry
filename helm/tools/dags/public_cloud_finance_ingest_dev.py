@@ -6,9 +6,9 @@ from airflow.operators.python import PythonOperator
 from _finance_ingest import trigger_finance_ingest
 from _task_failure_callback import send_alert
 
-BASE_URL = "https://dev-pltsvc.apps.silver.devops.gov.bc.ca"
-KEYCLOAK_AUTH_URL = "https://dev.loginproxy.gov.bc.ca/auth"
-KEYCLOAK_REALM = "platform-services"
+BASE_URL = os.getenv("DEV_REGISTRY_BASE_URL", "https://dev-pltsvc.apps.silver.devops.gov.bc.ca")
+KEYCLOAK_AUTH_URL = os.getenv("DEV_KEYCLOAK_AUTH_URL", "https://dev.loginproxy.gov.bc.ca/auth")
+KEYCLOAK_REALM = os.getenv("DEV_KEYCLOAK_REALM", "platform-services")
 FINANCE_SA_ID = os.getenv("DEV_FINANCE_SA_ID")
 FINANCE_SA_SECRET = os.getenv("DEV_FINANCE_SA_SECRET")
 
