@@ -15,7 +15,7 @@ FINANCE_SA_SECRET = os.getenv("TEST_FINANCE_SA_SECRET")
 with DAG(
     dag_id="public_cloud_finance_ingest_test",
     schedule="15 6 * * *",
-    start_date=datetime.now() - timedelta(days=1),
+    start_date=datetime(2026, 8, 1),
     is_paused_upon_creation=True,
     catchup=False,
     default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},

@@ -7,16 +7,22 @@ const BOC_VALET_BASE = `https://www.bankofcanada.ca/valet/observations/${BOC_FXU
 
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
-const bocObservationSchema = z.object({
-  observations: z
-    .array(
-      z.object({
-        d: z.string(),
-        FXUSDCAD: z.object({ v: z.string() }),
-      }),
-    )
-    .min(1),
+const bocObservationRowSchema = z.object({
+  d: z.string(),
+  FXUSDCAD: z.object({ v: z.string() }),
 });
+
+const bocObservationSchema = z.object({
+  observations: z.array(bocObservationRowSchema),
+});
+
+function requireBocObservations(payload: unknown) {
+  const parsed = bocObservationSchema.parse(payload);
+  if (parsed.observations.length === 0) {
+    throw new Error('Bank of Canada Valet returned no FXUSDCAD observations');
+  }
+  return parsed.observations;
+}
 
 export type UsdCadExchangeRate = {
   rate: number;
@@ -55,14 +61,13 @@ function observationToRate(observation: { d: string; FXUSDCAD: { v: string } }):
 }
 
 export function parseBocUsdCadResponse(payload: unknown): UsdCadExchangeRate {
-  const parsed = bocObservationSchema.parse(payload);
-  return observationToRate(parsed.observations[0]);
+  return observationToRate(requireBocObservations(payload)[0]);
 }
 
 /** Prefer the last observation in the payload (month-end / invoice timing). */
 export function parseBocUsdCadMonthEndResponse(payload: unknown): UsdCadExchangeRate {
-  const parsed = bocObservationSchema.parse(payload);
-  return observationToRate(parsed.observations[parsed.observations.length - 1]);
+  const observations = requireBocObservations(payload);
+  return observationToRate(observations[observations.length - 1]);
 }
 
 export async function fetchUsdCadExchangeRate(fetchImpl: typeof fetch = fetch): Promise<UsdCadExchangeRate> {
@@ -93,6 +98,7 @@ export async function fetchUsdCadExchangeRateForMonth(
   year: number,
   month: number,
   fetchImpl: typeof fetch = fetch,
+  now = new Date(),
 ): Promise<UsdCadExchangeRate> {
   const key = monthKey(year, month);
   const cached = monthCache.get(key);
@@ -100,8 +106,12 @@ export async function fetchUsdCadExchangeRateForMonth(
     return cached.value;
   }
 
+  let endDay = lastDayOfMonth(year, month);
+  if (year === now.getFullYear() && month === now.getMonth() + 1) {
+    endDay = Math.min(endDay, now.getDate());
+  }
   const start = `${year}-${String(month).padStart(2, '0')}-01`;
-  const end = `${year}-${String(month).padStart(2, '0')}-${String(lastDayOfMonth(year, month)).padStart(2, '0')}`;
+  const end = `${year}-${String(month).padStart(2, '0')}-${String(endDay).padStart(2, '0')}`;
   const url = `${BOC_VALET_BASE}?start_date=${start}&end_date=${end}`;
 
   const response = await fetchWithRetry(url, { headers: { Accept: 'application/json' } }, { fetchImpl });

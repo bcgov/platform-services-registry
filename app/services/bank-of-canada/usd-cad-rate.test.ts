@@ -19,6 +19,10 @@ describe('parseBocUsdCadResponse', () => {
     });
   });
 
+  it('rejects an empty observations list', () => {
+    expect(() => parseBocUsdCadResponse({ observations: [] })).toThrow(/no FXUSDCAD observations/);
+  });
+
   it('rejects a non-positive rate', () => {
     expect(() =>
       parseBocUsdCadResponse({
@@ -111,6 +115,21 @@ describe('fetchUsdCadExchangeRateForMonth', () => {
     expect(result.date).toBe('2026-07-31');
     expect(fetchImpl).toHaveBeenCalledWith(
       'https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json?start_date=2026-07-01&end_date=2026-07-31',
+      expect.any(Object),
+    );
+  });
+
+  it('clamps the open month query to today and rejects an empty month', async () => {
+    const fetchImpl = jest.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ observations: [] }),
+    });
+
+    await expect(
+      fetchUsdCadExchangeRateForMonth(2026, 9, fetchImpl as unknown as typeof fetch, new Date('2026-09-01T15:00:00Z')),
+    ).rejects.toThrow(/no FXUSDCAD observations/);
+    expect(fetchImpl).toHaveBeenCalledWith(
+      'https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json?start_date=2026-09-01&end_date=2026-09-01',
       expect.any(Object),
     );
   });

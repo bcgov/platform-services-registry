@@ -1,6 +1,6 @@
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { fetchUsdCadExchangeRateForMonth } from '@/services/bank-of-canada/usd-cad-rate';
+import { fetchUsdCadExchangeRate, fetchUsdCadExchangeRateForMonth } from '@/services/bank-of-canada/usd-cad-rate';
 import { isUniqueConstraintError } from '@/services/public-cloud-finance/ingest/ingest-errors';
 
 export const USD_CAD_PAIR = 'USD_CAD';
@@ -94,6 +94,19 @@ export function shouldReuseStoredUsdCadRate(
   return isLikelyMonthEndFxRate(existing.rateDate, year, month);
 }
 
+async function fetchUsdCadForIngestMonth(year: number, month: number) {
+  try {
+    return await fetchUsdCadExchangeRateForMonth(year, month);
+  } catch (error) {
+    logger.warn(
+      `Bank of Canada has no FXUSDCAD observations for ${year}-${month} yet; using latest published rate: ${String(
+        error,
+      )}`,
+    );
+    return fetchUsdCadExchangeRate();
+  }
+}
+
 /**
  * Ensure a USD/CAD rate is persisted for conversion.
  * Reuses a month-end Bank of Canada row for closed months. Refetches for the
@@ -109,7 +122,7 @@ export async function ensureMonthlyUsdCadRate(year: number, month: number): Prom
   }
 
   try {
-    const boc = await fetchUsdCadExchangeRateForMonth(year, month);
+    const boc = await fetchUsdCadForIngestMonth(year, month);
     return upsertMonthlyUsdCadRate({
       year,
       month,

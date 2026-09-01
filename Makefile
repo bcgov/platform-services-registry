@@ -28,12 +28,13 @@ local-airflow:
 	if [ -z "$$FINANCE_AZURE_COST_SCOPE" ]; then \
 	  echo "Azure Cost Management: set FINANCE_AZURE_COST_SCOPE in app/.env.local"; \
 	fi; \
-	if [ -z "$$AZURE_ACCESS_TOKEN" ] && command -v az >/dev/null; then \
+	unset AZURE_ACCESS_TOKEN; \
+	if command -v az >/dev/null; then \
 	  AZURE_ACCESS_TOKEN=$$(az account get-access-token --resource https://management.azure.com --query accessToken -o tsv) || true; \
 	  export AZURE_ACCESS_TOKEN; \
 	fi; \
 	if [ -n "$$AZURE_ACCESS_TOKEN" ]; then \
-	  echo 'Azure Cost Management: using az CLI token (expires ~1h)'; \
+	  echo 'Azure Cost Management: refreshed az CLI token (expires ~1h)'; \
 	elif [ -n "$$AZURE_CLIENT_SECRET" ]; then \
 	  echo 'Azure Cost Management: using service principal env'; \
 	else \
