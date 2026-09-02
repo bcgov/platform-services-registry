@@ -162,6 +162,86 @@ def _partial_month_fraction(year: int, month: int, now: datetime) -> float:
     return max(now.day, 1) / calendar.monthrange(year, month)[1]
 
 
+def _billing_row(identifier: str, service_line: str, amount: float, currency: str, year: int, month: int) -> dict:
+    return {
+        "accountIdentifier": identifier,
+        "serviceLine": service_line,
+        "amount": round(amount, 2),
+        "currency": currency,
+        "year": year,
+        "month": month,
+    }
+
+
+def _service_rows(
+    identifier: str,
+    profile: dict,
+    monthly_total: float,
+    spike_service: str | None,
+    rng: HashRng,
+    currency: str,
+    year: int,
+    month: int,
+) -> list[dict]:
+    total_weight = sum(weight for _name, weight in profile["services"])
+    rows: list[dict] = []
+    for name, weight in profile["services"]:
+        amount = monthly_total * weight / total_weight * rng.uniform(0.7, 1.35)
+        if name == spike_service:
+            amount *= rng.uniform(1.4, 2.2)
+        if amount < 0.01:
+            continue
+        rows.append(_billing_row(identifier, name, amount, currency, year, month))
+    return rows
+
+
+def _credit_row(
+    provider: str,
+    identifier: str,
+    profile: dict,
+    monthly_total: float,
+    rng: HashRng,
+    currency: str,
+    year: int,
+    month: int,
+) -> dict | None:
+    if rng.random() >= profile["credit_chance"] or monthly_total <= 0:
+        return None
+    credit_name = "Savings Plans for AWS Compute usage" if provider == "AWS_LZA" else "Azure Reservation"
+    return _billing_row(
+        identifier,
+        credit_name,
+        -monthly_total * rng.uniform(0.03, 0.08),
+        currency,
+        year,
+        month,
+    )
+
+
+def _rows_for_account(
+    provider: str,
+    identifier: str,
+    year: int,
+    month: int,
+    now: datetime,
+    fraction: float,
+    currency: str,
+) -> list[dict]:
+    profile = _account_profile(provider, identifier, now)
+    if (year, month) < (profile["start_year"], profile["start_month"]):
+        return []
+    rng = HashRng(f"month:{provider}:{identifier}:{year}-{month:02d}")
+    if rng.random() < profile["idle_chance"]:
+        return []
+    monthly_total = profile["base"] * _month_multiplier(profile, year, month, rng) * fraction
+    spike_service = rng.choice(profile["services"])[0] if rng.random() < profile["spike_chance"] else None
+    rows = _service_rows(identifier, profile, monthly_total, spike_service, rng, currency, year, month)
+    credit = _credit_row(provider, identifier, profile, monthly_total, rng, currency, year, month)
+    if credit:
+        rows.append(credit)
+    return rows
+
+
 def generate_dev_rows(
     provider: str,
     year: int,
@@ -176,48 +256,8 @@ def generate_dev_rows(
     rows: list[dict] = []
     for account_id in account_ids:
         identifier = account_id.strip()
-        if not identifier:
-            continue
-        profile = _account_profile(provider, identifier, now)
-        if (year, month) < (profile["start_year"], profile["start_month"]):
-            continue
-        rng = HashRng(f"month:{provider}:{identifier}:{year}-{month:02d}")
-        if rng.random() < profile["idle_chance"]:
-            continue
-
-        total_weight = sum(weight for _name, weight in profile["services"])
-        monthly_total = profile["base"] * _month_multiplier(profile, year, month, rng) * fraction
-        spike_service = rng.choice(profile["services"])[0] if rng.random() < profile["spike_chance"] else None
-
-        for name, weight in profile["services"]:
-            amount = monthly_total * weight / total_weight * rng.uniform(0.7, 1.35)
-            if name == spike_service:
-                amount *= rng.uniform(1.4, 2.2)
-            if amount < 0.01:
-                continue
-            rows.append(
-                {
-                    "accountIdentifier": identifier,
-                    "serviceLine": name,
-                    "amount": round(amount, 2),
-                    "currency": currency,
-                    "year": year,
-                    "month": month,
-                }
-            )
-
-        if rng.random() < profile["credit_chance"] and monthly_total > 0:
-            credit_name = "Savings Plans for AWS Compute usage" if provider == "AWS_LZA" else "Azure Reservation"
-            rows.append(
-                {
-                    "accountIdentifier": identifier,
-                    "serviceLine": credit_name,
-                    "amount": round(-monthly_total * rng.uniform(0.03, 0.08), 2),
-                    "currency": currency,
-                    "year": year,
-                    "month": month,
-                }
-            )
+        if identifier:
+            rows.extend(_rows_for_account(provider, identifier, year, month, now, fraction, currency))
     return rows
 
 

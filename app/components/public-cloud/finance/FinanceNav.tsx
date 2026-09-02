@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 const LINKS = [
   { href: '/public-cloud/finance', label: 'Snapshot', exact: true },
   { href: '/public-cloud/finance/rankings', label: 'Rankings' },
-  { href: '/public-cloud/finance/coverage', label: 'Coverage (internal)' },
-  { href: '/public-cloud/finance/anomalies', label: 'Anomalies (internal)' },
-  { href: '/public-cloud/finance/unmatched', label: 'Unmatched (internal)' },
+  { href: '/public-cloud/finance/coverage', label: 'Coverage' },
+  { href: '/public-cloud/finance/anomalies', label: 'Anomalies' },
+  { href: '/public-cloud/finance/unmatched', label: 'Unmatched' },
   { href: '/public-cloud/finance/export', label: 'Export' },
 ];
 
