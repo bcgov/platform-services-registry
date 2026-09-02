@@ -51,6 +51,7 @@ export default privateCloudProductNew(({ session }) => {
       Component: TeamContacts,
       componentArgs: {
         showAdditionalTeamMembers: false,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {

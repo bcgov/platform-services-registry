@@ -9,14 +9,14 @@ import { userSearchBodySchema } from '@/validation-schemas';
 export const POST = createApiHandler({
   permissions: [GlobalPermissions.ViewUsers],
   validations: { body: userSearchBodySchema },
-})(async ({ session, body }) => {
+})(async ({ body }) => {
   const searchProps = {
     ...body,
     page: 1,
     pageSize: 10000,
   };
 
-  const { data, totalCount } = await searchUsersWithRoles(searchProps);
+  const { data } = await searchUsersWithRoles(searchProps);
 
   if (data.length === 0) {
     return NoContent();
@@ -33,8 +33,8 @@ export const POST = createApiHandler({
     '# of public cloud products': user.publicProducts.length,
     Roles: user.roles.join(', '),
     'Last active': formatDate(user.lastSeen),
-    'GitHub Account ID': user.githubAccountId,
-    'GitHub Username': user.githubUsername,
+    'GitHub Account ID': user.githubAccount?.accountId ?? '',
+    'GitHub Username': user.githubAccount?.username ?? '',
   }));
 
   return CsvResponse(formattedData, 'users.csv');

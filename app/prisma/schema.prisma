@@ -12,6 +12,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model GitHubAccount {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  username  String @unique
+  accountId String @unique
+  userId    String @unique @db.ObjectId
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
   id                                                    String                    @id @default(auto()) @map("_id") @db.ObjectId
   providerUserId                                        String?
@@ -21,8 +29,7 @@ model User {
   upn                                                   String?
   idir                                                  String?
   idirGuid                                              String                    @unique
-  githubUsername                                        String?
-  githubAccountId                                       String?
+  githubAccount                                         GitHubAccount?
   officeLocation                                        String?
   jobTitle                                              String?
   image                                                 String?

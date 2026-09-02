@@ -6,6 +6,7 @@ export interface PrivateCloudProductDecorate {
     reprovision: boolean;
     manageMembers: boolean;
     toggleTemporary: boolean;
+    manageGitHubAccounts: boolean;
   };
 }
 
@@ -33,6 +34,7 @@ export interface PublicCloudProductDecorate {
     editAccountCoding: boolean;
     viewForecast: boolean;
     editForecast: boolean;
+    manageGitHubAccounts: boolean;
   };
 }
 

@@ -39,11 +39,10 @@ export default function GitHubAccountUpdated({
 
       <Button
         href={`https://github.com/${encodeURIComponent(githubUsername)}`}
-        className="rounded-md bg-yellow-500 px-4 py-2 text-white"
+        className="bg-bcorange rounded-md px-4 py-2 text-white"
       >
         View GitHub profile
       </Button>
-
       <Text>If this information is incorrect, please contact your product team.</Text>
     </Layout>
   );

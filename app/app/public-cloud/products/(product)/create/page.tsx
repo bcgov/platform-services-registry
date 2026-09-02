@@ -77,6 +77,7 @@ export default publicCloudProductNew(({ session }) => {
       Component: TeamContacts,
       componentArgs: {
         showAdditionalTeamMembers: false,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {

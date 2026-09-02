@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { userSorts } from '@/constants';
 import { Prisma } from '@/prisma/client';
-import { AdminViewUser, DeleteIncompleteUserResult, UserDetailWithColeagues } from '@/types/user';
+import { AdminViewUser, DeleteIncompleteUserResult, UserDetailWithColleagues } from '@/types/user';
 import { downloadFile } from '@/utils/browser';
 import { UserSearchBody, UserUpdateBody } from '@/validation-schemas';
 import { instance as baseInstance } from './axios';
@@ -40,7 +40,7 @@ export async function deleteIncompleteUsers() {
 }
 
 export async function getUser(userId: string) {
-  const result = await instance.get<UserDetailWithColeagues>(`/${userId}`).then((res) => res.data);
+  const result = await instance.get<UserDetailWithColleagues>(`/${userId}`).then((res) => res.data);
   return result;
 }
 

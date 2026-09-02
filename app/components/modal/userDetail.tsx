@@ -28,7 +28,7 @@ import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
 import { getUser } from '@/services/backend/user';
 import { appState } from '@/states/global';
-import { UserDetailWithColeagues } from '@/types/user';
+import { UserDetailWithColleagues } from '@/types/user';
 import { formatDate } from '@/utils/js';
 import ExternalLink from '../generic/button/ExternalLink';
 
@@ -51,7 +51,7 @@ function timeAgo(lastSeen: string | Date): string {
   return `Last seen ${Math.floor(diffInSeconds / 86400)} days ago`;
 }
 
-function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
+function UserDetails({ data }: { data?: UserDetailWithColleagues }) {
   const appSnapshot = useSnapshot(appState);
 
   if (!data) {
@@ -63,8 +63,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
       email: '',
       upn: '',
       idir: '',
-      githubUsername: null,
-      githubAccountId: null,
+      githubAccount: null,
       idirGuid: '',
       officeLocation: '',
       jobTitle: '',
@@ -111,6 +110,8 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
     ],
     (v) => v.id,
   );
+
+  const githubUsername = data.githubAccount?.username;
 
   return (
     <div className="mb-3 mx-2 overflow-x-hidden">
@@ -233,7 +234,7 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
                 </div>
               </div>
             </div>
-            {data.githubUsername && (
+            {githubUsername && (
               <div className="col-span-1 flex items-center">
                 <div className="mr-1">
                   <IconBrandGithub size={24} stroke={2.5} className="text-gray-600" />
@@ -241,8 +242,11 @@ function UserDetails({ data }: { data?: UserDetailWithColeagues }) {
                 <div>
                   <div className="text-gray-600 leading-6">GitHub</div>
                   <div className="text-xs">
-                    <ExternalLink href={`https://github.com/${encodeURIComponent(data.githubUsername)}`}>
-                      {data.githubUsername}
+                    <ExternalLink
+                      href={`https://github.com/${encodeURIComponent(githubUsername)}`}
+                      className="break-words"
+                    >
+                      {githubUsername}
                     </ExternalLink>
                   </div>
                 </div>

@@ -9,7 +9,7 @@ import {
   PublicCloudProductSimpleDecorated,
 } from '@/types/public-cloud';
 import { getUniqueNonFalsyItems, arraysIntersect } from '@/utils/js';
-import { publicCloudProductDetailInclude, publicCloudProductSimpleInclude } from '../includes';
+import { publicCloudProductDetailInclude, publicCloudProductSimpleInclude, userWithGitHubAccount } from '../includes';
 import { createSessionModel } from './core';
 
 async function baseFilter(session: Session) {
@@ -120,7 +120,14 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     const detailedData = doc as never as PublicCloudProductDetail;
     let memberIds = detailedData.members.map((member) => member.userId);
     memberIds = getUniqueNonFalsyItems(memberIds);
-    const users = await prisma.user.findMany({ where: { id: { in: memberIds } } });
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          in: memberIds,
+        },
+      },
+      include: userWithGitHubAccount.include,
+    });
 
     detailedData.members = detailedData.members.map((member) => {
       const user = users.find((usr) => usr.id === member.userId);
@@ -144,9 +151,8 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     delete: canEdit,
     reprovision: canReprovision,
     downloadMou: canDownloadMou,
-    manageMembers:
-      isActive &&
-      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
+    manageMembers: isActive && isMaintainer,
+    manageGitHubAccounts: session.isAdmin || (isActive && isMaintainer),
     editAccountCoding:
       session.permissions.reviewPublicCloudBilling ||
       session.isBillingManager ||

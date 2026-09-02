@@ -23,7 +23,7 @@ const publicCloudRequestOriginal = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudRequestOriginal(({ router }) => {
+export default publicCloudRequestOriginal(({ router, session }) => {
   const [, snap] = usePublicProductState();
 
   useEffect(() => {
@@ -72,6 +72,7 @@ export default publicCloudRequestOriginal(({ router }) => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {
