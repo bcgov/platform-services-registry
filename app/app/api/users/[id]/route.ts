@@ -15,7 +15,7 @@ import { githubUserUpdateBodySchema, putPathParamSchema } from './schema';
 export const GET = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: putPathParamSchema },
-})(async ({ pathParams, session }) => {
+})(async ({ pathParams }) => {
   const productQuery = {
     where: { status: ProjectStatus.ACTIVE },
     select: {
@@ -38,8 +38,12 @@ export const GET = createApiHandler({
       upn: true,
       idir: true,
       idirGuid: true,
-      githubUsername: true,
-      githubAccountId: true,
+      githubAccount: {
+        select: {
+          username: true,
+          accountId: true,
+        },
+      },
       officeLocation: true,
       jobTitle: true,
       image: true,
@@ -84,8 +88,12 @@ export const GET = createApiHandler({
       upn: true,
       idir: true,
       idirGuid: true,
-      githubUsername: true,
-      githubAccountId: true,
+      githubAccount: {
+        select: {
+          username: true,
+          accountId: true,
+        },
+      },
       officeLocation: true,
       jobTitle: true,
       image: true,

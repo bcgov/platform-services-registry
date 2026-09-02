@@ -136,6 +136,7 @@ export async function cleanUp() {
   await prisma.publicCloudBilling.deleteMany();
 
   // Now it should be safe to delete User documents
+  await prisma.gitHubAccount.deleteMany();
   await prisma.user.deleteMany();
   await prisma.event.deleteMany();
   await prisma.task.deleteMany();

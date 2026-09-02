@@ -1,6 +1,5 @@
 import { Badge, Table, Button } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
-import _get from 'lodash-es/get';
 import React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
@@ -8,8 +7,8 @@ import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
 import { formatFullName } from '@/helpers/user';
-import { User } from '@/prisma/client';
-import { formatDate, cn } from '@/utils/js';
+import type { SearchedUser } from '@/types/user';
+import { formatDate } from '@/utils/js';
 import TooltipTableHeader from './TooltipTableHeader';
 
 export default function AdditionalTeamMembers<
@@ -17,7 +16,17 @@ export default function AdditionalTeamMembers<
     userId: string;
     roles: string[];
   },
->({ disabled, memberRoles, children }: { disabled?: boolean; memberRoles: string[]; children?: React.ReactNode }) {
+>({
+  disabled,
+  memberRoles,
+  children,
+  canEditGitHubAccount,
+}: Readonly<{
+  disabled?: boolean;
+  memberRoles: string[];
+  children?: React.ReactNode;
+  canEditGitHubAccount?: boolean;
+}>) {
   const {
     control,
     setValue,
@@ -30,7 +39,7 @@ export default function AdditionalTeamMembers<
   });
 
   const [values] = watch(['members']);
-  const members = values as (User & T)[];
+  const members = values as (SearchedUser & T)[];
 
   const rows = members.length ? (
     members.map((member, index) => (
@@ -45,6 +54,7 @@ export default function AdditionalTeamMembers<
                     const { state } = await openUserPickerModal(
                       {
                         initialValue: member,
+                        canEditGitHubAccount,
                         /*
                          * Exclude the current member. They should be
                          * allowed to update their GitHub information.

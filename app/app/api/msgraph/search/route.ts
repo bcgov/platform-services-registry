@@ -44,8 +44,12 @@ export const POST = createApiHandler({
             upn: true,
             idir: true,
             idirGuid: true,
-            githubUsername: true,
-            githubAccountId: true,
+            githubAccount: {
+              select: {
+                username: true,
+                accountId: true,
+              },
+            },
             isGuidValid: true,
             officeLocation: true,
             jobTitle: true,
@@ -63,8 +67,7 @@ export const POST = createApiHandler({
       return {
         ...data,
         id: data.providerUserId,
-        githubUsername: null,
-        githubAccountId: null,
+        githubAccount: null,
         archived: false,
         createdAt: now,
         updatedAt: now,

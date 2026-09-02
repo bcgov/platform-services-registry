@@ -24,7 +24,7 @@ const privateCloudRequestRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default privateCloudRequestRequest(() => {
+export default privateCloudRequestRequest(({ session }) => {
   const [, snap] = usePrivateProductState();
 
   useEffect(() => {
@@ -67,6 +67,7 @@ export default privateCloudRequestRequest(() => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {

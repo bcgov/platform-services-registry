@@ -6,12 +6,12 @@ import MinistryBadge from '@/components/badges/MinistryBadge';
 import { openUserDetailModal } from '@/components/modal/userDetail';
 import { formatFullName } from '@/helpers/user';
 import { getUserImageData } from '@/helpers/user-image';
-import { User } from '@/prisma/client';
+import type { GitHubAccount, User } from '@/prisma/client';
 import { cn } from '@/utils/js';
 
 export type UserPickerData = Pick<User, 'email' | 'firstName' | 'lastName' | 'ministry' | 'image' | 'upn' | 'idir'> & {
   id?: string;
-  githubUsername?: User['githubUsername'];
+  githubAccount?: Pick<GitHubAccount, 'username' | 'accountId'> | null;
 };
 
 interface Props {
@@ -20,6 +20,7 @@ interface Props {
   text?: string;
   showEditIcon?: boolean;
   children?: React.ReactNode;
+  canEditGitHubAccount?: boolean;
 }
 
 export default function UserProfile({
@@ -28,12 +29,13 @@ export default function UserProfile({
   text = 'Click to select member',
   showEditIcon = true,
   children,
+  canEditGitHubAccount = false,
 }: Readonly<Props>) {
   const user: UserPickerData = data ?? {
     image: '',
     email: '',
     ministry: '',
-    githubUsername: null,
+    githubAccount: null,
     firstName: '',
     lastName: '',
     upn: '',
@@ -45,7 +47,7 @@ export default function UserProfile({
   const invalidTooltip = isInvalid ? `The user's ${missingProps.join(' and ')} attributes are missing` : '';
 
   const isSavedUser = !!user.id;
-  const githubUsername = user.githubUsername;
+  const githubUsername = user.githubAccount?.username;
 
   return (
     <>
@@ -100,6 +102,7 @@ export default function UserProfile({
                         )}
                       </>
                     ) : (
+                      canEditGitHubAccount &&
                       onClick && (
                         <UnstyledButton
                           className="text-xs text-orange-700 hover:underline"

@@ -9,7 +9,7 @@ import {
   PrivateCloudProductSimpleDecorated,
 } from '@/types/private-cloud';
 import { arraysIntersect, getUniqueNonFalsyItems } from '@/utils/js';
-import { privateCloudProductDetailInclude, privateCloudProductSimpleInclude } from '../includes';
+import { privateCloudProductDetailInclude, privateCloudProductSimpleInclude, userWithGitHubAccount } from '../includes';
 import { createSessionModel } from './core';
 
 async function baseFilter(session: Session) {
@@ -92,7 +92,14 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     const detailedData = doc as never as PrivateCloudProductDetail;
     let memberIds = detailedData.members.map((member) => member.userId);
     memberIds = getUniqueNonFalsyItems(memberIds);
-    const users = await prisma.user.findMany({ where: { id: { in: memberIds } } });
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          in: memberIds,
+        },
+      },
+      include: userWithGitHubAccount.include,
+    });
 
     detailedData.members = detailedData.members.map((member) => {
       const user = users.find((usr) => usr.id === member.userId);
@@ -111,6 +118,9 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     reprovision: canReprovision,
     manageMembers:
       isActive &&
+      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
+    manageGitHubAccounts:
+      session.isAdmin ||
       [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
     toggleTemporary: canToggleTemporary,
   };

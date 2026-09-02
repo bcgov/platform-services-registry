@@ -124,6 +124,7 @@ export default publicCloudProductEdit(({ session }) => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
+        canEditGitHubAccount: currentProduct._permissions.manageGitHubAccounts,
       },
     },
     {

@@ -33,7 +33,7 @@ const publicCloudRequest = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudRequest(({ getPathParams }) => {
+export default publicCloudRequest(({ getPathParams, session }) => {
   const [pathParams, setPathParams] = useState<z.infer<typeof pathParamSchema>>();
 
   useEffect(() => {
@@ -73,6 +73,7 @@ export default publicCloudRequest(({ getPathParams }) => {
       Component: TeamContacts,
       componentArgs: {
         disabled: true,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {
