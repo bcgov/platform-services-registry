@@ -6,9 +6,11 @@ from airflow.operators.python import PythonOperator
 from _finance_ingest import trigger_finance_ingest
 from _task_failure_callback import send_alert
 
-BASE_URL = "https://test-pltsvc.apps.silver.devops.gov.bc.ca"
-KEYCLOAK_AUTH_URL = "https://test.loginproxy.gov.bc.ca/auth"
-KEYCLOAK_REALM = "platform-services"
+# TEST_* overrides let local Airflow (sandbox/docker-compose-airflow.yml) run real Forge billing
+# against the local registry. In the cluster these are unset and the Silver test defaults apply.
+BASE_URL = os.getenv("TEST_REGISTRY_BASE_URL", "https://test-pltsvc.apps.silver.devops.gov.bc.ca")
+KEYCLOAK_AUTH_URL = os.getenv("TEST_KEYCLOAK_AUTH_URL", "https://test.loginproxy.gov.bc.ca/auth")
+KEYCLOAK_REALM = os.getenv("TEST_KEYCLOAK_REALM", "platform-services")
 FINANCE_SA_ID = os.getenv("TEST_FINANCE_SA_ID")
 FINANCE_SA_SECRET = os.getenv("TEST_FINANCE_SA_SECRET")
 

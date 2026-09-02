@@ -67,6 +67,12 @@ export function isCurrentCalendarMonth(year: number, month: number, now = new Da
   return year === now.getFullYear() && month === now.getMonth() + 1;
 }
 
+/** Day-of-month / days-in-month so FYTD forecast matches month-to-date actuals. */
+export function currentMonthElapsedFraction(now = new Date()) {
+  const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  return Math.min(1, Math.max(now.getDate(), 1) / days);
+}
+
 export function monthsThrough<T extends { year: number; month: number }>(
   months: T[],
   through: { year: number; month: number },
@@ -87,7 +93,7 @@ export function financePeriodMonths(period: 'ytd' | 'full-fy', now = new Date())
   return fyEnded ? fyMonths : ytdMonths;
 }
 
-/** Chart/export actual: complete months, or current month once a rollup exists. */
+/** Chart/export actual: any month that has stored rollups, otherwise complete like-for-like. */
 export function monthlyChartActual(options: {
   year: number;
   month: number;
@@ -96,10 +102,7 @@ export function monthlyChartActual(options: {
   hasRollup: boolean;
   now?: Date;
 }): number | null {
-  if (options.hasCompleteActual) return options.actualTotal;
-  if (isCurrentCalendarMonth(options.year, options.month, options.now) && options.hasRollup) {
-    return options.actualTotal;
-  }
+  if (options.hasRollup || options.hasCompleteActual) return options.actualTotal;
   return null;
 }
 
@@ -116,9 +119,21 @@ export function sumForecastForFiscalYear(values: MonthlyValue[], fyStartYear: nu
 }
 
 /** Sum forecast amounts for an explicit month set (e.g. FYTD through today). */
-export function sumForecastForMonths(values: MonthlyValue[], months: Array<{ year: number; month: number }>) {
+export function sumForecastForMonths(
+  values: MonthlyValue[],
+  months: Array<{ year: number; month: number }>,
+  options?: { now?: Date; prorateCurrent?: boolean },
+) {
+  const now = options?.now ?? new Date();
+  const fraction = options?.prorateCurrent ? currentMonthElapsedFraction(now) : 1;
   const keys = new Set(months.map((m) => monthKey(m.year, m.month)));
-  return values.reduce((sum, v) => (keys.has(monthKey(v.year, v.month)) ? sum + v.amount : sum), 0);
+  return values.reduce((sum, value) => {
+    if (!keys.has(monthKey(value.year, value.month))) return sum;
+    if (options?.prorateCurrent && isCurrentCalendarMonth(value.year, value.month, now)) {
+      return sum + value.amount * fraction;
+    }
+    return sum + value.amount;
+  }, 0);
 }
 
 export function isLowForecastCoverage(coveragePercent: number) {

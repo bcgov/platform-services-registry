@@ -59,17 +59,19 @@ If Valet is unreachable, ingest may fall back to `FINANCE_USD_CAD_RATE` and stil
 
 ## Actuals by environment
 
-Every environment fetches billing in Airflow and persists via `POST /api/public-cloud/finance/ingest/lines`. The registry app never calls Cost Explorer or Cost Management.
+The registry app never calls Cost Explorer or Cost Management. Test and prod Airflow DAGs fetch real billing, then persist via `POST /api/public-cloud/finance/ingest/lines`. The `_dev` DAG (Silver **dev** and local by default) never calls the cloud APIs; dev has no bill. It passes a `fetch_rows` generator (`_finance_ingest_dev_data.py`) to the shared `trigger_finance_ingest`, which pages `GET /api/v1/public-cloud/products?status=ACTIVE`, flattens each product's `accountId` links, invents amounts in the DAG, and POSTs normal lines. Persist is unchanged. `accountId` is an additive field on the v1 product list / detail responses (`[{ provider, accountIdentifier, environment? }]`, resolved from `billingAccountLinks` with `awsAccounts` / `azureSubscriptions` fallback) and is available to any service-account consumer, not only Airflow.
 
-| Environment | DAG                                |
-| ----------- | ---------------------------------- |
-| Local / Dev | `public_cloud_finance_ingest_dev`  |
-| Test        | `public_cloud_finance_ingest_test` |
-| Prod        | `public_cloud_finance_ingest_prod` |
+| Environment     | DAG                                | Billing source                                      |
+| --------------- | ---------------------------------- | --------------------------------------------------- |
+| Dev             | `public_cloud_finance_ingest_dev`  | Generated amounts on real product account / sub IDs |
+| Test            | `public_cloud_finance_ingest_test` | Cost Explorer + Cost Management (Forge)             |
+| Prod            | `public_cloud_finance_ingest_prod` | Cost Explorer + Cost Management                     |
+| Local (default) | `_dev`                             | Generated, no cloud keys                            |
+| Local (option)  | `_test`                            | Real Forge billing via your `aws sso` / `az login`  |
 
-Local Airflow is `make local-airflow` (port 8082, user `admin` / `admin`). That target sources `app/.env.local` and force-recreates the container. Set `AWS_PROFILE` and `FINANCE_AZURE_COST_SCOPE` there (do not commit real values). AWS uses host `~/.aws`; it checks SSO and tells you to `aws sso login --profile …` if expired. Azure loads `az account get-access-token` when `AZURE_ACCESS_TOKEN` is unset (`az login` first). Compose overrides the `_dev` DAG with `DEV_REGISTRY_BASE_URL`, `DEV_KEYCLOAK_AUTH_URL`, and the sandbox provision SA so local does not ship a separate DAG into the tools cluster. Drop any leftover `AIRFLOW_FINANCE_DAG_ID=public_cloud_finance_ingest_local` from `.env.local`.
+Local Airflow is `make local-airflow` (port 8082, user `admin` / `admin`). That target sources `app/.env.local` and force-recreates the container. Compose points **both** `_dev` and `_test` at the local registry and sandbox Keycloak via `DEV_*` / `TEST_*` overrides (`*_REGISTRY_BASE_URL`, `*_KEYCLOAK_AUTH_URL`, `*_KEYCLOAK_REALM`, `*_FINANCE_SA_ID` / `_SECRET`); in the cluster those are unset and the Silver defaults apply. The snapshot button queues `_dev` unless `.env.local` sets `AIRFLOW_FINANCE_DAG_ID=public_cloud_finance_ingest_test`, which needs `AWS_PROFILE` and `FINANCE_AZURE_COST_SCOPE` (`aws sso login` / `az login` as needed). Drop any leftover `AIRFLOW_FINANCE_DAG_ID=public_cloud_finance_ingest_local`.
 
-Local product seed is two modes. `pnpm seed-all-local` creates ~110 invented products for UI and forecast testing; ingest cannot join those IDs. `pnpm seed-forge-finance-local` seeds the Forge AWS / Azure test plates from `FINANCE_LIVE_TEST_LICENCE_PLATES` and `FINANCE_LIVE_TEST_ACCOUNT_IDS` in `.env.local`. Pass `--reset` on the Forge seed to drop the invented demo products first.
+Local product seed is two modes. `pnpm seed-all-local` creates ~110 invented products for UI and forecast testing (their invented billing links will receive generated amounts). `pnpm seed-forge-finance-local` seeds the Forge AWS / Azure test plates from `FINANCE_LIVE_TEST_LICENCE_PLATES` and `FINANCE_LIVE_TEST_ACCOUNT_IDS` in `.env.local`. Pass `--reset` on the Forge seed to drop the invented demo products first.
 
 ## Provider credentials
 
@@ -82,11 +84,12 @@ Airflow (schedule or snapshot "Ingest missing months")
   ├─ GET /api/public-cloud/finance/ingest/missing
   │    └─ current FY months through the in-progress month with no unscoped SUCCESS IngestionRun
   │       (always re-fetches the current month and last complete month)
-  ├─ AWS Cost Explorer (LZA)     ← keys in airflow-variables (or local env)
-  ├─ Azure Cost Management       ← SP in airflow-variables (or local env)
+  ├─ Dev (_dev DAG, generated rows via _finance_ingest_dev_data):
+  │    GET /api/v1/public-cloud/products (accountId per product) → invent amounts in the DAG (no cloud APIs)
+  ├─ Test / prod: AWS Cost Explorer (LZA) + Azure Cost Management
   └─ Keycloak client_credentials (finance SA)
        └─ POST /api/public-cloud/finance/ingest/lines
-            └─ Registry (persist + FX only)
+            └─ Registry persist (same path for generated and live lines)
 ```
 
 -   **Airflow** holds AWS/Azure billing credentials. KubernetesExecutor task pods inherit `airflow-variables`.
@@ -151,7 +154,7 @@ The Keycloak client must be configured as:
 | Env (Airflow / `airflow-variables`) | Purpose                                          |
 | ----------------------------------- | ------------------------------------------------ |
 | `DEV_FINANCE_SA_ID` / `_SECRET`     | Dev (local compose sets these to the sandbox SA) |
-| `TEST_FINANCE_SA_ID` / `_SECRET`    | Test                                             |
+| `TEST_FINANCE_SA_ID` / `_SECRET`    | Test (local compose also sets these)             |
 | `PROD_FINANCE_SA_ID` / `_SECRET`    | Prod                                             |
 
 ### Registry → Airflow (snapshot button)
@@ -165,20 +168,46 @@ The Keycloak client must be configured as:
 | `AIRFLOW_API_PASSWORD`   | Matching password                             |
 | `AIRFLOW_FINANCE_DAG_ID` | Optional override; defaults from `APP_ENV`    |
 
+### Environment configuration (dev / test / prod)
+
+Do this in **each** registry environment. Dev does not get real billing credentials.
+
+**Every environment**
+
+1. In the Registry UI (`/team-api-accounts`), create a team service account with `public-admin`. Copy the client id and secret.
+2. Put that pair in the tools `airflow-variables` secret as `{DEV,TEST,PROD}_FINANCE_SA_ID` / `_SECRET`.
+3. Put `AIRFLOW_API_URL`, `AIRFLOW_API_USERNAME`, and `AIRFLOW_API_PASSWORD` on the **app** Vault path so the snapshot button can queue the DAG. Do **not** put AWS or Azure billing keys on the app pod.
+4. Unpause that environment’s DAG in the tools Airflow UI (`secdash-airflow`).
+
+**Dev only**
+
+-   No AWS / Azure keys and no `FINANCE_AZURE_COST_SCOPE`. `_dev` reads product `accountId` links from the v1 products API and invents amounts in the DAG.
+-   Finance preview is already on (`APP_ENV=dev`).
+
+**Test and prod (real billing)**
+
+1. Create an AWS LZA billing-read principal and an Azure Cost Management Reader SP.
+2. Add to `airflow-variables`: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `FINANCE_AWS_REGION=us-east-1`, `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `FINANCE_AZURE_COST_SCOPE`.
+3. Unpause `_test` / `_prod` only after the Azure scope is set.
+4. **Prod UI:** set `PUBLIC_CLOUD_FINANCE_PREVIEW=true` on the app Vault path (dev and test are already on).
+
+**Local**
+
+-   `make local-airflow` loads both `_dev` and `_test` against the local registry with the sandbox provision SA (`provision-service-account-id` / `testsecret`).
+-   Default (`_dev`): generated rows, no cloud keys.
+-   Real Forge (`_test`): `AIRFLOW_FINANCE_DAG_ID=public_cloud_finance_ingest_test`, `AWS_PROFILE`, and `FINANCE_AZURE_COST_SCOPE` in `.env.local`; seed plates with `pnpm seed-forge-finance-local`.
+
 ### Rollout checklist
 
-1. Create AWS LZA billing-read principal and Azure service principal (Test first).
-2. Grant Cost Explorer / Cost Management read on the required accounts and the Azure estate scope.
-3. Add the provider env vars above to **`airflow-variables`**. Rebuild the Airflow image so `boto3` is installed.
-4. Create the Keycloak finance SA (team + `public-admin`); store id/secret in `airflow-variables`.
-5. Add `AIRFLOW_API_*` to the app Vault path (and `.env.local` for local). Confirm AWS/Azure finance keys are **not** on the app pod.
-6. Unpause the environment DAG after `FINANCE_AZURE_COST_SCOPE` is set.
-7. Rotate SP and SA secrets on the usual platform schedule.
+1. Dev: team SA + `DEV_FINANCE_SA_*` + app `AIRFLOW_API_*`; unpause `_dev` (generated rows, no cloud keys).
+2. Test: team SA + `TEST_FINANCE_SA_*` + AWS/Azure keys + `FINANCE_AZURE_COST_SCOPE`; unpause `_test`.
+3. Prod: same as test with `PROD_*`, plus `PUBLIC_CLOUD_FINANCE_PREVIEW=true` on the app.
+4. Rotate SP and SA secrets on the usual platform schedule.
 
 ### Explicit non-goals
 
 -   AWS/Azure billing credentials on the registry app
--   In-app or CLI billing fetch (including simulated actuals)
+-   In-app or CLI billing fetch (Airflow `_dev` invents amounts on v1 product `accountId` links only)
 -   Provider credentials in Airflow DAG code or GitHub Actions
 -   Classic AWS native account storage or any real classic-AWS ingest
 -   Per-subscription Azure fallback in Airflow (estate scope only)

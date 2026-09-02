@@ -68,7 +68,7 @@ function accumulateProductForecastTotals(
     } else {
       productsWithForecast += 1;
       fullYearForecast += sumForecastForFiscalYear(forecast, fyStartYear);
-      fytdForecast += sumForecastForMonths(forecast, ytdMonths);
+      fytdForecast += sumForecastForMonths(forecast, ytdMonths, { prorateCurrent: true });
       if (hasForecastValuesForRequiredHorizon(forecast)) productsWithCompleteCoverage += 1;
     }
 

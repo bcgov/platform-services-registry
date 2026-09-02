@@ -30,7 +30,7 @@ async function main() {
   await seedDemoPublicCloudProducts();
 
   console.log('\n3. Forecast demo data...');
-  console.log('   Non-complete profiles:');
+  console.log('   Override profiles (default is with-past from April):');
   for (const [plate, profile] of Object.entries(FORECAST_SEED_PROFILES)) {
     console.log(`     ${plate} → ${profile}`);
   }

@@ -83,10 +83,11 @@ function formatIngestPlanLine(
 }
 
 function fytdForecastHint(excludedCount: number) {
+  const base = 'Same months as FYTD actual · current month prorated';
   if (excludedCount > 0) {
-    return `Same months as FYTD actual · excludes ${excludedCount} products with no forecast`;
+    return `${base} · excludes ${excludedCount} products with no forecast`;
   }
-  return 'Same months as FYTD actual';
+  return base;
 }
 
 function fytdVarianceValue(lowCoverage: boolean, variance: { amount: number; percent: number | null } | null) {
@@ -99,7 +100,7 @@ function fytdVarianceHint(lowCoverage: boolean, through: { year: number; month: 
   return `Actual − forecast through ${through.year}-${String(through.month).padStart(
     2,
     '0',
-  )} (current month is month-to-date)`;
+  )} (current month prorated to month-to-date)`;
 }
 
 function ingestErrorMessage(error: unknown) {

@@ -19,6 +19,12 @@ services:
       DEV_KEYCLOAK_REALM: platform-services
       DEV_FINANCE_SA_ID: provision-service-account-id
       DEV_FINANCE_SA_SECRET: testsecret # pragma: allowlist secret
+      # _test DAG pointed at the local registry: real Forge billing (needs AWS_PROFILE / Azure below).
+      TEST_REGISTRY_BASE_URL: http://host.docker.internal:3000
+      TEST_KEYCLOAK_AUTH_URL: http://keycloak:8080
+      TEST_KEYCLOAK_REALM: platform-services
+      TEST_FINANCE_SA_ID: provision-service-account-id
+      TEST_FINANCE_SA_SECRET: testsecret # pragma: allowlist secret
       FINANCE_AWS_REGION: us-east-1
       AWS_PROFILE: ${AWS_PROFILE:-}
       AWS_SHARED_CREDENTIALS_FILE: /home/airflow/.aws/credentials

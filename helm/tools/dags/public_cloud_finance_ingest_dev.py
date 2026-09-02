@@ -1,9 +1,14 @@
+"""Dev finance ingest. Dev has no cloud bill: rows are generated from registry
+account IDs (see _finance_ingest_dev_data) and persisted through the normal API.
+Also runs local Airflow via sandbox/docker-compose-airflow.yml with DEV_* overrides."""
+
 import os
 from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from _finance_ingest import trigger_finance_ingest
+from _finance_ingest_dev_data import make_dev_fetch_rows
 from _task_failure_callback import send_alert
 
 BASE_URL = os.getenv("DEV_REGISTRY_BASE_URL", "https://dev-pltsvc.apps.silver.devops.gov.bc.ca")
@@ -30,6 +35,7 @@ with DAG(
             "kc_realm": KEYCLOAK_REALM,
             "kc_client_id": FINANCE_SA_ID,
             "kc_client_secret": FINANCE_SA_SECRET,
+            "fetch_rows": make_dev_fetch_rows(),
         },
         execution_timeout=timedelta(minutes=20),
         on_failure_callback=lambda context: send_alert(context, context["dag"].dag_id),

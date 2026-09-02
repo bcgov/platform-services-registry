@@ -1,14 +1,34 @@
 import { productExistedDuringMonth } from '@/components/public-cloud/finance/finance-measure-utils';
-import { platesToRollupForPeriod, resolveBillingStartedAt } from './product-billing-start';
+import { earliestActualMonthByPlate, platesToRollupForPeriod, resolveBillingStartedAt } from './product-billing-start';
 
 describe('product billing start', () => {
-  it('prefers provisionedDate over createdAt', () => {
+  it('prefers provisionedDate over createdAt unless earlier actuals exist', () => {
     expect(resolveBillingStartedAt(new Date('2026-04-01T00:00:00Z'), new Date('2026-08-15T00:00:00Z'))).toEqual(
       new Date('2026-08-15T00:00:00Z'),
     );
     expect(resolveBillingStartedAt(new Date('2026-04-01T00:00:00Z'), undefined)).toEqual(
       new Date('2026-04-01T00:00:00Z'),
     );
+    expect(
+      resolveBillingStartedAt(new Date('2026-09-01T23:48:00Z'), undefined, new Date('2026-04-01T00:00:00Z')),
+    ).toEqual(new Date('2026-04-01T00:00:00Z'));
+    expect(
+      resolveBillingStartedAt(
+        new Date('2026-04-01T00:00:00Z'),
+        new Date('2026-08-15T00:00:00Z'),
+        new Date('2026-09-01T00:00:00Z'),
+      ),
+    ).toEqual(new Date('2026-08-15T00:00:00Z'));
+  });
+
+  it('takes the earliest stored actual month per plate', () => {
+    expect(
+      earliestActualMonthByPlate([
+        { licencePlate: 'aa', year: 2026, month: 7 },
+        { licencePlate: 'aa', year: 2026, month: 4 },
+        { licencePlate: 'bb', year: 2026, month: 9 },
+      ]).get('aa'),
+    ).toEqual(new Date('2026-04-01T00:00:00Z'));
   });
 
   it('treats the UTC month of provision as in scope and earlier months as out of scope', () => {

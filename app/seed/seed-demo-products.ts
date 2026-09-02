@@ -8,6 +8,12 @@ import prisma from '../core/prisma';
 import { Prisma, ProjectStatus, Provider, PublicCloudProductMemberRole } from '../prisma/client';
 import { inventDemoAzureSubscriptions } from '../services/azure/subscriptions';
 import { inventDemoBillingLinks } from '../services/public-cloud-finance/billing-account-links';
+import { getForecastStartMonth } from './seed-forecast-local';
+
+function billingStartedAtForPlate(licencePlate: string) {
+  const start = getForecastStartMonth(licencePlate);
+  return new Date(Date.UTC(start.year, start.month - 1, 1));
+}
 
 export type DemoProductConfig = {
   licencePlate: string;
@@ -46,8 +52,9 @@ function generatedDemoProducts({
     const index = startIndex + offset;
     const budgetStep = (index % 8) + 1;
 
+    const licencePlate = `${prefix}${String(index).padStart(4, '0')}`;
     return {
-      licencePlate: `${prefix}${String(index).padStart(4, '0')}`,
+      licencePlate,
       name: `Cost Model Scale Test ${index} (${providerLabel})`,
       provider,
       description: `Generated local seed ${providerLabel} product for large forecast rollup testing.`,
@@ -57,6 +64,7 @@ function generatedDemoProducts({
         prod: baseBudget.prod + budgetStep * 250,
         tools: baseBudget.tools + budgetStep * 50,
       },
+      billingStartedAt: billingStartedAtForPlate(licencePlate),
     };
   });
 }
@@ -68,6 +76,7 @@ const BASE_AZURE_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AZURE,
     description: 'Local seed Azure product for forecast and cost testing.',
     budget: { dev: 12000, test: 10000, prod: 20000, tools: 5000 },
+    billingStartedAt: billingStartedAtForPlate('e71b0e'),
   },
   {
     licencePlate: 'a1c2d3',
@@ -75,6 +84,7 @@ const BASE_AZURE_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AZURE,
     description: 'Second local seed Azure product to exercise multi-project forecast rollups.',
     budget: { dev: 5000, test: 4000, prod: 8000, tools: 2000 },
+    billingStartedAt: billingStartedAtForPlate('a1c2d3'),
   },
 ];
 
@@ -85,6 +95,7 @@ const BASE_AWS_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AWS_LZA,
     description: 'Local seed AWS LZA product for forecast and cost testing (forecasted in CAD).',
     budget: { dev: 8000, test: 6000, prod: 15000, tools: 3000 },
+    billingStartedAt: billingStartedAtForPlate('f82c1a'),
   },
   {
     licencePlate: 'b4e5f6',
@@ -92,6 +103,7 @@ const BASE_AWS_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AWS_LZA,
     description: 'Second local seed AWS LZA product to exercise multi-project forecast rollups.',
     budget: { dev: 6000, test: 5000, prod: 10000, tools: 2000 },
+    billingStartedAt: billingStartedAtForPlate('b4e5f6'),
   },
 ];
 

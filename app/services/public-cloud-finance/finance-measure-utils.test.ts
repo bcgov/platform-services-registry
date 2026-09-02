@@ -60,6 +60,27 @@ describe('finance measure utils', () => {
     ).toBe(300);
   });
 
+  it('prorates the current month when summing FYTD forecast', () => {
+    const values = [
+      { year: 2026, month: 8, amount: 300, currency: 'CAD' as const },
+      { year: 2026, month: 9, amount: 300, currency: 'CAD' as const },
+    ];
+    const now = new Date(2026, 8, 10);
+    expect(
+      sumForecastForMonths(
+        values,
+        [
+          { year: 2026, month: 8 },
+          { year: 2026, month: 9 },
+        ],
+        {
+          now,
+          prorateCurrent: true,
+        },
+      ),
+    ).toBe(300 + 300 * (10 / 30));
+  });
+
   it('formats CAD amounts and distinguishes zero from missing', () => {
     expect(formatCadAmount(null)).toBe('—');
     expect(formatCadAmount(0)).toBe('CA$0.00');
@@ -258,8 +279,18 @@ describe('complete rollup months and like-for-like totals', () => {
     ).toBe('Includes month-to-date 2026-08');
   });
 
-  it('shows current-month actuals only after a rollup exists', () => {
-    const now = new Date('2026-08-15T12:00:00');
+  it('shows stored rollups even when the product was created later', () => {
+    const now = new Date('2026-09-15T12:00:00');
+    expect(
+      monthlyChartActual({
+        year: 2026,
+        month: 7,
+        actualTotal: 90,
+        hasCompleteActual: false,
+        hasRollup: true,
+        now,
+      }),
+    ).toBe(90);
     expect(
       monthlyChartActual({
         year: 2026,
@@ -280,16 +311,6 @@ describe('complete rollup months and like-for-like totals', () => {
         now,
       }),
     ).toBeNull();
-    expect(
-      monthlyChartActual({
-        year: 2026,
-        month: 7,
-        actualTotal: 90,
-        hasCompleteActual: true,
-        hasRollup: true,
-        now,
-      }),
-    ).toBe(90);
   });
 
   it('does not treat missing elapsed actuals as zero against a full-year forecast', () => {

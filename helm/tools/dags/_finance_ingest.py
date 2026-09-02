@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 from datetime import datetime, timezone
+from typing import Callable
 
 import requests
 from _aws_cost_explorer import fetch_aws_cost_explorer_rows
@@ -13,6 +14,9 @@ from _keycloak import Keycloak
 PROVIDERS = ("AWS_LZA", "AZURE")
 PERSIST_CONFLICT_STATUS = 409
 PERSIST_CONFLICT_ATTEMPTS = 8
+
+# fetch_rows(provider, year, month, ctx) -> rows. ctx = {"session", "base_url", "headers"}.
+FetchRows = Callable[[str, int, int, dict], list[dict]]
 
 
 def previous_complete_month(today: datetime) -> tuple[int, int]:
@@ -66,7 +70,8 @@ def post_ingest_lines(session: requests.Session, url: str, headers: dict, payloa
     return response
 
 
-def _fetch_provider_rows(provider: str, year: int, month: int) -> list[dict]:
+def _fetch_provider_rows(provider: str, year: int, month: int, ctx: dict | None = None) -> list[dict]:
+    """Default fetch_rows: real Cost Explorer (AWS LZA) / Cost Management (Azure)."""
     if provider == "AWS_LZA":
         return fetch_aws_cost_explorer_rows(year, month)
     if provider == "AZURE":
@@ -74,9 +79,16 @@ def _fetch_provider_rows(provider: str, year: int, month: int) -> list[dict]:
     raise RuntimeError(f"Classic AWS ingest is not supported for real billing data. Use AWS_LZA. Got {provider}.")
 
 
-def _rows_or_fetch_failure(provider: str, year: int, month: int) -> tuple[list[dict] | None, str]:
+def _rows_or_fetch_failure(
+    provider: str,
+    year: int,
+    month: int,
+    fetch_rows: FetchRows | None = None,
+    ctx: dict | None = None,
+) -> tuple[list[dict] | None, str]:
+    fetch = fetch_rows or _fetch_provider_rows
     try:
-        return _fetch_provider_rows(provider, year, month), ""
+        return fetch(provider, year, month, ctx or {}), ""
     except RuntimeError as error:
         if "no non-zero rows" in str(error):
             return [], ""
@@ -92,6 +104,8 @@ def _ingest_provider_period(
     provider: str,
     year: int,
     month: int,
+    fetch_rows: FetchRows | None = None,
+    ctx: dict | None = None,
 ) -> dict:
     result = {
         "provider": provider,
@@ -102,7 +116,7 @@ def _ingest_provider_period(
         "body": "",
         "error": "",
     }
-    rows, fetch_error = _rows_or_fetch_failure(provider, year, month)
+    rows, fetch_error = _rows_or_fetch_failure(provider, year, month, fetch_rows, ctx)
     if rows is None:
         result["status"] = "fetch_failed"
         result["error"] = fetch_error
@@ -175,10 +189,13 @@ def trigger_finance_ingest(
     kc_realm: str,
     kc_client_id: str,
     kc_client_secret: str,
+    fetch_rows: FetchRows | None = None,
 ):
     """
     Ingest the current (partial) month and last complete month, plus any earlier FY
     months with no successful IngestionRun (so a failed night does not leave a hole).
+
+    `fetch_rows` defaults to the real cloud billing APIs; the dev DAG passes a generator.
     """
     if not kc_client_id or not kc_client_secret:
         raise ValueError("Keycloak service account client id/secret are required for finance ingest")
@@ -208,13 +225,23 @@ def trigger_finance_ingest(
     if not isinstance(providers, list) or not providers:
         raise RuntimeError(f"Missing ingest plan has no providers: {plan!r}"[:500])
 
+    ctx = {"session": session, "base_url": base_url, "headers": headers}
     results = []
     lines_url = f"{base_url.rstrip('/')}/api/public-cloud/finance/ingest/lines"
     for item in providers:
         provider = item["provider"]
         for period in item.get("periods", [{"year": year, "month": month}]):
             results.append(
-                _ingest_provider_period(session, lines_url, headers, provider, period["year"], period["month"])
+                _ingest_provider_period(
+                    session,
+                    lines_url,
+                    headers,
+                    provider,
+                    period["year"],
+                    period["month"],
+                    fetch_rows=fetch_rows,
+                    ctx=ctx,
+                )
             )
     _raise_if_provider_failures(results)
     return results

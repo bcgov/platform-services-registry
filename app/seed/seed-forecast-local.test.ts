@@ -10,6 +10,17 @@ function month(year: number, monthNumber: number, amount: number) {
   return { year, month: monthNumber, amount, currency: 'CAD' as const };
 }
 
+describe('applyPastFiscalMonths from a later start', () => {
+  it('fills from June and leaves April–May blank', () => {
+    const values = [month(2026, 4, 0), month(2026, 5, 0), month(2026, 6, 0), month(2026, 7, 0), month(2026, 8, 4000)];
+    const fromJune = applyPastFiscalMonths(values, now, 6);
+    expect(fromJune.find((value) => value.month === 4)?.amount).toBe(0);
+    expect(fromJune.find((value) => value.month === 5)?.amount).toBe(0);
+    expect(fromJune.find((value) => value.month === 6)?.amount).toBe(4000);
+    expect(fromJune.find((value) => value.month === 7)?.amount).toBe(4000);
+  });
+});
+
 describe('applyPastFiscalMonthsFromMay', () => {
   it('fills May–July and leaves April blank', () => {
     const values = [month(2026, 4, 0), month(2026, 5, 0), month(2026, 6, 0), month(2026, 7, 0), month(2026, 8, 4000)];
