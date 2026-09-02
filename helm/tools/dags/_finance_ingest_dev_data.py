@@ -8,8 +8,8 @@ Cost Explorer / Cost Management fetch in _finance_ingest.
 from __future__ import annotations
 
 import calendar
+import hashlib
 import math
-import random
 from datetime import datetime, timezone
 
 import requests
@@ -83,7 +83,35 @@ LATE_ONBOARD_SHARE = 0.08
 FY_START_MONTH = 4
 
 
-def _account_start_month(rng: random.Random, now: datetime) -> tuple[int, int]:
+class HashRng:
+    """Deterministic [0, 1) stream from sha256. Not for secrets; only invented billing amounts."""
+
+    def __init__(self, seed: str):
+        self._seed = seed
+        self._n = 0
+
+    def random(self) -> float:
+        self._n += 1
+        digest = hashlib.sha256(f"{self._seed}:{self._n}".encode()).digest()
+        return int.from_bytes(digest[:8], "big") / 2**64
+
+    def uniform(self, low: float, high: float) -> float:
+        return low + (high - low) * self.random()
+
+    def randint(self, low: int, high: int) -> int:
+        return low + int(self.random() * (high - low + 1)) % (high - low + 1)
+
+    def choice(self, seq):
+        return seq[int(self.random() * len(seq)) % len(seq)]
+
+    def lognormvariate(self, mu: float, sigma: float) -> float:
+        unit = max(self.random(), 1e-12)
+        angle = self.random()
+        normal = math.sqrt(-2.0 * math.log(unit)) * math.cos(math.tau * angle)
+        return math.exp(mu + sigma * normal)
+
+
+def _account_start_month(rng: HashRng, now: datetime) -> tuple[int, int]:
     fy_start_year = now.year if now.month >= FY_START_MONTH else now.year - 1
     last = now.month if now.month >= FY_START_MONTH else now.month + 12
     if rng.random() >= LATE_ONBOARD_SHARE or last <= FY_START_MONTH:
@@ -96,7 +124,7 @@ def _account_start_month(rng: random.Random, now: datetime) -> tuple[int, int]:
 
 def _account_profile(provider: str, identifier: str, now: datetime) -> dict:
     """Stable per-account shape: which services, how big, when it started."""
-    rng = random.Random(f"profile:{provider}:{identifier}")
+    rng = HashRng(f"profile:{provider}:{identifier}")
     services = [
         (name, weight * rng.uniform(0.4, 1.8))
         for name, weight, adoption in SERVICE_CATALOG[provider]
@@ -120,7 +148,7 @@ def _account_profile(provider: str, identifier: str, now: datetime) -> dict:
     }
 
 
-def _month_multiplier(profile: dict, year: int, month: int, rng: random.Random) -> float:
+def _month_multiplier(profile: dict, year: int, month: int, rng: HashRng) -> float:
     months_from_epoch = (year - 2026) * 12 + (month - 1)
     trend = (1.0 + profile["growth"]) ** months_from_epoch
     seasonal = 1.0 + profile["seasonality"] * math.sin((month + profile["phase"]) / 12 * math.tau)
@@ -153,7 +181,7 @@ def generate_dev_rows(
         profile = _account_profile(provider, identifier, now)
         if (year, month) < (profile["start_year"], profile["start_month"]):
             continue
-        rng = random.Random(f"month:{provider}:{identifier}:{year}-{month:02d}")
+        rng = HashRng(f"month:{provider}:{identifier}:{year}-{month:02d}")
         if rng.random() < profile["idle_chance"]:
             continue
 

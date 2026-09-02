@@ -290,16 +290,22 @@ describe('API: List Public Cloud Products - Validations', () => {
     expect(res1.status).toBe(200);
     const dat1 = await res1.json();
 
-    const linked = dat1.data.find((doc: any) => doc.licencePlate === azure.licencePlate);
-    expect(linked.accountId).toEqual([
+    type ListedProduct = {
+      licencePlate: string;
+      accountId: Array<{ provider: Provider; accountIdentifier: string; environment?: string }>;
+    };
+    const listed = dat1.data as unknown as ListedProduct[];
+    const linked = listed.find((doc) => doc.licencePlate === azure.licencePlate);
+    expect(linked).toBeTruthy();
+    expect(linked?.accountId).toEqual([
       {
         provider: Provider.AZURE,
         accountIdentifier: '11111111-2222-3333-4444-555555555555',
         environment: 'production',
       },
     ]);
-    const others = dat1.data.filter((doc: any) => doc.licencePlate !== azure.licencePlate);
-    expect(others.every((doc: any) => Array.isArray(doc.accountId))).toBe(true);
+    const others = listed.filter((doc) => doc.licencePlate !== azure.licencePlate);
+    expect(others.every((doc) => Array.isArray(doc.accountId))).toBe(true);
   });
 
   it('should successfully list 0 projects by admin with search criteria', async () => {
