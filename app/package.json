@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@azure/identity": "^4.11.1",
-    "@faker-js/faker": "^9.9.0",
+    "@faker-js/faker": "^10.0.0",
     "@headlessui/react": "2.2.10",
     "@hookform/resolvers": "^5.2.1",
     "@keycloak/keycloak-admin-client": "26.7.3",
@@ -102,7 +102,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@faker-js/faker": "^9.0.0",
+    "@faker-js/faker": "^10.0.0",
     "@jest/globals": "^30.4.1",
     "@react-email/preview-server": "^5.2.11",
     "@react-email/ui": "6.9.3",
