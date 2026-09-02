@@ -151,12 +151,8 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     delete: canEdit,
     reprovision: canReprovision,
     downloadMou: canDownloadMou,
-    manageMembers:
-      isActive &&
-      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
-    manageGitHubAccounts:
-      session.isAdmin ||
-      [doc.projectOwnerId, doc.primaryTechnicalLeadId, doc.secondaryTechnicalLeadId].includes(session.user.id),
+    manageMembers: isActive && isMaintainer,
+    manageGitHubAccounts: session.isAdmin || (isActive && isMaintainer),
     editAccountCoding:
       session.permissions.reviewPublicCloudBilling ||
       session.isBillingManager ||
