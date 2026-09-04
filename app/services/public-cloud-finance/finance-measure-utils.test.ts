@@ -14,6 +14,7 @@ import {
   monthsThrough,
   likeForLikeMonths,
   monthsWithCompleteRollups,
+  sumForecastForInScopeMonths,
   sumForecastForMonths,
   sumKnownActualsOrNull,
   expectedPastActualMonths,
@@ -148,6 +149,20 @@ describe('finance measure utils', () => {
         new Date('2026-08-15T12:00:00'),
       ),
     ).toEqual([{ year: 2026, month: 8 }]);
+  });
+
+  it('sums FYTD forecast only after a product billing start', () => {
+    const now = new Date('2026-08-15T12:00:00');
+    const months = [
+      { year: 2026, month: 4 },
+      { year: 2026, month: 7 },
+      { year: 2026, month: 8 },
+    ];
+    const values = months.map((month) => ({ ...month, amount: 100, currency: 'CAD' as const }));
+    expect(
+      sumForecastForInScopeMonths(values, months, new Date('2026-08-01T00:00:00Z'), { now, prorateCurrent: true }),
+    ).toBeCloseTo(100 * (15 / 31));
+    expect(sumForecastForMonths(values, months, { now, prorateCurrent: true })).toBeCloseTo(200 + 100 * (15 / 31));
   });
 
   it('explains empty expected months when elapsed FY months exist', () => {

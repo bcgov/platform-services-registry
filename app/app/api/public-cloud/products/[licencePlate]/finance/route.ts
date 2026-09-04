@@ -20,7 +20,7 @@ export const GET = createApiHandler({
     { where: { licencePlate: pathParams.licencePlate } },
     session,
   );
-  if (!product?._permissions.viewForecast) {
+  if (!product?._permissions.viewFinanceActuals) {
     return UnauthorizedResponse();
   }
 

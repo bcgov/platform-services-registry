@@ -1,3 +1,4 @@
+import { isCurrentCalendarMonth } from '@/components/public-cloud/finance/finance-measure-utils';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { fetchUsdCadExchangeRate, fetchUsdCadExchangeRateForMonth } from '@/services/bank-of-canada/usd-cad-rate';
@@ -94,10 +95,11 @@ export function shouldReuseStoredUsdCadRate(
   return isLikelyMonthEndFxRate(existing.rateDate, year, month);
 }
 
-async function fetchUsdCadForIngestMonth(year: number, month: number) {
+export async function fetchUsdCadForIngestMonth(year: number, month: number, now = new Date()) {
   try {
     return await fetchUsdCadExchangeRateForMonth(year, month);
   } catch (error) {
+    if (!isCurrentCalendarMonth(year, month, now)) throw error;
     logger.warn(
       `Bank of Canada has no FXUSDCAD observations for ${year}-${month} yet; using latest published rate: ${String(
         error,
@@ -112,17 +114,21 @@ async function fetchUsdCadForIngestMonth(year: number, month: number) {
  * Reuses a month-end Bank of Canada row for closed months. Refetches for the
  * open month (MTD) and when a stored rate is still mid-month after close.
  */
-export async function ensureMonthlyUsdCadRate(year: number, month: number): Promise<StoredMonthlyFxRate> {
+export async function ensureMonthlyUsdCadRate(
+  year: number,
+  month: number,
+  now = new Date(),
+): Promise<StoredMonthlyFxRate> {
   const existing = await prisma.monthlyFxRate.findUnique({
     where: { pair_year_month: { pair: USD_CAD_PAIR, year, month } },
   });
 
-  if (existing && shouldReuseStoredUsdCadRate(existing, year, month)) {
+  if (existing && shouldReuseStoredUsdCadRate(existing, year, month, now)) {
     return toStored(existing);
   }
 
   try {
-    const boc = await fetchUsdCadForIngestMonth(year, month);
+    const boc = await fetchUsdCadForIngestMonth(year, month, now);
     return upsertMonthlyUsdCadRate({
       year,
       month,
@@ -133,7 +139,7 @@ export async function ensureMonthlyUsdCadRate(year: number, month: number): Prom
   } catch (error) {
     if (existing) return toStored(existing);
     const fallback = Number(process.env.FINANCE_USD_CAD_RATE);
-    if (Number.isFinite(fallback) && fallback > 0) {
+    if (isCurrentCalendarMonth(year, month, now) && Number.isFinite(fallback) && fallback > 0) {
       logger.warn(
         `Bank of Canada FX unavailable for ${year}-${month}; using FINANCE_USD_CAD_RATE fallback for ingest: ${String(
           error,

@@ -20,7 +20,8 @@ export default function PublicCloudForecastSection({ licencePlate }: Readonly<{ 
   const product = productSnap.currentProduct;
   const canViewForecast = Boolean(product?._permissions.viewForecast);
   const canEditForecast = Boolean(product?._permissions.editForecast);
-  const showActualVariance = Boolean(session?.previews.publicCloudFinance);
+  const canViewFinanceActuals = Boolean(product?._permissions.viewFinanceActuals);
+  const showActualVariance = Boolean(session?.previews.publicCloudFinance && canViewFinanceActuals);
   const queryClient = useQueryClient();
   const draftMonthlyValues = useMemo(() => buildRollingFiscalForecastMonths(0, 'CAD', new Date()), []);
 

@@ -32,6 +32,7 @@ export interface PublicCloudProductDecorate {
     manageMembers: boolean;
     editAccountCoding: boolean;
     viewForecast: boolean;
+    viewFinanceActuals: boolean;
     editForecast: boolean;
   };
 }

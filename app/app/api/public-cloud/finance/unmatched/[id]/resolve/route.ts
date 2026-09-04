@@ -1,8 +1,12 @@
 import { z } from 'zod';
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
-import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, ConflictResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { resolveUnmatchedBillingLine } from '@/services/db/public-cloud-finance';
+import {
+  ingestFailureMessage,
+  isIngestAlreadyRunningError,
+} from '@/services/public-cloud-finance/ingest/ingest-errors';
 import { financeResolveUnmatchedBodySchema } from '@/validation-schemas/cloud-cost';
 import { objectId } from '@/validation-schemas/common';
 
@@ -18,7 +22,8 @@ export const POST = createApiHandler({
   try {
     const updated = await resolveUnmatchedBillingLine(pathParams.id, body.licencePlate);
     return OkResponse(updated);
-  } catch {
+  } catch (error) {
+    if (isIngestAlreadyRunningError(error)) return ConflictResponse(ingestFailureMessage(error));
     return BadRequestResponse('Unable to resolve unmatched line');
   }
 });

@@ -7,6 +7,7 @@ import { DB_DATA } from '@/jest.mock';
 import { FinanceIngestionStatus, ProjectStatus, Provider } from '@/prisma/client';
 import { mockSessionByRole } from '@/services/api-test/core';
 import { postFinanceResolveUnmatched } from '@/services/api-test/public-cloud/finance';
+import { acquireIngestLock, releaseIngestLock } from '@/services/public-cloud-finance/ingest/ingest-lock';
 
 const MISSING_ID = 'aaaaaaaaaaaaaaaaaaaaaaaa';
 const owner = mockNoRoleUsers[0];
@@ -171,5 +172,19 @@ describe('POST /api/public-cloud/finance/unmatched/:id/resolve', () => {
       '222233334444',
       '444455556666',
     ]);
+  });
+
+  it('returns 409 when ingest already holds the period lock', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+    const { product, line } = await createResolveFixture();
+    const lock = await acquireIngestLock(line.provider, { year: line.year, month: line.month });
+    try {
+      const res = await postFinanceResolveUnmatched(line.id, product.licencePlate);
+      expect(res.status).toBe(409);
+      const current = await prisma.unmatchedBillingLine.findUniqueOrThrow({ where: { id: line.id } });
+      expect(current.resolvedTo).toBeNull();
+    } finally {
+      await releaseIngestLock(lock.id);
+    }
   });
 });

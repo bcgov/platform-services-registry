@@ -136,6 +136,16 @@ export function sumForecastForMonths(
   }, 0);
 }
 
+/** FYTD forecast for one product: only months on or after billing start. */
+export function sumForecastForInScopeMonths(
+  values: MonthlyValue[],
+  months: Array<{ year: number; month: number }>,
+  existedAt: Date | null | undefined,
+  options?: { now?: Date; prorateCurrent?: boolean },
+) {
+  return sumForecastForMonths(values, filterMonthsProductExisted(months, existedAt), options);
+}
+
 export function isLowForecastCoverage(coveragePercent: number) {
   return coveragePercent < LOW_FORECAST_COVERAGE_PERCENT;
 }
