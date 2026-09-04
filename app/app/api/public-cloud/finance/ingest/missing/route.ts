@@ -1,0 +1,23 @@
+import { currentCalendarMonth } from '@/components/public-cloud/finance/finance-measure-utils';
+import { GlobalRole } from '@/constants';
+import createApiHandler from '@/core/api-handler';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { listScheduledIngestPlan } from '@/services/public-cloud-finance/ingest/missing-periods';
+import { financeIngestMissingQuerySchema } from '@/validation-schemas/cloud-cost';
+
+export const GET = createApiHandler({
+  roles: [`${GlobalRole.ServiceAccount} ${GlobalRole.PublicAdmin}`, GlobalRole.Admin, GlobalRole.PublicAdmin],
+  useServiceAccount: true,
+  validations: { queryParams: financeIngestMissingQuerySchema },
+})(async ({ queryParams, session }) => {
+  if (!session.isServiceAccount && !session.previews.publicCloudFinance) {
+    return UnauthorizedResponse();
+  }
+
+  const through =
+    queryParams.year && queryParams.month
+      ? { year: queryParams.year, month: queryParams.month }
+      : currentCalendarMonth();
+
+  return OkResponse(await listScheduledIngestPlan(through));
+});

@@ -144,6 +144,23 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     session.previews.publicCloudForecast &&
     (canView || session.permissions.viewPublicCloudBilling || session.permissions.viewPublicCloudForecast);
 
+  const isProductTeamMember =
+    isMaintainer ||
+    isExpenseAuthority ||
+    members.some(
+      (member) =>
+        member.userId === session.user.id &&
+        arraysIntersect(member.roles, [
+          PublicCloudProductMemberRole.BILLING_VIEWER,
+          PublicCloudProductMemberRole.EDITOR,
+          PublicCloudProductMemberRole.VIEWER,
+        ]),
+    );
+
+  const canViewFinanceActuals = Boolean(
+    session.previews.publicCloudFinance && (session.permissions.viewPublicCloudForecast || isProductTeamMember),
+  );
+
   const canEditForecast = session.previews.publicCloudForecast && canEdit;
   decoratedDoc._permissions = {
     view: canView || canSignMou || canApproveMou,
@@ -158,6 +175,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
       session.isBillingManager ||
       doc.expenseAuthorityId === session.user.id,
     viewForecast: canViewForecast,
+    viewFinanceActuals: canViewFinanceActuals,
     editForecast: canEditForecast,
   };
 

@@ -46,6 +46,13 @@ export function NotFoundResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Not Found', error }, { status: 404 });
 }
 
+export function ConflictResponse(error: any, retryAfterSeconds = 5) {
+  return NextResponse.json(
+    { success: false, message: 'Conflict', error },
+    { status: 409, headers: { 'Retry-After': String(retryAfterSeconds) } },
+  );
+}
+
 export function UnprocessableEntityResponse(error: any) {
   return NextResponse.json({ success: false, message: 'Unprocessable Entity', error }, { status: 422 });
 }

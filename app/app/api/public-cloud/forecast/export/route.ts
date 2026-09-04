@@ -20,16 +20,17 @@ export const GET = createApiHandler({
   }
 
   const format = queryParams.format ?? 'xlsx';
+  const includeActuals = session.previews.publicCloudFinance;
 
   if (format === 'csv') {
-    const rows = await buildPlatformForecastExportCsvRows();
+    const rows = await buildPlatformForecastExportCsvRows({ includeActuals });
     if (!rows.length) {
       return NoContent();
     }
     return CsvResponse(rows, 'public-cloud-forecast.csv');
   }
 
-  const summary = await getPlatformForecastSummary();
+  const summary = await getPlatformForecastSummary({ includeActuals });
   if (!summary.groups.length) {
     return NoContent();
   }

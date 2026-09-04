@@ -607,3 +607,38 @@ export function aggregateMonthlyTotalsFromProducts(
 
   return mergeMonthlyValuesOntoFiscalHorizon([...totalsByMonth.values()], currency);
 }
+
+function existedDuringMonth(existedAt: string | Date | null | undefined, year: number, month: number) {
+  if (!existedAt) return true;
+  const start = existedAt instanceof Date ? existedAt : new Date(existedAt);
+  const startYear = start.getUTCFullYear();
+  const startMonth = start.getUTCMonth() + 1;
+  return year > startYear || (year === startYear && month >= startMonth);
+}
+
+/**
+ * Sum product monthlyActuals aligned to the fiscal horizon. A month is null when
+ * any product that existed that month is missing a rollup (unknown, not CA$0).
+ */
+export function aggregateMonthlyActualsFromProducts(
+  products: Array<{ monthlyActuals: Array<number | null>; billingStartedAt?: string | Date | null }>,
+  months: Array<{ year: number; month: number }>,
+): Array<number | null> {
+  return months.map((month, index) => {
+    let sum = 0;
+    let expected = false;
+    let missing = false;
+    for (const product of products) {
+      if (!existedDuringMonth(product.billingStartedAt, month.year, month.month)) continue;
+      expected = true;
+      const amount = product.monthlyActuals[index];
+      if (amount == null) {
+        missing = true;
+        continue;
+      }
+      sum += amount;
+    }
+    if (!expected || missing) return null;
+    return sum;
+  });
+}

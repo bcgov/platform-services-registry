@@ -88,3 +88,11 @@ export function getAwsLzaConsoleUrl(accountId: string, isProd: boolean) {
 
   return `https://forge-bcgov.awsapps.com/start/#/console?account_id=${accountId}`;
 }
+
+export function getAzureSubscriptionName(licencePlate: string, environment: PublicCloudEnvironmentKey) {
+  return `${licencePlate}-${environmentShortNames[environment]}`;
+}
+
+export function getAzurePortalUrl(subscriptionId: string) {
+  return `https://portal.azure.com/#@bcgov.onmicrosoft.com/resource/subscriptions/${subscriptionId}/overview`;
+}

@@ -3,6 +3,7 @@ import { BadRequestResponse, OkResponse } from '@/core/responses';
 import { ProjectStatus } from '@/prisma/client';
 import { models } from '@/services/db';
 import { getOrganizationMap } from '@/services/db/organization';
+import { resolveBillingAccountIdentifiers } from '@/services/public-cloud-finance/billing-account-links';
 
 export default async function readOp({ session, idOrLicencePlate }: { session: Session; idOrLicencePlate: string }) {
   const where = idOrLicencePlate.length > 7 ? { id: idOrLicencePlate } : { licencePlate: idOrLicencePlate };
@@ -35,6 +36,7 @@ export default async function readOp({ session, idOrLicencePlate }: { session: S
     ministry: org.code,
     ministryName: org.name,
     provider: data.provider,
+    accountId: resolveBillingAccountIdentifiers(data),
     projectOwner: {
       id: data.projectOwner.id,
       email: data.projectOwner.email,

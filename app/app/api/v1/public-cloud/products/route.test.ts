@@ -267,6 +267,47 @@ describe('API: List Public Cloud Products - Validations', () => {
     expect(dat1.totalCount).toBe(3);
   });
 
+  it('should expose billing account identifiers per product', async () => {
+    const azure = await prisma.publicCloudProduct.findFirst({ where: { provider: Provider.AZURE } });
+    expect(azure).toBeTruthy();
+    if (!azure) return;
+
+    await prisma.publicCloudProduct.update({
+      where: { id: azure.id },
+      data: {
+        billingAccountLinks: [
+          {
+            provider: Provider.AZURE,
+            accountIdentifier: '11111111-2222-3333-4444-555555555555',
+            environment: 'production',
+          },
+        ],
+      },
+    });
+
+    await mockUserServiceAccountByRole(GlobalRole.Admin);
+    const res1 = await listPublicCloudProductApi({ provider: Provider.AZURE });
+    expect(res1.status).toBe(200);
+    const dat1 = await res1.json();
+
+    type ListedProduct = {
+      licencePlate: string;
+      accountId: Array<{ provider: Provider; accountIdentifier: string; environment?: string }>;
+    };
+    const listed = dat1.data as unknown as ListedProduct[];
+    const linked = listed.find((doc) => doc.licencePlate === azure.licencePlate);
+    expect(linked).toBeTruthy();
+    expect(linked?.accountId).toEqual([
+      {
+        provider: Provider.AZURE,
+        accountIdentifier: '11111111-2222-3333-4444-555555555555',
+        environment: 'production',
+      },
+    ]);
+    const others = listed.filter((doc) => doc.licencePlate !== azure.licencePlate);
+    expect(others.every((doc) => Array.isArray(doc.accountId))).toBe(true);
+  });
+
   it('should successfully list 0 projects by admin with search criteria', async () => {
     await mockUserServiceAccountByRole(GlobalRole.Admin);
 

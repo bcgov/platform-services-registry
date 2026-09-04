@@ -27,6 +27,7 @@ import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
+import { normalizeStoredAzureSubscriptions } from '@/services/azure/subscriptions';
 import { updatePublicCloudProductRepositories } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
 import { publicCloudEditRequestBodySchema } from '@/validation-schemas/public-cloud';
@@ -113,6 +114,7 @@ export default publicCloudProductEdit(({ session }) => {
         mode: 'edit',
         disabled: isDisabled,
         awsAccounts: normalizeStoredAwsLzaAccounts(currentProduct.awsAccounts),
+        azureSubscriptions: normalizeStoredAzureSubscriptions(currentProduct.azureSubscriptions),
         product: currentProduct,
       },
     },

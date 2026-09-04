@@ -125,6 +125,17 @@ export async function cleanUp() {
   await prisma.publicCloudRequest.deleteMany();
   await prisma.privateCloudComment.deleteMany();
 
+  // Public cloud finance prototype collections
+  await prisma.actualSpend.deleteMany();
+  await prisma.unmatchedBillingLine.deleteMany();
+  await prisma.monthlyProductSpendRollup.deleteMany();
+  await prisma.spendFlag.deleteMany();
+  await prisma.ingestionLock.deleteMany();
+  await prisma.ingestionRun.deleteMany();
+  await prisma.monthlyFxRate.deleteMany();
+  await prisma.varianceNote.deleteMany();
+  await prisma.cloudCostForecast.deleteMany();
+
   // Delete projects
   await prisma.privateCloudProduct.deleteMany();
   await prisma.publicCloudProduct.deleteMany();
