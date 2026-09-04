@@ -114,6 +114,7 @@ nav:
   - business-logic/roles-permissions.md
   - business-logic/registry-roles-guide.md
   - business-logic/service-accounts.md
+  - business-logic/team-terminology.md
   - Private Cloud:
     - Request Workflow: business-logic/private-cloud/request-workflow.md
     - Email Scenario: business-logic/private-cloud/email-scenario.md
