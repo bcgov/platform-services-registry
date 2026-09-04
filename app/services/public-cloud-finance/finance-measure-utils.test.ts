@@ -17,6 +17,7 @@ import {
   sumForecastForMonths,
   sumKnownActualsOrNull,
   expectedPastActualMonths,
+  expectedYtdActualMonths,
   productExistedDuringMonth,
   summarizeYtdActuals,
   ytdActualHint,
@@ -130,6 +131,21 @@ describe('finance measure utils', () => {
         ],
         started,
         new Date('2026-09-15T12:00:00'),
+      ),
+    ).toEqual([{ year: 2026, month: 8 }]);
+  });
+
+  it('includes the in-scope current month in YTD expected actuals', () => {
+    const started = new Date('2026-08-01T00:00:00Z');
+    expect(
+      expectedYtdActualMonths(
+        [
+          { year: 2026, month: 7 },
+          { year: 2026, month: 8 },
+          { year: 2026, month: 9 },
+        ],
+        started,
+        new Date('2026-08-15T12:00:00'),
       ),
     ).toEqual([{ year: 2026, month: 8 }]);
   });
@@ -324,6 +340,31 @@ describe('complete rollup months and like-for-like totals', () => {
     expect(result.complete).toBe(false);
     expect(result.variance).toBeNull();
     expect(result.actual).toBe(10);
+  });
+
+  it('includes month-to-date actual and prorates current-month forecast', () => {
+    const now = new Date('2026-08-15T12:00:00');
+    const result = elapsedLikeForLikeTotals(
+      [
+        { year: 2026, month: 7 },
+        { year: 2026, month: 8 },
+      ],
+      [100, 40],
+      [100, 310],
+      now,
+    );
+    expect(result.complete).toBe(true);
+    expect(result.actual).toBe(140);
+    expect(result.forecast).toBeCloseTo(100 + 310 * (15 / 31));
+    expect(result.variance?.amount).toBeCloseTo(140 - (100 + 310 * (15 / 31)));
+  });
+
+  it('sums an MTD-only actual when no past months are in scope', () => {
+    const now = new Date('2026-08-15T12:00:00');
+    const result = elapsedLikeForLikeTotals([{ year: 2026, month: 8 }], [25], [310], now);
+    expect(result.complete).toBe(true);
+    expect(result.actual).toBe(25);
+    expect(result.variance).not.toBeNull();
   });
 
   it('uses YTD through today during the fiscal year, matching full-FY until March is complete', () => {

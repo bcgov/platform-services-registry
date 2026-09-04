@@ -210,6 +210,20 @@ export function expectedPastActualMonths<T extends { year: number; month: number
   );
 }
 
+/** Closed months plus the in-scope current month (FYTD / month-to-date). */
+export function expectedYtdActualMonths<T extends { year: number; month: number }>(
+  months: T[],
+  existedAt: Date | null | undefined,
+  now = new Date(),
+) {
+  return filterMonthsProductExisted(
+    months.filter(
+      (month) => isPastMonth(month.year, month.month, now) || isCurrentCalendarMonth(month.year, month.month, now),
+    ),
+    existedAt,
+  );
+}
+
 export type YtdActualSummary = {
   fytdActual: number | null;
   presentMonths: number;
@@ -358,13 +372,19 @@ export function elapsedLikeForLikeTotals(
   forecasts: Array<number | null | undefined>,
   now = new Date(),
 ) {
-  const elapsedIndexes = months
+  const pastIndexes = months
     .map((month, index) => (isPastMonth(month.year, month.month, now) ? index : -1))
     .filter((index) => index >= 0);
-  const elapsedActuals = elapsedIndexes.map((index) => actuals[index]);
-  const complete = elapsedActuals.every((amount) => amount != null);
-  const actual = sumKnownActualsOrNull(elapsedActuals);
-  const forecast = elapsedIndexes.reduce((sum, index) => sum + (forecasts[index] ?? 0), 0);
+  const currentIndex = months.findIndex((month) => isCurrentCalendarMonth(month.year, month.month, now));
+  const complete = pastIndexes.every((index) => actuals[index] != null);
+  const ytdIndexes = currentIndex >= 0 ? [...pastIndexes, currentIndex] : pastIndexes;
+  const actual = sumKnownActualsOrNull(ytdIndexes.map((index) => actuals[index]));
+  const fraction = currentMonthElapsedFraction(now);
+  const forecast = ytdIndexes.reduce((sum, index) => {
+    const amount = forecasts[index] ?? 0;
+    if (index === currentIndex) return sum + amount * fraction;
+    return sum + amount;
+  }, 0);
   return {
     actual,
     forecast,

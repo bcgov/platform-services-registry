@@ -28,7 +28,7 @@ import {
   unresolvedUnmatchedWhere,
   unreviewedSpendFlagWhere,
 } from '@/services/public-cloud-finance/active-spend';
-import { normalizeBillingAccountLinks } from '@/services/public-cloud-finance/billing-account-links';
+import { resolveBillingAccountIdentifiers } from '@/services/public-cloud-finance/billing-account-links';
 import { FINANCE_ANOMALY_THRESHOLDS, SPEND_FLAG_RULE_LABELS } from '@/services/public-cloud-finance/constants';
 import { evaluateSpendFlagsForPeriod } from '@/services/public-cloud-finance/ingest/evaluate-flags';
 import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
@@ -110,6 +110,7 @@ function buildMonthlyChart(options: {
 
   return fyMonths.map((m) => {
     const keySuffix = monthKey(m.year, m.month);
+    const hasCompleteActual = completeMonthKeys.has(keySuffix);
     const forecastTotal = products.reduce(
       (sum, product) => sum + (forecastByPlateMonth.get(`${product.licencePlate}:${keySuffix}`) ?? 0),
       0,
@@ -123,11 +124,12 @@ function buildMonthlyChart(options: {
       year: m.year,
       month: m.month,
       label: new Date(m.year, m.month - 1, 1).toLocaleString('en-CA', { month: 'short' }),
+      hasCompleteActual,
       actual: monthlyChartActual({
         year: m.year,
         month: m.month,
         actualTotal,
-        hasCompleteActual: completeMonthKeys.has(keySuffix),
+        hasCompleteActual,
         hasRollup: products.some((product) => actualByPlateMonth.has(`${product.licencePlate}:${keySuffix}`)),
       }),
       forecast: forecastTotal,
@@ -635,6 +637,7 @@ async function claimUnmatchedLine(id: string, licencePlate: string, alreadyResol
 }
 
 async function attachResolvedSpend(options: {
+  unmatchedLineId: string;
   licencePlate: string;
   provider: Provider;
   serviceLine: string;
@@ -646,53 +649,30 @@ async function attachResolvedSpend(options: {
   fxRateDate?: Date | null;
   ingestionRunId: string;
 }) {
-  const attachedWhere = {
-    AND: [
-      activeActualSpendWhere,
-      {
-        licencePlate: options.licencePlate,
-        provider: options.provider,
-        serviceLine: options.serviceLine,
-        year: options.year,
-        month: options.month,
-        ingestionRunId: options.ingestionRunId,
-      },
-    ],
-  };
-
-  let attached = await prisma.actualSpend.findMany({
-    where: attachedWhere,
+  const existing = await prisma.actualSpend.findFirst({
+    where: {
+      AND: [activeActualSpendWhere, { unmatchedLineId: options.unmatchedLineId }],
+    },
     select: { id: true },
-    orderBy: { id: 'asc' },
   });
-  if (attached.length === 0) {
-    await prisma.actualSpend.create({
-      data: {
-        licencePlate: options.licencePlate,
-        provider: options.provider,
-        serviceLine: options.serviceLine,
-        year: options.year,
-        month: options.month,
-        amountCad: options.amountCad,
-        sourceCurrency: options.sourceCurrency,
-        fxRate: options.fxRate ?? undefined,
-        fxRateDate: options.fxRateDate ?? undefined,
-        ingestionRunId: options.ingestionRunId,
-        supersededBy: null,
-      },
-    });
-    attached = await prisma.actualSpend.findMany({
-      where: attachedWhere,
-      select: { id: true },
-      orderBy: { id: 'asc' },
-    });
-  }
-  if (attached.length > 1) {
-    await prisma.actualSpend.updateMany({
-      where: { id: { in: attached.slice(1).map((row) => row.id) } },
-      data: { supersededBy: attached[0]?.id },
-    });
-  }
+  if (existing) return;
+
+  await prisma.actualSpend.create({
+    data: {
+      licencePlate: options.licencePlate,
+      provider: options.provider,
+      serviceLine: options.serviceLine,
+      year: options.year,
+      month: options.month,
+      amountCad: options.amountCad,
+      sourceCurrency: options.sourceCurrency,
+      fxRate: options.fxRate ?? undefined,
+      fxRateDate: options.fxRateDate ?? undefined,
+      ingestionRunId: options.ingestionRunId,
+      unmatchedLineId: options.unmatchedLineId,
+      supersededBy: null,
+    },
+  });
 }
 
 export async function resolveUnmatchedBillingLine(id: string, licencePlate: string) {
@@ -701,7 +681,13 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
 
   const product = await prisma.publicCloudProduct.findUnique({
     where: { licencePlate },
-    select: { licencePlate: true, provider: true, billingAccountLinks: true },
+    select: {
+      licencePlate: true,
+      provider: true,
+      billingAccountLinks: true,
+      awsAccounts: true,
+      azureSubscriptions: true,
+    },
   });
   if (!product) throw new Error('Unknown project identifier');
   if (product.provider !== line.provider) {
@@ -710,7 +696,7 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
 
   await claimUnmatchedLine(line.id, licencePlate, line.resolvedTo);
 
-  const links = normalizeBillingAccountLinks(product.billingAccountLinks);
+  const links = resolveBillingAccountIdentifiers(product);
   const alreadyLinked = links.some(
     (link) =>
       link.provider === line.provider && link.accountIdentifier.toLowerCase() === line.accountIdentifier.toLowerCase(),
@@ -728,6 +714,7 @@ export async function resolveUnmatchedBillingLine(id: string, licencePlate: stri
   }
 
   await attachResolvedSpend({
+    unmatchedLineId: line.id,
     licencePlate,
     provider: line.provider,
     serviceLine: line.serviceLine,

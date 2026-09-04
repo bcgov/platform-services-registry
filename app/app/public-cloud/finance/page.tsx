@@ -58,6 +58,14 @@ function formatVarianceCell(actual: number | null, forecast: number) {
   return `${formatCadAmount(variance.amount)} (${formatPercent(variance.percent, 0)})`;
 }
 
+function closedMonthVariance(
+  row: { actual: number | null; forecast: number; hasCompleteActual: boolean },
+  lowCoverage: boolean,
+) {
+  if (lowCoverage || !row.hasCompleteActual) return null;
+  return calculateVariance(row.actual, row.forecast);
+}
+
 function ingestButtonLabel(isPending: boolean) {
   if (isPending) return 'Queueing ingest…';
   return 'Ingest missing months';
@@ -290,25 +298,23 @@ function FinanceSnapshotBody({
                   label: string;
                   actual: number | null;
                   forecast: number;
+                  hasCompleteActual: boolean;
                   isElapsed: boolean;
                   isCurrentPartial: boolean;
-                }) => (
-                  <tr key={`${row.year}-${row.month}`} className={row.isElapsed ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-3 py-2">{row.label}</td>
-                    <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
-                    <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
-                    <td
-                      className={`px-3 py-2 text-right ${
-                        data.lowCoverage
-                          ? 'text-gray-700'
-                          : varianceToneClass(calculateVariance(row.actual, row.forecast)) || 'text-gray-700'
-                      }`}
-                    >
-                      {data.lowCoverage ? '—' : formatVarianceCell(row.actual, row.forecast)}
-                    </td>
-                    <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
-                  </tr>
-                ),
+                }) => {
+                  const monthVariance = closedMonthVariance(row, data.lowCoverage);
+                  return (
+                    <tr key={`${row.year}-${row.month}`} className={row.isElapsed ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-3 py-2">{row.label}</td>
+                      <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
+                      <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
+                      <td className={`px-3 py-2 text-right ${varianceToneClass(monthVariance) || 'text-gray-700'}`}>
+                        {monthVariance == null ? '—' : formatVarianceCell(row.actual, row.forecast)}
+                      </td>
+                      <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
+                    </tr>
+                  );
+                },
               )}
             </tbody>
           </table>

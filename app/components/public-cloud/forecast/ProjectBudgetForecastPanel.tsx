@@ -8,7 +8,7 @@ import {
   elapsedLikeForLikeTotals,
   formatCadAmount,
   isCurrentCalendarMonth,
-  expectedPastActualMonths,
+  expectedYtdActualMonths,
   sumKnownActualsOrNull,
   varianceToneClass,
 } from '@/components/public-cloud/finance/finance-measure-utils';
@@ -61,15 +61,15 @@ function fiscalChunkKnownActuals(
   actualByKey: Map<string, number>,
   billingStartedAt?: Date | null,
 ) {
-  const expectedPast = expectedPastActualMonths(months, billingStartedAt);
-  const presentPast = expectedPast.filter((month) => actualByKey.has(monthKey(month.year, month.month))).length;
+  const expected = expectedYtdActualMonths(months, billingStartedAt);
+  const present = expected.filter((month) => actualByKey.has(monthKey(month.year, month.month))).length;
   const known = sumKnownActualsOrNull(
-    expectedPast.map((month) => {
+    expected.map((month) => {
       const key = monthKey(month.year, month.month);
       return actualByKey.has(key) ? actualByKey.get(key) : null;
     }),
   );
-  return { known, presentPast, expectedPast: expectedPast.length };
+  return { known, present, expected: expected.length };
 }
 
 function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
@@ -448,7 +448,7 @@ export default function ProjectBudgetForecastPanel({
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
                             {(() => {
-                              const { known, presentPast, expectedPast } = fiscalChunkKnownActuals(
+                              const { known, present, expected } = fiscalChunkKnownActuals(
                                 fyChunk.months,
                                 actualByKey,
                                 billingStartedDate,
@@ -456,9 +456,9 @@ export default function ProjectBudgetForecastPanel({
                               return (
                                 <>
                                   {formatCadAmount(known)}
-                                  {presentPast < expectedPast && known != null && (
+                                  {present < expected && known != null && (
                                     <div className="text-[10px] font-normal text-gray-500">
-                                      incomplete ({presentPast} of {expectedPast} months)
+                                      incomplete ({present} of {expected} months)
                                     </div>
                                   )}
                                 </>
@@ -485,7 +485,7 @@ export default function ProjectBudgetForecastPanel({
                           })}
                           <td className="px-3 py-2 text-center font-semibold bg-amber-50">
                             {(() => {
-                              const expected = expectedPastActualMonths(fyChunk.months, billingStartedDate);
+                              const expected = expectedYtdActualMonths(fyChunk.months, billingStartedDate);
                               const likeForLike = elapsedLikeForLikeTotals(
                                 expected,
                                 expected.map((month) => {

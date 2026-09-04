@@ -789,19 +789,20 @@ enum SpendFlagRuleId {
 
 /// Line-level actual spend (product × provider × service line × month).
 model ActualSpend {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  licencePlate   String
-  provider       Provider
-  serviceLine    String
-  year           Int
-  month          Int
-  amountCad      Float
-  sourceCurrency String    @default("CAD")
-  fxRate         Float?
-  fxRateDate     DateTime?
-  ingestionRunId String    @db.ObjectId
-  loadedAt       DateTime  @default(now())
-  supersededBy   String?   @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  licencePlate    String
+  provider        Provider
+  serviceLine     String
+  year            Int
+  month           Int
+  amountCad       Float
+  sourceCurrency  String    @default("CAD")
+  fxRate          Float?
+  fxRateDate      DateTime?
+  ingestionRunId  String    @db.ObjectId
+  unmatchedLineId String?   @db.ObjectId
+  loadedAt        DateTime  @default(now())
+  supersededBy    String?   @db.ObjectId
 
   @@index([licencePlate, year, month])
   @@index([provider, year, month])

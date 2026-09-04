@@ -108,5 +108,68 @@ describe('POST /api/public-cloud/finance/unmatched/:id/resolve', () => {
     });
     expect(spend).toHaveLength(1);
     expect(spend[0]?.amountCad).toBe(42);
+    expect(spend[0]?.unmatchedLineId).toBe(line.id);
+  });
+
+  it('attaches two same-service accounts from one run without collapsing amounts', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+    const { product, line } = await createResolveFixture();
+    const second = await prisma.unmatchedBillingLine.create({
+      data: {
+        provider: line.provider,
+        accountIdentifier: '999988887777',
+        serviceLine: line.serviceLine,
+        year: line.year,
+        month: line.month,
+        amountCad: 18,
+        sourceCurrency: 'CAD',
+        ingestionRunId: line.ingestionRunId,
+      },
+    });
+
+    const first = await postFinanceResolveUnmatched(line.id, product.licencePlate);
+    const next = await postFinanceResolveUnmatched(second.id, product.licencePlate);
+    expect(first.status).toBe(200);
+    expect(next.status).toBe(200);
+
+    const spend = await prisma.actualSpend.findMany({
+      where: { licencePlate: product.licencePlate, ingestionRunId: line.ingestionRunId },
+      orderBy: { amountCad: 'desc' },
+    });
+    expect(spend).toHaveLength(2);
+    expect(spend.map((row) => row.amountCad)).toEqual([42, 18]);
+
+    const rollup = await prisma.monthlyProductSpendRollup.findFirst({
+      where: { licencePlate: product.licencePlate, year: line.year, month: line.month },
+    });
+    expect(rollup?.amountCad).toBe(60);
+  });
+
+  it('seeds native account identifiers before appending a resolved link', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+    const { product, line } = await createResolveFixture();
+    await prisma.publicCloudProduct.update({
+      where: { licencePlate: product.licencePlate },
+      data: {
+        awsAccounts: [
+          { environment: 'development', name: 'dev', accountId: '222233334444' },
+          { environment: 'production', name: 'prod', accountId: '444455556666' },
+        ],
+      },
+    });
+
+    const res = await postFinanceResolveUnmatched(line.id, product.licencePlate);
+    expect(res.status).toBe(200);
+
+    const updated = await prisma.publicCloudProduct.findUniqueOrThrow({
+      where: { licencePlate: product.licencePlate },
+      select: { billingAccountLinks: true },
+    });
+    const links = updated.billingAccountLinks as Array<{ accountIdentifier: string }>;
+    expect(links.map((link) => link.accountIdentifier).sort()).toEqual([
+      '111122223333',
+      '222233334444',
+      '444455556666',
+    ]);
   });
 });
