@@ -68,9 +68,6 @@ spec:
             {{- if .Data.data.AIRFLOW_FINANCE_DAG_ID }}
             export AIRFLOW_FINANCE_DAG_ID='{{ .Data.data.AIRFLOW_FINANCE_DAG_ID }}'
             {{- end }}
-            {{- if .Data.data.PUBLIC_CLOUD_FINANCE_PREVIEW }}
-            export PUBLIC_CLOUD_FINANCE_PREVIEW='{{ .Data.data.PUBLIC_CLOUD_FINANCE_PREVIEW }}'
-            {{- end }}
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}

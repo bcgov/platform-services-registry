@@ -1,4 +1,3 @@
-import { IS_PROD } from '@/config';
 import { SpendFlagRuleId } from '@/prisma/client';
 
 export const FINANCE_ANOMALY_THRESHOLDS = {
@@ -18,10 +17,3 @@ export const SPEND_FLAG_RULE_LABELS: Record<SpendFlagRuleId, string> = {
 
 /** Coverage below this → snapshot degrades to actuals-only (variance not meaningful). */
 export const LOW_FORECAST_COVERAGE_PERCENT = 20;
-
-export const PUBLIC_CLOUD_FINANCE_PREVIEW_ENABLED = !IS_PROD || process.env.PUBLIC_CLOUD_FINANCE_PREVIEW === 'true';
-
-export function isPublicCloudFinancePreviewEnabled(isProd = IS_PROD) {
-  if (!isProd) return true;
-  return process.env.PUBLIC_CLOUD_FINANCE_PREVIEW === 'true';
-}

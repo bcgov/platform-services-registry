@@ -182,14 +182,13 @@ Do this in **each** registry environment. Dev does not get real billing credenti
 **Dev only**
 
 -   No AWS / Azure keys and no `FINANCE_AZURE_COST_SCOPE`. `_dev` reads product `accountId` links from the v1 products API and invents amounts in the DAG.
--   Finance preview is already on (`APP_ENV=dev`).
+-   Finance preview is on in non-prod only, same as cost recovery and security.
 
 **Test and prod (real billing)**
 
 1. Create an AWS LZA billing-read principal and an Azure Cost Management Reader SP.
 2. Add to `airflow-variables`: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `FINANCE_AWS_REGION=us-east-1`, `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `FINANCE_AZURE_COST_SCOPE`.
 3. Unpause `_test` / `_prod` only after the Azure scope is set.
-4. **Prod UI:** set `PUBLIC_CLOUD_FINANCE_PREVIEW=true` on the app Vault path (dev and test are already on).
 
 **Local**
 
@@ -201,7 +200,7 @@ Do this in **each** registry environment. Dev does not get real billing credenti
 
 1. Dev: team SA + `DEV_FINANCE_SA_*` + app `AIRFLOW_API_*`; unpause `_dev` (generated rows, no cloud keys).
 2. Test: team SA + `TEST_FINANCE_SA_*` + AWS/Azure keys + `FINANCE_AZURE_COST_SCOPE`; unpause `_test`.
-3. Prod: same as test with `PROD_*`, plus `PUBLIC_CLOUD_FINANCE_PREVIEW=true` on the app.
+3. Prod: same as test with `PROD_*`. The finance UI stays off in prod.
 4. Rotate SP and SA secrets on the usual platform schedule.
 
 ### Explicit non-goals
