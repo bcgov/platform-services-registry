@@ -35,7 +35,7 @@ export default function GitHubAccountUpdated({
         </Text>
       )}
 
-      {!wasRemoved && (
+      {githubUsername !== null && (
         <>
           <Text>
             Current GitHub username: <strong>{githubUsername}</strong>
