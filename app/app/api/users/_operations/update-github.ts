@@ -8,6 +8,59 @@ import { usersShareActiveProduct } from '@/services/db';
 import { validateGitHubUsername } from '@/services/github';
 import { githubUserUpdateBodySchema, putPathParamSchema } from '../[id]/schema';
 
+async function removeGitHubAccount({
+  user,
+  session,
+}: {
+  user: {
+    id: string;
+    email: string;
+    firstName: string | null;
+    githubAccount: {
+      username: string;
+      accountId: string;
+    } | null;
+  };
+  session: Session;
+}) {
+  if (!user.githubAccount) {
+    return OkResponse({
+      id: user.id,
+      githubAccount: null,
+    });
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      githubAccount: {
+        delete: true,
+      },
+    },
+    select: {
+      id: true,
+      githubAccount: {
+        select: {
+          username: true,
+          accountId: true,
+        },
+      },
+    },
+  });
+
+  await sendGitHubAccountUpdatedEmail({
+    email: user.email,
+    firstName: user.firstName,
+    githubUsername: null,
+    previousGithubUsername: user.githubAccount.username,
+    updatedBy: session.user.name,
+  });
+
+  return OkResponse(updatedUser);
+}
+
 export default async function updateGitHubOp({
   session,
   body,
@@ -47,6 +100,13 @@ export default async function updateGitHubOp({
 
   if (!isEditingSelf && !canEditAnyUser && !canEditProductMember) {
     return UnauthorizedResponse();
+  }
+
+  if (username === null) {
+    return removeGitHubAccount({
+      user,
+      session,
+    });
   }
 
   const validation = await validateGitHubUsername(username);

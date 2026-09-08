@@ -79,12 +79,7 @@ function useGitHubUser(
   const changeUsername = (value: string) => {
     setUsername(value);
     setLookupUser(null);
-
-    setError(
-      hadInitialGitHubData && !value.trim()
-        ? 'A GitHub account cannot be removed. Enter and validate a replacement username.'
-        : '',
-    );
+    setError('');
 
     setUser((currentUser) =>
       currentUser
@@ -222,16 +217,12 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
     const hasValidatedGitHubUsername = Boolean(user?.githubAccount?.username && user?.githubAccount?.accountId);
 
-    const isClearingExistingGitHubAccount =
-      canEditGitHubAccount && github.hadInitialGitHubData && github.isEditing && !hasEnteredGitHubUsername;
-
     const shouldDisableSelect = Boolean(
       !user?.idir ||
         !user?.upn ||
         isBlacklisted ||
         github.isSearching ||
         github.isSaving ||
-        isClearingExistingGitHubAccount ||
         (canEditGitHubAccount && hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
     );
 
@@ -243,31 +234,25 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       github.setError('');
 
       const githubAccount = user.githubAccount;
-      if (
-        canEditGitHubAccount &&
-        github.hadInitialGitHubData &&
-        github.isEditing &&
-        (!githubAccount?.username || !githubAccount?.accountId)
-      ) {
-        github.setError('Enter and validate a new GitHub username, or close this window to keep the existing account.');
-        return;
-      }
+
+      const githubWasRemoved =
+        canEditGitHubAccount && github.hadInitialGitHubData && github.isEditing && !githubAccount;
+
       const githubWasChanged =
         canEditGitHubAccount &&
         Boolean(githubAccount?.username && githubAccount?.accountId) &&
         (githubAccount?.username !== github.originalUsername || githubAccount?.accountId !== github.originalAccountId);
-
       let selectedUser = user;
 
-      if (githubWasChanged && githubAccount) {
+      if (githubWasRemoved || githubWasChanged) {
         if (!user.id) {
-          github.setError('The Registry user must be saved before adding a GitHub account.');
+          github.setError('The Registry user must be saved before updating a GitHub account.');
           return;
         }
 
         github.setIsSaving(true);
-
-        const result = await updateUserGitHub(user.id, githubAccount.username).finally(() => {
+        const githubUsername = githubWasRemoved ? null : githubAccount?.username ?? null;
+        const result = await updateUserGitHub(user.id, githubUsername).finally(() => {
           github.setIsSaving(false);
         });
 
