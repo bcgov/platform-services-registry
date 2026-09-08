@@ -177,7 +177,7 @@ export async function getPlatformForecastSummary(options?: {
   providers?: Provider[];
 }) {
   const includeActuals = options?.includeActuals === true;
-  if (options?.providers !== undefined && options.providers.length === 0) {
+  if (options?.providers?.length === 0) {
     return { totalProducts: 0, productsWithForecast: 0, groups: [] };
   }
   // Include ACTIVE and INACTIVE so archived products keep historical forecast rollups.

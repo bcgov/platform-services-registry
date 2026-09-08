@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID } from 'node:crypto';
+import { createHash, randomInt, randomUUID } from 'node:crypto';
 
 const AWS_ACCOUNT_ID = /^\d{12}$/;
 const AZURE_SUBSCRIPTION_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -56,7 +56,7 @@ function inventAwsAccountId(licencePlate, environment, used) {
     }
   }
 
-  const fallback = String(randomBytes(6).readUIntBE(0, 6) % 10 ** 12).padStart(12, '0');
+  const fallback = String(randomInt(10 ** 12)).padStart(12, '0');
   used.add(fallback);
   return fallback;
 }
@@ -91,29 +91,40 @@ function existingByEnvironment(items, key) {
   );
 }
 
+function reserveItemIds(product, items, idKey, valid, counts, used, normalize) {
+  const byEnv = existingByEnvironment(items);
+  for (const environment of enabledEnvironments(product)) {
+    const value = byEnv.get(environment)?.[idKey];
+    if (!needsReplacement(value, valid, counts)) {
+      used.add(normalize(value));
+    }
+  }
+}
+
 function reserveKeptIds(products, counts, used) {
   for (const product of products) {
     if (product.provider === 'AWS_LZA') {
-      const byEnv = existingByEnvironment(product.awsAccounts);
-      for (const environment of enabledEnvironments(product)) {
-        const existing = byEnv.get(environment);
-        if (existing && !needsReplacement(existing.accountId, (value) => AWS_ACCOUNT_ID.test(value), counts)) {
-          used.add(existing.accountId);
-        }
-      }
+      reserveItemIds(
+        product,
+        product.awsAccounts,
+        'accountId',
+        (value) => AWS_ACCOUNT_ID.test(value),
+        counts,
+        used,
+        (id) => id,
+      );
       continue;
     }
 
-    const byEnv = existingByEnvironment(product.azureSubscriptions);
-    for (const environment of enabledEnvironments(product)) {
-      const existing = byEnv.get(environment);
-      if (
-        existing &&
-        !needsReplacement(existing.subscriptionId, (value) => AZURE_SUBSCRIPTION_ID.test(value), counts)
-      ) {
-        used.add(existing.subscriptionId.toLowerCase());
-      }
-    }
+    reserveItemIds(
+      product,
+      product.azureSubscriptions,
+      'subscriptionId',
+      (value) => AZURE_SUBSCRIPTION_ID.test(value),
+      counts,
+      used,
+      (id) => id.toLowerCase(),
+    );
   }
 }
 
