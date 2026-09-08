@@ -1,3 +1,5 @@
+## [0.85.0](https://github.com/bcgov/platform-services-registry/compare/v0.84.0...v0.85.0) (2026-09-08)
+
 ## [0.84.0](https://github.com/bcgov/platform-services-registry/compare/v0.83.2...v0.84.0) (2026-09-03)
 
 ## [0.83.2](https://github.com/bcgov/platform-services-registry/compare/v0.83.1...v0.83.2) (2026-08-24)
