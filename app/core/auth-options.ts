@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import _forEach from 'lodash-es/forEach';
 import _get from 'lodash-es/get';
 import _uniq from 'lodash-es/uniq';
-import { Account, AuthOptions, Session, User, SessionKeys, Permissions, SessionTokenTeams } from 'next-auth';
+import { Account, AuthOptions, Session, User, SessionKeys, Permissions, SessionTeam } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak';
 import { IS_PROD, AUTH_SERVER_URL, AUTH_RELM, AUTH_RESOURCE, AUTH_SECRET, USER_TOKEN_REFRESH_INTERVAL } from '@/config';
@@ -27,7 +27,7 @@ async function updateUserSession(tokens?: { access_token?: string; refresh_token
   const decodedToken = jwt.decode(access_token) as DecodedToken;
   const { resource_access = {}, sub = '', email = '', idir_guid = '' } = decodedToken || {};
   const roles = _get(resource_access, `${AUTH_RESOURCE}.roles`, []) as string[];
-  const teams: SessionTokenTeams[] = [];
+  const teams: SessionTeam[] = [];
 
   _forEach(resource_access, (val, key) => {
     if (key.startsWith(TEAM_SA_PREFIX)) {

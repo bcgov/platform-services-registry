@@ -105,7 +105,7 @@ declare module 'next-auth' {
     isFinanceManager: boolean;
     isTaskReader: boolean;
     roles: string[];
-    teams: { clientId: string; roles: string[] }[];
+    teams: SessionTeam[];
     ministries: {
       editor: string[];
       reader: string[];
@@ -138,7 +138,8 @@ declare module 'next-auth' {
   type PermissionsKey = keyof Permissions;
   type SessionKeys = keyof typeof Session;
 
-  interface SessionTokenTeams {
+  /** A Keycloak team-context service account, not a team of people. */
+  interface SessionTeam {
     clientId: string;
     roles: string[];
   }
