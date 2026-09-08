@@ -20,16 +20,13 @@ import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/forecast-grid-utils';
-import { GlobalPermissions, providerFilterOptions } from '@/constants';
+import { GlobalPermissions, financeProviderFilterOptions, type FinanceProviderFilter } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { Provider } from '@/prisma/client';
 import {
   getFinanceIngestPlan,
   getFinanceSnapshot,
   triggerFinanceIngestDag,
 } from '@/services/backend/public-cloud/finance';
-
-type ProviderFilter = 'ALL' | Provider;
 
 function SummaryCard({
   label,
@@ -124,7 +121,7 @@ const publicCloudFinancePage = createClientPage({
 });
 
 export default publicCloudFinancePage(({ session }) => {
-  const [provider, setProvider] = useState<ProviderFilter>('ALL');
+  const [provider, setProvider] = useState<FinanceProviderFilter>('ALL');
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['finance-snapshot', provider],
@@ -167,8 +164,8 @@ export default publicCloudFinancePage(({ session }) => {
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <SegmentedControl
           value={provider}
-          onChange={(value) => setProvider(value as ProviderFilter)}
-          data={[{ label: 'All providers', value: 'ALL' }, ...providerFilterOptions]}
+          onChange={(value) => setProvider(value as FinanceProviderFilter)}
+          data={[{ label: 'All providers', value: 'ALL' }, ...financeProviderFilterOptions]}
           aria-label="Provider filter"
         />
       </div>

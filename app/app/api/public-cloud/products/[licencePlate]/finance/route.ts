@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { GlobalRole } from '@/constants';
+import { GlobalRole, isFinanceProvider } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { models } from '@/services/db';
@@ -20,7 +20,7 @@ export const GET = createApiHandler({
     { where: { licencePlate: pathParams.licencePlate } },
     session,
   );
-  if (!product?._permissions.viewFinanceActuals) {
+  if (!product?._permissions.viewFinanceActuals || !isFinanceProvider(product.provider)) {
     return UnauthorizedResponse();
   }
 

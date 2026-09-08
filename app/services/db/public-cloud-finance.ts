@@ -21,6 +21,7 @@ import {
   yearOverYearChange,
 } from '@/components/public-cloud/finance/finance-measure-utils';
 import { type MonthlyValue } from '@/components/public-cloud/forecast/forecast-grid-utils';
+import { financeProviders, type FinanceProviderFilter } from '@/constants/public-cloud';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Prisma, Provider, ProjectStatus } from '@/prisma/client';
 import {
@@ -34,10 +35,11 @@ import { evaluateSpendFlagsForPeriod } from '@/services/public-cloud-finance/ing
 import { acquireIngestLock, releaseIngestLock } from '@/services/public-cloud-finance/ingest/ingest-lock';
 import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
 
-export type ProviderFilter = 'ALL' | Provider;
+export type ProviderFilter = FinanceProviderFilter;
 
 function providerWhere(provider: ProviderFilter) {
-  return provider === 'ALL' ? {} : { provider };
+  if (provider === 'ALL') return { provider: { in: [...financeProviders] } };
+  return { provider };
 }
 
 type SnapshotProduct = {
@@ -157,7 +159,7 @@ function buildMonthlyChart(options: {
 }
 
 export async function getDataFreshness() {
-  const providers = [Provider.AWS, Provider.AWS_LZA, Provider.AZURE] as const;
+  const providers = financeProviders;
   return Promise.all(
     providers.map(async (provider) => {
       const [latest, lastSuccess] = await Promise.all([
@@ -209,7 +211,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
     where: {
       licencePlate: { in: plates },
       OR: fyMonths.map((m) => ({ year: m.year, month: m.month })),
-      ...(provider === 'ALL' ? {} : { provider }),
+      ...providerWhere(provider),
     },
   });
 
@@ -240,7 +242,7 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
               activeActualSpendWhere,
               { licencePlate: { in: plates } },
               { OR: ytdMonths.map((m) => ({ year: m.year, month: m.month })) },
-              provider === 'ALL' ? {} : { provider },
+              providerWhere(provider),
             ],
           },
           _sum: { amountCad: true },
@@ -306,14 +308,14 @@ export async function getFinanceSnapshot(provider: ProviderFilter = 'ALL') {
 
   const [anomaliesAwaitingReview, unmatchedThisMonth, productsMissingForecast] = await Promise.all([
     prisma.spendFlag.count({
-      where: { AND: [unreviewedSpendFlagWhere, provider === 'ALL' ? {} : { provider }] },
+      where: { AND: [unreviewedSpendFlagWhere, providerWhere(provider)] },
     }),
     prisma.unmatchedBillingLine.count({
       where: {
         year: through.year,
         month: through.month,
         AND: [unresolvedUnmatchedWhere],
-        ...(provider === 'ALL' ? {} : { provider }),
+        ...providerWhere(provider),
       },
     }),
     Promise.resolve(activeProducts.filter((product) => !forecastByPlate.has(product.licencePlate)).length),
@@ -515,7 +517,7 @@ export async function getFinanceRankings(options: {
 export async function getForecastCoverageChaseList() {
   // Chase list is ACTIVE-only: do not remind owners of archived products.
   const products = await prisma.publicCloudProduct.findMany({
-    where: { status: ProjectStatus.ACTIVE },
+    where: { status: ProjectStatus.ACTIVE, ...providerWhere('ALL') },
     select: {
       licencePlate: true,
       name: true,
@@ -557,7 +559,9 @@ export async function getForecastCoverageChaseList() {
 
 export async function getAnomalyQueue(options?: { includeReviewed?: boolean }) {
   const flags = await prisma.spendFlag.findMany({
-    where: options?.includeReviewed ? {} : unreviewedSpendFlagWhere,
+    where: {
+      AND: [options?.includeReviewed ? {} : unreviewedSpendFlagWhere, providerWhere('ALL')],
+    },
     orderBy: [{ raisedAt: 'desc' }],
   });
   const plates = [...new Set(flags.map((f) => f.licencePlate))];
@@ -618,7 +622,7 @@ export async function getUnmatchedBilling(options?: { provider?: ProviderFilter;
         {
           year,
           month,
-          ...(provider === 'ALL' ? {} : { provider }),
+          ...providerWhere(provider),
         },
       ],
     },
@@ -628,7 +632,7 @@ export async function getUnmatchedBilling(options?: { provider?: ProviderFilter;
   return {
     year,
     month,
-    note: 'Lines that cannot be matched to a product via billingAccountLinks (or AWS_LZA awsAccounts / Azure azureSubscriptions fallback). Classic AWS has no native account field.',
+    note: 'Lines that cannot be matched to a product via billingAccountLinks (or AWS_LZA awsAccounts / Azure azureSubscriptions fallback). Classic AWS is out of scope.',
     lines: lines.map((line) => ({
       id: line.id,
       provider: line.provider,

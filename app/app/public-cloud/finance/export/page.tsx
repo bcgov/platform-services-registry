@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { failure, success } from '@/components/notification';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
-import { GlobalPermissions, providerFilterOptions } from '@/constants';
+import { GlobalPermissions, financeProviderFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { downloadFinanceExport } from '@/services/backend/public-cloud/finance';
 
@@ -42,7 +42,7 @@ export default publicCloudFinanceExportPage(({ session }) => {
         <SegmentedControl
           value={provider}
           onChange={setProvider}
-          data={[{ label: 'All', value: 'ALL' }, ...providerFilterOptions]}
+          data={[{ label: 'All', value: 'ALL' }, ...financeProviderFilterOptions]}
           aria-label="Provider filter"
         />
         <Select

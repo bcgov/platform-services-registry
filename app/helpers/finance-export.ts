@@ -4,6 +4,7 @@ import {
   formatCadAmount,
   monthKey,
 } from '@/components/public-cloud/finance/finance-measure-utils';
+import { isFinanceProvider } from '@/constants/public-cloud';
 import { getFinanceRankings, getFinanceSnapshot, type ProviderFilter } from '@/services/db/public-cloud-finance';
 import { getPlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 
@@ -25,6 +26,7 @@ function formatExportProductName(product: Pick<ForecastProduct, 'name' | 'status
 }
 
 function matchesProviderFilter(productProvider: ForecastProduct['provider'], provider: ProviderFilter) {
+  if (!isFinanceProvider(productProvider)) return false;
   return provider === 'ALL' || productProvider === provider;
 }
 

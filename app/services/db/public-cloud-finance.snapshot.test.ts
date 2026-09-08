@@ -14,7 +14,7 @@ import { getFinanceSnapshot } from './public-cloud-finance';
 
 const owner = mockNoRoleUsers[0];
 
-async function createSnapshotProduct(createdAt: Date) {
+async function createSnapshotProduct(createdAt: Date, provider: Provider = Provider.AWS_LZA) {
   const org = DB_DATA.organizations[0] ?? getRandomOrganization();
   const user = await prisma.user.findFirstOrThrow({ where: { idirGuid: owner.idirGuid } });
   return prisma.publicCloudProduct.create({
@@ -28,7 +28,7 @@ async function createSnapshotProduct(createdAt: Date) {
       primaryTechnicalLeadId: user.id,
       expenseAuthorityId: user.id,
       organizationId: org.id,
-      provider: Provider.AWS_LZA,
+      provider,
       requiresNetworking: false,
       networkingReason: '',
       providerSelectionReasons: ['Cost Efficiency'],
@@ -93,5 +93,14 @@ describe('getFinanceSnapshot billing-start scope', () => {
     if (priorClosed) {
       expect(priorClosed.forecast).toBe(0);
     }
+  });
+
+  it('excludes classic AWS from the estate snapshot and freshness', async () => {
+    const before = await getFinanceSnapshot('ALL');
+    await createSnapshotProduct(new Date(), Provider.AWS);
+
+    const snapshot = await getFinanceSnapshot('ALL');
+    expect(snapshot.coverage.productCount).toBe(before.coverage.productCount);
+    expect(snapshot.freshness.map((item) => item.provider).sort()).toEqual(['AWS_LZA', 'AZURE']);
   });
 });

@@ -5,11 +5,12 @@ import {
   lastCompleteMonth,
   monthKey,
 } from '@/components/public-cloud/finance/finance-measure-utils';
+import { financeProviders } from '@/constants/public-cloud';
 import prisma from '@/core/prisma';
 import { FinanceIngestionStatus, Provider } from '@/prisma/client';
 import type { BillingPeriod } from './types';
 
-export const SCHEDULED_INGEST_PROVIDERS = [Provider.AWS_LZA, Provider.AZURE] as const;
+export const SCHEDULED_INGEST_PROVIDERS = financeProviders;
 
 export function elapsedCompleteFyMonths(through: BillingPeriod = lastCompleteMonth()): BillingPeriod[] {
   const fy = currentFiscalYearBounds(new Date(through.year, through.month - 1, 15));

@@ -10,7 +10,7 @@ import { getProductFinance } from '@/services/api-test/public-cloud/finance';
 
 const owner = mockNoRoleUsers[0];
 
-async function createOwnedProduct() {
+async function createOwnedProduct(provider: Provider = Provider.AWS_LZA) {
   const org = DB_DATA.organizations[0] ?? getRandomOrganization();
   const user = await prisma.user.findFirstOrThrow({ where: { idirGuid: owner.idirGuid } });
   return prisma.publicCloudProduct.create({
@@ -24,7 +24,7 @@ async function createOwnedProduct() {
       primaryTechnicalLeadId: user.id,
       expenseAuthorityId: user.id,
       organizationId: org.id,
-      provider: Provider.AWS_LZA,
+      provider,
       requiresNetworking: false,
       networkingReason: '',
       providerSelectionReasons: ['Cost Efficiency'],
@@ -70,6 +70,13 @@ describe('GET /api/public-cloud/products/:licencePlate/finance', () => {
   it('rejects a billing reader who is not on the product', async () => {
     const product = await createOwnedProduct();
     await mockSessionByRole(GlobalRole.Billingreader);
+    const res = await getProductFinance(product.licencePlate);
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects classic AWS products', async () => {
+    const product = await createOwnedProduct(Provider.AWS);
+    await mockSessionByRole(GlobalRole.Admin);
     const res = await getProductFinance(product.licencePlate);
     expect(res.status).toBe(401);
   });
