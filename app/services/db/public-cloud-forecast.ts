@@ -177,9 +177,12 @@ export async function getPlatformForecastSummary(options?: {
   providers?: Provider[];
 }) {
   const includeActuals = options?.includeActuals === true;
+  if (options?.providers !== undefined && options.providers.length === 0) {
+    return { totalProducts: 0, productsWithForecast: 0, groups: [] };
+  }
   // Include ACTIVE and INACTIVE so archived products keep historical forecast rollups.
   const products = await prisma.publicCloudProduct.findMany({
-    where: options?.providers?.length ? { provider: { in: options.providers } } : {},
+    where: options?.providers ? { provider: { in: options.providers } } : {},
     select: { licencePlate: true, name: true, provider: true, status: true },
     orderBy: [{ provider: 'asc' }, { name: 'asc' }],
   });
