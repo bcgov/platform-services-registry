@@ -37,6 +37,9 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             ['. /vault/secrets/secrets.env && node_modules/.bin/migrate-mongo up']
+          env:
+            - name: APP_ENV
+              value: {{ index (.Values.env | default dict) "APP_ENV" | default "" | quote }}
           resources:
             limits:
               cpu: 0.5
