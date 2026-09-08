@@ -1,7 +1,7 @@
 import GitHubAccountUpdatedTemplate from '@/emails/_templates/users/GitHubAccountUpdated';
 import { sendEmail } from '@/services/ches/core';
 import { getContent } from '@/services/ches/helpers';
-import { GitHubAccountUpdatedEmailData } from '.';
+import type { GitHubAccountUpdatedEmailData } from '.';
 
 export async function sendGitHubAccountUpdated({
   email,

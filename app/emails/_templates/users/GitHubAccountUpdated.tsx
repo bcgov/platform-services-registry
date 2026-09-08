@@ -1,7 +1,7 @@
 import { Button, Heading, Text } from '@react-email/components';
 import * as React from 'react';
 import Layout from '@/emails/_components/layout/Layout';
-import { GitHubAccountUpdatedEmailData } from '@/services/ches/users';
+import type { GitHubAccountUpdatedEmailData } from '@/services/ches/users';
 
 export default function GitHubAccountUpdated({
   firstName,
