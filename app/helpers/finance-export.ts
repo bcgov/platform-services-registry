@@ -4,6 +4,7 @@ import {
   formatCadAmount,
   monthKey,
 } from '@/components/public-cloud/finance/finance-measure-utils';
+import { financeProviders, isFinanceProvider } from '@/constants/public-cloud';
 import { getFinanceRankings, getFinanceSnapshot, type ProviderFilter } from '@/services/db/public-cloud-finance';
 import { getPlatformForecastSummary } from '@/services/db/public-cloud-forecast';
 
@@ -24,7 +25,12 @@ function formatExportProductName(product: Pick<ForecastProduct, 'name' | 'status
   return product.status === 'INACTIVE' ? `${product.name} (archived)` : product.name;
 }
 
+function financeExportProviders(provider: ProviderFilter) {
+  return provider === 'ALL' ? [...financeProviders] : [provider];
+}
+
 function matchesProviderFilter(productProvider: ForecastProduct['provider'], provider: ProviderFilter) {
+  if (!isFinanceProvider(productProvider)) return false;
   return provider === 'ALL' || productProvider === provider;
 }
 
@@ -129,7 +135,9 @@ export async function buildFinanceWorkbookBuffer(options: {
     period: options.period,
     limit: 100,
   });
-  const forecastSummary = await getPlatformForecastSummary();
+  const forecastSummary = options.datasets.includes('forecast')
+    ? await getPlatformForecastSummary({ providers: financeExportProviders(options.provider) })
+    : null;
   const periodKeys = monthWindowKeys(options.period);
 
   const meta = workbook.addWorksheet('Export metadata');
@@ -152,7 +160,7 @@ export async function buildFinanceWorkbookBuffer(options: {
     'No forecast entered — excluded from forecast rollups',
   ]);
 
-  if (options.datasets.includes('forecast')) {
+  if (forecastSummary && options.datasets.includes('forecast')) {
     addForecastSheet(workbook, forecastSummary, options.provider, periodKeys);
   }
   if (options.datasets.includes('actuals')) {
@@ -304,7 +312,9 @@ export async function buildFinanceExportCsvRows(options: {
   const rankings = options.datasets.some((dataset) => ['product-rankings', 'service-line-rankings'].includes(dataset))
     ? await getFinanceRankings({ provider: options.provider, period: options.period, limit: 100 })
     : null;
-  const forecastSummary = options.datasets.includes('forecast') ? await getPlatformForecastSummary() : null;
+  const forecastSummary = options.datasets.includes('forecast')
+    ? await getPlatformForecastSummary({ providers: financeExportProviders(options.provider) })
+    : null;
   const periodKeys = monthWindowKeys(options.period);
 
   if (forecastSummary) appendForecastCsvRows(rows, forecastSummary, options.provider, periodKeys);

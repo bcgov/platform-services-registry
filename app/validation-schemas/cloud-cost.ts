@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { financeProviders } from '@/constants/public-cloud';
 import { objectId } from '@/validation-schemas/common';
 
 export const forecastMonthlyValueSchema = z.object({
@@ -22,7 +23,10 @@ export const forecastExportQuerySchema = z.object({
 export type ForecastExportQuery = z.infer<typeof forecastExportQuerySchema>;
 
 export const financeProviderQuerySchema = z.object({
-  provider: z.enum(['ALL', 'AWS', 'AWS_LZA', 'AZURE']).optional().default('ALL'),
+  provider: z
+    .enum(['ALL', ...financeProviders])
+    .optional()
+    .default('ALL'),
 });
 
 export const financeRankingsQuerySchema = financeProviderQuerySchema.extend({
@@ -33,7 +37,10 @@ export const financeRankingsQuerySchema = financeProviderQuerySchema.extend({
 
 export const financeExportQuerySchema = z.object({
   format: z.enum(['csv', 'xlsx']).optional().default('xlsx'),
-  provider: z.enum(['ALL', 'AWS', 'AWS_LZA', 'AZURE']).optional().default('ALL'),
+  provider: z
+    .enum(['ALL', ...financeProviders])
+    .optional()
+    .default('ALL'),
   period: z.enum(['ytd', 'full-fy']).optional().default('ytd'),
   datasets: z.string().optional().default('forecast,actuals,variance,product-rankings,service-line-rankings'),
 });
@@ -69,7 +76,7 @@ export const financeIngestLineSchema = z.object({
 });
 
 export const financeIngestLinesBodySchema = z.object({
-  provider: z.enum(['AWS_LZA', 'AZURE']),
+  provider: z.enum(financeProviders),
   year: z.number().int().min(2000).max(2100),
   month: z.number().int().min(1).max(12),
   lines: z.array(financeIngestLineSchema),

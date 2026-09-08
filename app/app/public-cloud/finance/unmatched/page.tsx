@@ -9,7 +9,7 @@ import { currentCalendarMonth, formatCadAmount } from '@/components/public-cloud
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
-import { GlobalPermissions, providerFilterOptions } from '@/constants';
+import { GlobalPermissions, financeProviderFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceUnmatched, resolveFinanceUnmatched } from '@/services/backend/public-cloud/finance';
 
@@ -48,7 +48,7 @@ export default publicCloudFinanceUnmatchedPage(({ session }) => {
       <h1 className="text-xl lg:text-2xl font-semibold mb-2">Unmatched billing</h1>
       <p className="text-sm text-gray-600 mb-4">
         Internal. Billing lines that could not be joined to a product. Prefer billingAccountLinks; otherwise AWS_LZA
-        uses awsAccounts and Azure uses azureSubscriptions. Classic AWS has no native account field.
+        uses awsAccounts and Azure uses azureSubscriptions. Classic AWS is not part of finance reporting.
       </p>
       <FinanceNav />
 
@@ -56,7 +56,7 @@ export default publicCloudFinanceUnmatchedPage(({ session }) => {
         <SegmentedControl
           value={provider}
           onChange={setProvider}
-          data={[{ label: 'All', value: 'ALL' }, ...providerFilterOptions]}
+          data={[{ label: 'All', value: 'ALL' }, ...financeProviderFilterOptions]}
           aria-label="Provider filter"
         />
         <NumberInput

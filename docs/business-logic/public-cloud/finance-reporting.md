@@ -1,5 +1,7 @@
 # Public Cloud financial reporting (prototype)
 
+Finance reporting covers **AWS LZA** and **MS Azure** only. Classic AWS products stay in the registry and on the forecast page, but they are not ingested, filtered, or rolled into finance snapshot / rankings / coverage / unmatched / export.
+
 ## Account / subscription join keys
 
 Ingestion joins provider billing lines to registry products via account or subscription identifiers.

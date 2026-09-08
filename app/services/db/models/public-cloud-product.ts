@@ -1,4 +1,5 @@
 import { Session } from 'next-auth';
+import { isFinanceProvider } from '@/constants/public-cloud';
 import prisma from '@/core/prisma';
 import { Prisma, ProjectStatus, TaskType, PublicCloudProductMemberRole } from '@/prisma/client';
 import { PublicCloudProductDecorate } from '@/types/doc-decorate';
@@ -157,7 +158,9 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     );
 
   const canViewFinanceActuals = Boolean(
-    session.previews.publicCloudFinance && (session.permissions.viewPublicCloudForecast || isProductTeamMember),
+    session.previews.publicCloudFinance &&
+      isFinanceProvider(doc.provider) &&
+      (session.permissions.viewPublicCloudForecast || isProductTeamMember),
   );
 
   const canEditForecast = canEdit;

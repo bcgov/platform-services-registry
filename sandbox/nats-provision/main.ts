@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import waitOn from 'wait-on';
 import { connect, JSONCodec } from 'nats';
 import {
@@ -15,9 +16,6 @@ import {
 import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
 
 const natsServer = `${NATS_HOST}:${NATS_PORT}`;
-const mockAwsAccountId = '123456789012';
-const mockAzureSubscriptionId = '00000000-0000-4000-8000-000000000001';
-
 const awsLzaEnvironmentMap = {
   dev: { environment: 'development', suffix: 'dev' },
   test: { environment: 'test', suffix: 'test' },
@@ -26,6 +24,22 @@ const awsLzaEnvironmentMap = {
 } as const;
 
 const azureEnvironmentMap = awsLzaEnvironmentMap;
+
+function inventAwsAccountId(licencePlate: string, environment: string) {
+  const hex = createHash('sha256').update(`dev-aws:${licencePlate}:${environment}:0`).digest('hex');
+  return (BigInt(`0x${hex.slice(0, 16)}`) % 10n ** 12n).toString().padStart(12, '0');
+}
+
+function inventAzureSubscriptionId(licencePlate: string, environment: string) {
+  const hex = createHash('sha256').update(`dev-azure:${licencePlate}:${environment}:0`).digest('hex');
+  return [
+    hex.slice(0, 8),
+    hex.slice(8, 12),
+    `4${hex.slice(13, 16)}`,
+    `${((Number.parseInt(hex[16], 16) & 0x3) | 0x8).toString(16)}${hex.slice(17, 20)}`,
+    hex.slice(20, 32),
+  ].join('-');
+}
 
 function getPublicCloudProvisionPayload(provider: string, data: any) {
   const licencePlate = data.project_set_info.licence_plate;
@@ -38,7 +52,7 @@ function getPublicCloudProvisionPayload(provider: string, data: any) {
         .map(([, account]) => ({
           environment: account.environment,
           name: `${licencePlate}-${account.suffix}`,
-          accountId: mockAwsAccountId,
+          accountId: inventAwsAccountId(licencePlate, account.environment),
         })),
     };
   }
@@ -50,7 +64,7 @@ function getPublicCloudProvisionPayload(provider: string, data: any) {
         .map(([, account]) => ({
           environment: account.environment,
           name: `${licencePlate}-${account.suffix}`,
-          subscriptionId: mockAzureSubscriptionId,
+          subscriptionId: inventAzureSubscriptionId(licencePlate, account.environment),
         })),
     };
   }

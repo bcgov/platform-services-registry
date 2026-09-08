@@ -171,10 +171,18 @@ function appendCurrencyTotalRows(
 }
 
 /** Estate billing actuals stay off unless the caller opts in (finance preview). */
-export async function getPlatformForecastSummary(options?: { includeActuals?: boolean }) {
+export async function getPlatformForecastSummary(options?: {
+  includeActuals?: boolean;
+  /** When set, only these providers are loaded. Forecast UI omits this to include classic AWS. */
+  providers?: Provider[];
+}) {
   const includeActuals = options?.includeActuals === true;
+  if (options?.providers?.length === 0) {
+    return { totalProducts: 0, productsWithForecast: 0, groups: [] };
+  }
   // Include ACTIVE and INACTIVE so archived products keep historical forecast rollups.
   const products = await prisma.publicCloudProduct.findMany({
+    where: options?.providers ? { provider: { in: options.providers } } : {},
     select: { licencePlate: true, name: true, provider: true, status: true },
     orderBy: [{ provider: 'asc' }, { name: 'asc' }],
   });

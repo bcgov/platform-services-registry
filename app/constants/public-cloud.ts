@@ -23,7 +23,21 @@ export const providerOptions = providers.map((value) => ({
   value,
 }));
 
-/** Filter chips used on finance and forecast pages. Order matches those UIs (LZA, MS Azure, classic AWS). */
+/** Providers with finance actuals. Classic AWS is out of scope (no native billing join; ingest is LZA + Azure). */
+export const financeProviders = [Provider.AWS_LZA, Provider.AZURE] as const;
+export type FinanceProvider = (typeof financeProviders)[number];
+export type FinanceProviderFilter = 'ALL' | FinanceProvider;
+
+export function isFinanceProvider(provider: string): provider is FinanceProvider {
+  return (financeProviders as readonly string[]).includes(provider);
+}
+
+export const financeProviderFilterOptions = financeProviders.map((value) => ({
+  label: providerLabels[value],
+  value,
+}));
+
+/** Filter chips used on the forecast page. Includes classic AWS (legacy products still forecast). */
 export const providerFilterOptions = [
   { label: providerLabels[Provider.AWS_LZA], value: Provider.AWS_LZA },
   { label: providerLabels[Provider.AZURE], value: Provider.AZURE },
