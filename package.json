@@ -1,9 +1,9 @@
 {
   "name": "pltsvc",
   "description": "B.C. Government's Platform Product Registry",
-  "version": "0.83.2",
+  "version": "0.84.0",
   "private": true,
-  "packageManager": "pnpm@11.23.0",
+  "packageManager": "pnpm@11.26.0",
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.root.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.root.json --fix .",
@@ -15,7 +15,7 @@
     "node": ">=22.1.0"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^26.0.0",
+    "@badeball/cypress-cucumber-preprocessor": "^28.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
@@ -24,7 +24,7 @@
     "@release-it/bumper": "^8.0.0",
     "@types/eslint-config-prettier": "^6.11.3",
     "conventional-changelog-cli": "^5.0.0",
-    "cypress": "^14.5.3",
+    "cypress": "^16.0.0",
     "cypress-keycloak": "^2.0.2",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
@@ -35,22 +35,5 @@
     "typescript": "^6.0.0",
     "typescript-eslint": "^8.39.0",
     "wait-on": "^9.0.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "conventional-changelog-conventionalcommits": "^10.0.0",
-      "eslint-plugin-react-hooks": "^7.0.0"
-    },
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "canvas",
-      "core-js-pure",
-      "cypress",
-      "esbuild",
-      "prisma",
-      "sharp",
-      "unrs-resolver"
-    ]
   }
 }

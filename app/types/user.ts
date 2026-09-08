@@ -1,5 +1,5 @@
 import { BcgovGuidExtensionKey } from '@/constants';
-import { Prisma, User } from '@/prisma/client';
+import { Prisma } from '@/prisma/client';
 
 export interface MsUserBase {
   id: string;
@@ -23,8 +23,7 @@ export interface AppUser {
   email: string;
   idir: string;
   idirGuid: string;
-  githubUsername: string | null;
-  githubAccountId: string | null;
+  githubAccount: { username: string; accountId: string } | null;
   isGuidValid: boolean;
   displayName: string;
   firstName: string;
@@ -38,10 +37,21 @@ export interface AppUserWithRoles extends AppUser {
   roles: string[];
 }
 
-export type AdminViewUser = User & {
+export type AdminViewUser = Prisma.UserGetPayload<{
+  include: {
+    githubAccount: GitHubAccountSelection;
+  };
+}> & {
   roles: string[];
   privateProducts: { name: string; licencePlate: string }[];
   publicProducts: { name: string; licencePlate: string }[];
+};
+
+type GitHubAccountSelection = {
+  select: {
+    username: true;
+    accountId: true;
+  };
 };
 
 type UserDetailProduct = {
@@ -57,8 +67,7 @@ export type UserDetail = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
-    githubUsername: true;
-    githubAccountId: true;
+    githubAccount: GitHubAccountSelection;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -76,7 +85,7 @@ export type UserDetail = Prisma.UserGetPayload<{
   };
 }>;
 
-export type UserDetailColeagues = Prisma.UserGetPayload<{
+export type UserDetailColleagues = Prisma.UserGetPayload<{
   select: {
     id: true;
     firstName: true;
@@ -84,8 +93,7 @@ export type UserDetailColeagues = Prisma.UserGetPayload<{
     email: true;
     upn: true;
     idir: true;
-    githubUsername: true;
-    githubAccountId: true;
+    githubAccount: GitHubAccountSelection;
     idirGuid: true;
     officeLocation: true;
     jobTitle: true;
@@ -96,34 +104,9 @@ export type UserDetailColeagues = Prisma.UserGetPayload<{
   };
 }>;
 
-export type UserDetailWithColeagues = Prisma.UserGetPayload<{
-  select: {
-    id: true;
-    providerUserId: true;
-    firstName: true;
-    lastName: true;
-    email: true;
-    upn: true;
-    idir: true;
-    idirGuid: true;
-    githubUsername: true;
-    githubAccountId: true;
-    officeLocation: true;
-    jobTitle: true;
-    image: true;
-    ministry: true;
-    archived: true;
-    lastSeen: true;
-    onboardingDate: true;
-    privateCloudProjectsAsProjectOwner: UserDetailProduct;
-    privateCloudProjectsAsPrimaryTechnicalLead: UserDetailProduct;
-    privateCloudProjectsAsSecondaryTechnicalLead: UserDetailProduct;
-    publicCloudProjectsAsProjectOwner: UserDetailProduct;
-    publicCloudProjectsAsPrimaryTechnicalLead: UserDetailProduct;
-    publicCloudProjectsAsSecondaryTechnicalLead: UserDetailProduct;
-    publicCloudProjectsAsExpenseAuthority: UserDetailProduct;
-  };
-}> & { colleagues: UserDetailColeagues[] };
+export type UserDetailWithColleagues = UserDetail & {
+  colleagues: UserDetailColleagues[];
+};
 
 export type SearchedUser = Prisma.UserGetPayload<{
   select: {
@@ -134,8 +117,7 @@ export type SearchedUser = Prisma.UserGetPayload<{
     upn: true;
     idir: true;
     idirGuid: true;
-    githubUsername: true;
-    githubAccountId: true;
+    githubAccount: GitHubAccountSelection;
     isGuidValid: true;
     officeLocation: true;
     jobTitle: true;
@@ -191,8 +173,10 @@ export type GitHubUserValidationResult =
 
 export interface UpdatedGitHubUser {
   id: string;
-  githubUsername: string | null;
-  githubAccountId: string | null;
+  githubAccount: {
+    username: string;
+    accountId: string;
+  } | null;
 }
 
-export type MsGraphAppUser = Omit<AppUser, 'githubUsername' | 'githubAccountId'>;
+export type MsGraphAppUser = Omit<AppUser, 'githubAccount'>;

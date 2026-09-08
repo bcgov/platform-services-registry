@@ -20,10 +20,11 @@ interface UserAttribute {
 
 interface Props {
   disabled?: boolean;
+  canEditGitHubAccount?: boolean;
   userAttributes: UserAttribute[];
 }
 
-export default function TeamContacts({ disabled, userAttributes }: Props) {
+export default function TeamContacts({ disabled, canEditGitHubAccount, userAttributes }: Readonly<Props>) {
   const {
     setValue,
     watch,
@@ -51,6 +52,7 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
           initialValue: user,
           blacklistIds: resolvedBlacklistIds,
           blacklistMessage,
+          canEditGitHubAccount,
         },
         { initialState: { user } },
       );
@@ -81,7 +83,11 @@ export default function TeamContacts({ disabled, userAttributes }: Props) {
           {isOptional && <span className="italic font-bold"> (Optional)</span>}
         </Table.Td>
         <Table.Td className="user-button">
-          <UserProfile data={user} onClick={disabled ? undefined : handleUserChange} />
+          <UserProfile
+            data={user}
+            onClick={disabled ? undefined : handleUserChange}
+            canEditGitHubAccount={canEditGitHubAccount}
+          />
           <FormError field={`${key}Id`} className="mt-1" />
         </Table.Td>
 

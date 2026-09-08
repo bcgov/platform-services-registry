@@ -4,11 +4,18 @@ import SharedAdditionalTeamMembers from '@/components/shared/AdditionalTeamMembe
 import { publicCloudProductMemberRoles } from '@/constants';
 import { PublicCloudProductMember } from '@/prisma/client';
 
-export default function AdditionalTeamMembers({ disabled }: { disabled?: boolean }) {
+export default function AdditionalTeamMembers({
+  disabled,
+  canEditGitHubAccount,
+}: {
+  disabled?: boolean;
+  canEditGitHubAccount?: boolean;
+}) {
   return (
     <SharedAdditionalTeamMembers<PublicCloudProductMember>
       disabled={disabled}
       memberRoles={publicCloudProductMemberRoles}
+      canEditGitHubAccount={canEditGitHubAccount}
     >
       <p>
         Additional members can be added to grant privileges on the registry application. These privileges are for

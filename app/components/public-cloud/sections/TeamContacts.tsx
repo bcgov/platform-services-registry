@@ -6,6 +6,7 @@ interface Props {
   isTeamContactsDisabled?: boolean;
   isAdditionalMembersDisabled?: boolean;
   showAdditionalTeamMembers?: boolean;
+  canEditGitHubAccount?: boolean;
 }
 
 const userAttributes = [
@@ -47,15 +48,20 @@ export default function TeamContacts({
   isTeamContactsDisabled,
   isAdditionalMembersDisabled,
   showAdditionalTeamMembers = true,
+  canEditGitHubAccount = false,
 }: Props) {
   return (
     <div className="m-5">
       <h3 className="text-base lg:text-lg font-semibold leading-7 mt-7">Primary Contacts</h3>
-      <TeamContactsBase disabled={isTeamContactsDisabled} userAttributes={userAttributes} />
+      <TeamContactsBase
+        disabled={isTeamContactsDisabled}
+        canEditGitHubAccount={canEditGitHubAccount}
+        userAttributes={userAttributes}
+      />
       {showAdditionalTeamMembers && (
         <>
           <h6 className="text-base lg:text-lg font-semibold leading-7 mt-7">Additional team members (optional)</h6>
-          <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} />
+          <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} canEditGitHubAccount={canEditGitHubAccount} />
         </>
       )}
     </div>

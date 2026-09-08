@@ -1,5 +1,5 @@
 # 1st stage to build the image
-FROM node:24.19.0-slim AS build
+FROM node:24.20.0-slim AS build
 
 WORKDIR /workspace
 
@@ -7,7 +7,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY app/package.json ./app/package.json
 COPY app/prisma ./app/prisma
 
-RUN npm install -g turbo pnpm@11.23.0 && \
+RUN npm install -g turbo pnpm@11.26.0 && \
     pnpm install --frozen-lockfile
 
 COPY app ./app

@@ -72,6 +72,7 @@ export default privateCloudRequestOriginal(({ getPathParams, session, router }) 
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {

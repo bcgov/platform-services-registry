@@ -24,7 +24,7 @@ interface TableProps {
 
 export default function TableBody({ data, availableRoles = [], session }: TableProps) {
   const [savingOnboardingDate, setSavingOnboardingDate] = useState(false);
-
+  const canEditGitHubAccount = session.isAdmin;
   const methods = useForm({
     values: {
       users: data,
@@ -40,6 +40,7 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
           <UserProfile
             data={item}
             showEditIcon={false}
+            canEditGitHubAccount={canEditGitHubAccount}
             onClick={
               session.permissions.editUsers
                 ? async () => {
@@ -47,6 +48,7 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
                       {
                         initialValue: item,
                         userReadonly: true,
+                        canEditGitHubAccount,
                       },
                       {
                         initialState: {
@@ -61,8 +63,7 @@ export default function TableBody({ data, availableRoles = [], session }: TableP
 
                     methods.setValue(`users.${index}`, {
                       ...item,
-                      githubUsername: state.user.githubUsername,
-                      githubAccountId: state.user.githubAccountId,
+                      githubAccount: state.user.githubAccount,
                     });
                   }
                 : undefined

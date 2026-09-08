@@ -9,7 +9,7 @@ import {
   PublicCloudRequestSimpleDecorated,
 } from '@/types/public-cloud';
 import { getDaysSince, getUniqueNonFalsyItems } from '@/utils/js';
-import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude } from '../includes';
+import { publicCloudRequestDetailInclude, publicCloudRequestSimpleInclude, userWithGitHubAccount } from '../includes';
 import { createSessionModel } from './core';
 import { publicCloudProductModel } from './public-cloud-product';
 
@@ -172,7 +172,14 @@ async function decorate<T extends PublicCloudRequestSimple | PublicCloudRequestD
     }
 
     memberIds = getUniqueNonFalsyItems(memberIds);
-    const users = await prisma.user.findMany({ where: { id: { in: memberIds } } });
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          in: memberIds,
+        },
+      },
+      include: userWithGitHubAccount.include,
+    });
 
     if (detailedData.originalData) {
       detailedData.originalData.members = detailedData.originalData.members.map((member) => {

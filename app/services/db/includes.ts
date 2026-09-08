@@ -1,7 +1,18 @@
+export const userWithGitHubAccount = {
+  include: {
+    githubAccount: {
+      select: {
+        username: true,
+        accountId: true,
+      },
+    },
+  },
+} as const;
+
 export const privateCloudProductSimpleInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
+  projectOwner: userWithGitHubAccount,
+  primaryTechnicalLead: userWithGitHubAccount,
+  secondaryTechnicalLead: userWithGitHubAccount,
   organization: true,
   requests: {
     where: {
@@ -14,9 +25,9 @@ export const privateCloudProductSimpleInclude = {
 };
 
 export const privateCloudProductDetailInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
+  projectOwner: userWithGitHubAccount,
+  primaryTechnicalLead: userWithGitHubAccount,
+  secondaryTechnicalLead: userWithGitHubAccount,
   organization: true,
   requests: {
     where: {
@@ -34,17 +45,17 @@ export const privateCloudRequestSimpleInclude = {
   createdBy: true,
   project: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
       organization: true,
     },
   },
   decisionData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
       organization: true,
     },
   },
@@ -56,43 +67,43 @@ export const privateCloudRequestDetailInclude = {
   createdBy: true,
   project: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
       organization: true,
     },
   },
   originalData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
       organization: true,
     },
   },
   requestData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
       organization: true,
     },
   },
   decisionData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
       organization: true,
     },
   },
 };
 
 export const publicCloudProductSimpleInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  expenseAuthority: true,
+  projectOwner: userWithGitHubAccount,
+  primaryTechnicalLead: userWithGitHubAccount,
+  secondaryTechnicalLead: userWithGitHubAccount,
+  expenseAuthority: userWithGitHubAccount,
   organization: true,
   requests: {
     where: {
@@ -105,10 +116,10 @@ export const publicCloudProductSimpleInclude = {
 };
 
 export const publicCloudProductDetailInclude = {
-  projectOwner: true,
-  primaryTechnicalLead: true,
-  secondaryTechnicalLead: true,
-  expenseAuthority: true,
+  projectOwner: userWithGitHubAccount,
+  primaryTechnicalLead: userWithGitHubAccount,
+  secondaryTechnicalLead: userWithGitHubAccount,
+  expenseAuthority: userWithGitHubAccount,
   organization: true,
   requests: {
     where: {
@@ -126,19 +137,19 @@ export const publicCloudRequestSimpleInclude = {
   createdBy: true,
   project: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
+      expenseAuthority: userWithGitHubAccount,
       organization: true,
     },
   },
   decisionData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
+      expenseAuthority: userWithGitHubAccount,
       organization: true,
     },
   },
@@ -150,37 +161,37 @@ export const publicCloudRequestDetailInclude = {
   createdBy: true,
   project: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
+      expenseAuthority: userWithGitHubAccount,
       organization: true,
     },
   },
   originalData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
+      expenseAuthority: userWithGitHubAccount,
       organization: true,
     },
   },
   requestData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
+      expenseAuthority: userWithGitHubAccount,
       organization: true,
     },
   },
   decisionData: {
     include: {
-      projectOwner: true,
-      primaryTechnicalLead: true,
-      secondaryTechnicalLead: true,
-      expenseAuthority: true,
+      projectOwner: userWithGitHubAccount,
+      primaryTechnicalLead: userWithGitHubAccount,
+      secondaryTechnicalLead: userWithGitHubAccount,
+      expenseAuthority: userWithGitHubAccount,
       organization: true,
     },
   },
@@ -189,11 +200,11 @@ export const publicCloudRequestDetailInclude = {
 export const publicCloudBillingSimpleInclude = {
   signedBy: true,
   approvedBy: true,
-  expenseAuthority: true,
+  expenseAuthority: userWithGitHubAccount,
 };
 
 export const publicCloudBillingDetailInclude = {
   signedBy: true,
   approvedBy: true,
-  expenseAuthority: true,
+  expenseAuthority: userWithGitHubAccount,
 };

@@ -126,6 +126,7 @@ export default publicCloudProductEdit(() => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
+        canEditGitHubAccount: currentProduct._permissions.manageGitHubAccounts,
       },
     },
     {

@@ -17,6 +17,7 @@ interface ModalProps {
   blacklistIds?: string[];
   blacklistMessage?: string;
   userReadonly?: boolean;
+  canEditGitHubAccount?: boolean;
 }
 
 interface ModalState {
@@ -38,19 +39,22 @@ function useGitHubUser(
 ) {
   const [isSaving, setIsSaving] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [username, setUsername] = useState(initialUser?.githubUsername ?? '');
+  const [username, setUsername] = useState(initialUser?.githubAccount?.username ?? '');
   const [error, setError] = useState('');
   const [lookupUser, setLookupUser] = useState<GitHubUser | null>(null);
-  const [isEditing, setIsEditing] = useState(!initialUser?.githubUsername || !initialUser.githubAccountId);
+  const [isEditing, setIsEditing] = useState(!initialUser?.githubAccount);
 
-  const [originalUsername, setOriginalUsername] = useState<string | null>(initialUser?.githubUsername ?? null);
+  const [originalUsername, setOriginalUsername] = useState<string | null>(initialUser?.githubAccount?.username ?? null);
 
-  const [originalAccountId, setOriginalAccountId] = useState<string | null>(initialUser?.githubAccountId ?? null);
+  const [originalAccountId, setOriginalAccountId] = useState<string | null>(
+    initialUser?.githubAccount?.accountId ?? null,
+  );
 
   const hadInitialGitHubData = Boolean(originalUsername || originalAccountId);
   const reset = (selectedUser: SearchedUser | null) => {
-    const selectedUsername = selectedUser?.githubUsername ?? null;
-    const selectedAccountId = selectedUser?.githubAccountId ?? null;
+    const selectedAccount = selectedUser?.githubAccount ?? null;
+    const selectedUsername = selectedAccount?.username ?? null;
+    const selectedAccountId = selectedAccount?.accountId ?? null;
     const hasAccount = Boolean(selectedUsername && selectedAccountId);
 
     setOriginalUsername(selectedUsername);
@@ -86,8 +90,7 @@ function useGitHubUser(
       currentUser
         ? {
             ...currentUser,
-            githubUsername: null,
-            githubAccountId: null,
+            githubAccount: null,
           }
         : currentUser,
     );
@@ -126,8 +129,10 @@ function useGitHubUser(
       currentUser
         ? {
             ...currentUser,
-            githubUsername: verifiedUsername,
-            githubAccountId: result.user.accountId,
+            githubAccount: {
+              username: verifiedUsername,
+              accountId: result.user.accountId,
+            },
           }
         : currentUser,
     );
@@ -141,8 +146,7 @@ function useGitHubUser(
       currentUser
         ? {
             ...currentUser,
-            githubUsername: null,
-            githubAccountId: null,
+            githubAccount: null,
           }
         : currentUser,
     );
@@ -189,7 +193,15 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       content: 'overflow-y-visible',
     },
   },
-  Component: function ({ initialValue, blacklistIds = [], blacklistMessage, state, closeModal, userReadonly = false }) {
+  Component: function ({
+    initialValue,
+    blacklistIds = [],
+    blacklistMessage,
+    state,
+    closeModal,
+    userReadonly = false,
+    canEditGitHubAccount = false,
+  }) {
     const initialUser = initialValue?.id ? initialValue : null;
     const [user, setUser] = useState<SearchedUser | null>(initialUser);
     const [autocompId, setAutocompId] = useState(randomId());
@@ -208,10 +220,10 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     }
     const hasEnteredGitHubUsername = github.username.trim().length > 0;
 
-    const hasValidatedGitHubUsername = Boolean(user?.githubUsername && user.githubAccountId);
+    const hasValidatedGitHubUsername = Boolean(user?.githubAccount?.username && user?.githubAccount?.accountId);
 
     const isClearingExistingGitHubAccount =
-      github.hadInitialGitHubData && github.isEditing && !hasEnteredGitHubUsername;
+      canEditGitHubAccount && github.hadInitialGitHubData && github.isEditing && !hasEnteredGitHubUsername;
 
     const shouldDisableSelect = Boolean(
       !user?.idir ||
@@ -220,7 +232,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         github.isSearching ||
         github.isSaving ||
         isClearingExistingGitHubAccount ||
-        (hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
+        (canEditGitHubAccount && hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
     );
 
     const selectUser = async () => {
@@ -230,15 +242,24 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
       github.setError('');
 
-      let selectedUser = user;
-      if (github.hadInitialGitHubData && github.isEditing && (!user.githubUsername || !user.githubAccountId)) {
-        github.setError('Enter and validate a new GitHub username, or close the editor to keep the existing account.');
+      const githubAccount = user.githubAccount;
+      if (
+        canEditGitHubAccount &&
+        github.hadInitialGitHubData &&
+        github.isEditing &&
+        (!githubAccount?.username || !githubAccount?.accountId)
+      ) {
+        github.setError('Enter and validate a new GitHub username, or close this window to keep the existing account.');
         return;
       }
       const githubWasChanged =
-        Boolean(user.githubUsername && user.githubAccountId) &&
-        (user.githubUsername !== github.originalUsername || user.githubAccountId !== github.originalAccountId);
-      if (githubWasChanged) {
+        canEditGitHubAccount &&
+        Boolean(githubAccount?.username && githubAccount?.accountId) &&
+        (githubAccount?.username !== github.originalUsername || githubAccount?.accountId !== github.originalAccountId);
+
+      let selectedUser = user;
+
+      if (githubWasChanged && githubAccount) {
         if (!user.id) {
           github.setError('The Registry user must be saved before adding a GitHub account.');
           return;
@@ -246,27 +267,23 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
 
         github.setIsSaving(true);
 
-        const result = await updateUserGitHub(user.id, user.githubUsername!).finally(() => {
+        const result = await updateUserGitHub(user.id, githubAccount.username).finally(() => {
           github.setIsSaving(false);
         });
 
         if (!result.success) {
           github.setError(result.message);
-          github.clearCandidate();
           return;
         }
 
         selectedUser = {
           ...user,
-          githubUsername: result.user.githubUsername,
-          githubAccountId: result.user.githubAccountId,
+          githubAccount: result.user.githubAccount,
         };
       }
-
       state.user = selectedUser;
       closeModal();
     };
-
     return (
       <>
         {userReadonly && user ? (
@@ -282,53 +299,55 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           />
         )}
 
-        {user && (github.isEditing || !user.githubUsername || !user.githubAccountId) && (
-          <div className="mt-4">
-            <Group align="flex-end">
-              <TextInput
-                label="GitHub username"
-                description={
-                  <span>
-                    This field is optional. Enter the GitHub username only. Do not include the @ symbol or the GitHub
-                    profile URL. If you don&apos;t know your username, review{' '}
-                    <ExternalLink href="https://docs.github.com/en/account-and-profile/how-tos/email-preferences/remembering-your-github-username-or-email">
-                      these guidelines
-                    </ExternalLink>
-                    .
-                  </span>
-                }
-                placeholder="For example: octocat"
-                value={github.username}
-                error={github.error || undefined}
-                disabled={github.isSearching}
-                className="flex-1"
-                leftSection={<IconBrandGithub size={18} />}
-                onChange={(event) => {
-                  github.changeUsername(event.currentTarget.value);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    void github.search();
+        {canEditGitHubAccount &&
+          user &&
+          (github.isEditing || !user.githubAccount?.username || !user.githubAccount?.accountId) && (
+            <div className="mt-4">
+              <Group align="flex-end">
+                <TextInput
+                  label="GitHub username"
+                  description={
+                    <span>
+                      This field is optional. Enter the GitHub username only. Do not include the @ symbol or the GitHub
+                      profile URL. If you don&apos;t know your username, review{' '}
+                      <ExternalLink href="https://docs.github.com/en/account-and-profile/how-tos/email-preferences/remembering-your-github-username-or-email">
+                        these guidelines
+                      </ExternalLink>
+                      .
+                    </span>
                   }
-                }}
-              />
+                  placeholder="For example: octocat"
+                  value={github.username}
+                  error={github.error || undefined}
+                  disabled={github.isSearching}
+                  className="flex-1"
+                  leftSection={<IconBrandGithub size={18} />}
+                  onChange={(event) => {
+                    github.changeUsername(event.currentTarget.value);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      void github.search();
+                    }
+                  }}
+                />
 
-              <Button
-                variant="outline"
-                loading={github.isSearching}
-                disabled={!github.username.trim()}
-                onClick={() => {
-                  void github.search();
-                }}
-              >
-                Look up
-              </Button>
-            </Group>
-          </div>
-        )}
+                <Button
+                  variant="outline"
+                  loading={github.isSearching}
+                  disabled={!github.username.trim()}
+                  onClick={() => {
+                    void github.search();
+                  }}
+                >
+                  Look up
+                </Button>
+              </Group>
+            </div>
+          )}
 
-        {user?.githubUsername && user.githubAccountId && (
+        {user?.githubAccount?.username && user.githubAccount?.accountId && (
           <Alert color="green" icon={<IconBrandGithub size={20} />} className="mt-4" title="GitHub account verified">
             <Group justify="space-between">
               <div>
@@ -336,17 +355,18 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                   Username:{' '}
                   <ExternalLink
                     href={
-                      github.lookupUser?.profileUrl ?? `https://github.com/${encodeURIComponent(user.githubUsername)}`
+                      github.lookupUser?.profileUrl ??
+                      `https://github.com/${encodeURIComponent(user.githubAccount?.username ?? '')}`
                     }
                   >
-                    {user.githubUsername}
+                    {user.githubAccount?.username}
                   </ExternalLink>
                 </div>
 
-                <div>GitHub account ID: {user.githubAccountId}</div>
+                <div>GitHub account ID: {user.githubAccount?.accountId}</div>
               </div>
 
-              {!github.isEditing && (
+              {canEditGitHubAccount && !github.isEditing && (
                 <Tooltip label="Edit">
                   <IconEdit
                     className="ml-2 cursor-pointer edit-user-icon"
@@ -361,7 +381,9 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
             </Group>
           </Alert>
         )}
-        {github.error && user?.githubUsername && user.githubAccountId && <WarningMessage message={github.error} />}
+        {github.error && user?.githubAccount?.username && user.githubAccount?.accountId && (
+          <WarningMessage message={github.error} />
+        )}
 
         {warnings.map((warning, index) => {
           return <WarningMessage key={index} message={warning} />;

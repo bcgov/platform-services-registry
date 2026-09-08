@@ -15,6 +15,7 @@ export interface FormUserPickerProps {
   onChange: (value?: SearchedUser | null) => void;
   value?: SearchedUser;
   disabled?: boolean;
+  canEditGitHubAccount?: boolean;
   classNames?: {
     wrapper?: string;
     label?: string;
@@ -28,6 +29,7 @@ export default function FormUserPicker({
   onChange,
   value,
   disabled = false,
+  canEditGitHubAccount,
 }: FormUserPickerProps) {
   const [user, setUser] = useState<SearchedUser | null>(value ?? null);
   if (!id) id = randomId();
@@ -42,6 +44,7 @@ export default function FormUserPicker({
 
       <div className="flex">
         <UserProfile
+          canEditGitHubAccount={canEditGitHubAccount}
           data={user as UserPickerData}
           text="Click to select user"
           onClick={async () => {

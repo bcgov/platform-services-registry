@@ -3,6 +3,7 @@ import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import generateLicencePlate from '@/helpers/licence-plate';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
+import { canManageGpuQuota, sanitizeGpuResourceRequests } from '@/helpers/quota-change';
 import { DecisionStatus, ProjectStatus, RequestType, EventType, TaskType, Cluster } from '@/prisma/client';
 import { sendCreateRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import { createEvent, models, privateCloudRequestDetailInclude, tasks } from '@/services/db';
@@ -44,6 +45,8 @@ export default async function createOp({ session, body }: { session: Session; bo
   } = body;
 
   if (rest.cluster === Cluster.GOLDDR) rest.cluster = Cluster.GOLD;
+  const canManageGpu = canManageGpuQuota(session);
+  rest.resourceRequests = sanitizeGpuResourceRequests(rest.resourceRequests, rest.cluster, canManageGpu);
 
   const productData = {
     ...rest,

@@ -5,6 +5,7 @@ import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { getQuotaChangeStatus } from '@/helpers/auto-approval-check';
 import { sendRequestNatsMessage } from '@/helpers/nats-message';
 import { comparePrivateProductData } from '@/helpers/product-change';
+import { canManageGpuQuota, sanitizeGpuResourceRequests } from '@/helpers/quota-change';
 import { DecisionStatus, Cluster, RequestType, EventType, TaskType } from '@/prisma/client';
 import { sendEditRequestEmails, sendRequestApprovalEmails } from '@/services/ches/private-cloud';
 import {
@@ -52,6 +53,13 @@ export default async function updateOp({
   if (!product._permissions.manageMembers) {
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
+  const canManageGpu = canManageGpuQuota(session);
+  rest.resourceRequests = sanitizeGpuResourceRequests(
+    rest.resourceRequests,
+    product.cluster,
+    canManageGpu,
+    product.resourceRequests,
+  );
 
   const productData = {
     ...rest,
@@ -73,7 +81,7 @@ export default async function updateOp({
     licencePlate: product.licencePlate,
     cluster: product.cluster,
     currentResourceRequests: product.resourceRequests,
-    requestedResourceRequests: body.resourceRequests,
+    requestedResourceRequests: rest.resourceRequests,
   });
 
   // If there is no quota change or no quota upgrade and no golddr flag changes, the request is automatically approved

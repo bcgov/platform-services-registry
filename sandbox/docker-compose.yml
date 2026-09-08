@@ -117,7 +117,7 @@ services:
   nats:
     platform: linux/amd64
     container_name: nats
-    image: nats:2.14.5
+    image: nats:2.14.6
     ports:
     - 4222:4222
 
@@ -152,7 +152,7 @@ services:
 
   mailpit:
     # See https://hub.docker.com/r/axllent/mailpit/tags
-    image: axllent/mailpit:v1.31.0
+    image: axllent/mailpit:v1.31.1
     container_name: mailpit
     restart: unless-stopped
     volumes:

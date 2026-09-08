@@ -18,17 +18,15 @@ export default function TableBody({ data }: TableProps) {
           <Text size="md">{eventTypeNames[event.type]}</Text>
         </Table.Td>
         <Table.Td>
-          <Table.Td>
-            {event.user && (
-              <UserProfile data={event.user}>
-                {event.user.jobTitle && (
-                  <Badge color="info" variant="filled">
-                    {event.user.jobTitle}
-                  </Badge>
-                )}
-              </UserProfile>
-            )}
-          </Table.Td>
+          {event.user && (
+            <UserProfile data={event.user}>
+              {event.user.jobTitle && (
+                <Badge color="info" variant="filled">
+                  {event.user.jobTitle}
+                </Badge>
+              )}
+            </UserProfile>
+          )}
         </Table.Td>
         <Table.Td>
           <Text size="xs">{formatDate(event.createdAt)}</Text>

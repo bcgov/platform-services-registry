@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
+import { resourceRequests1 } from '@/helpers/mock-resources/private-cloud-product';
 import { findOtherMockUsers } from '@/helpers/mock-users';
 import { pickProductData } from '@/helpers/product';
 import { Cluster } from '@/prisma/client';
@@ -202,5 +203,79 @@ describe('Create Private Cloud Request - Validations', () => {
 
     const response = await createPrivateCloudProduct(requestData);
     expect(response.status).toBe(200);
+  });
+
+  it('should reset GPU quota to 0 for non-admin users on Emerald', async () => {
+    const product = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 4,
+          },
+        },
+      },
+    });
+
+    await mockSessionByIdirGuid(product.projectOwner.idirGuid);
+
+    const response = await createPrivateCloudProduct(product);
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+  });
+  it('should reset GPU quota to 0 for unsupported clusters', async () => {
+    const product = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.SILVER,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 4,
+          },
+        },
+      },
+    });
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await createPrivateCloudProduct(product);
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(0);
+  });
+
+  it('should preserve GPU quota for private admin on Emerald', async () => {
+    const product = createSamplePrivateCloudProductData({
+      data: {
+        cluster: Cluster.EMERALD,
+        resourceRequests: {
+          ...resourceRequests1,
+          development: {
+            ...resourceRequests1.development,
+            gpu: 4,
+          },
+        },
+      },
+    });
+
+    await mockSessionByRole(GlobalRole.PrivateAdmin);
+
+    const response = await createPrivateCloudProduct(product);
+
+    expect(response.status).toBe(200);
+
+    const responseData = await response.json();
+
+    expect(responseData.decisionData.resourceRequests.development.gpu).toBe(4);
   });
 });

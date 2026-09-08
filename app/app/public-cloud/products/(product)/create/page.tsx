@@ -29,7 +29,7 @@ import { publicCloudCreateRequestBodySchema } from '@/validation-schemas/public-
 const publicCloudProductNew = createClientPage({
   roles: [GlobalRole.User],
 });
-export default publicCloudProductNew(() => {
+export default publicCloudProductNew(({ session }) => {
   const form = useForm({
     resolver: zodResolver(publicCloudCreateRequestBodySchema),
     defaultValues: {
@@ -77,6 +77,7 @@ export default publicCloudProductNew(() => {
       Component: TeamContacts,
       componentArgs: {
         showAdditionalTeamMembers: false,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {

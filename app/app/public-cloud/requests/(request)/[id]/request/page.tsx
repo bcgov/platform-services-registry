@@ -141,6 +141,7 @@ export default publicCloudProductRequest(({ router }) => {
       componentArgs: {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: true,
+        canEditGitHubAccount: session?.isAdmin,
       },
     },
     {

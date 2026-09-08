@@ -78,20 +78,10 @@ export default function Landing() {
           className="pl-8 text-gray-700"
         >
           <List.Item>Fulfill the onboarding prerequisites</List.Item>
-          <List.Item>
-            Have a valid{' '}
-            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services/idir">
-              IDIR
-            </ExternalLink>{' '}
-            account, which you will use to access the registry
-          </List.Item>
+          <List.Item>Have a valid IDIR account, which you will use to access the registry</List.Item>
           <List.Item>Provide an application name and description without using acronyms</List.Item>
           <List.Item>
-            Contact emails tied to an{' '}
-            <ExternalLink href="https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/id-services/idir">
-              IDIR
-            </ExternalLink>{' '}
-            for the product owner and up to two (2) technical leads
+            Contact emails tied to an IDIR account for the product owner and up to two (2) technical leads
           </List.Item>
           <List.Item>
             Provide an estimate for your project&apos;s projected budget if using AWS <strong>(must be in USD)</strong>

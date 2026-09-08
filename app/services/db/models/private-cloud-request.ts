@@ -9,7 +9,7 @@ import {
   PrivateCloudRequestSimpleDecorated,
 } from '@/types/private-cloud';
 import { getUniqueNonFalsyItems } from '@/utils/js';
-import { privateCloudRequestDetailInclude, privateCloudRequestSimpleInclude } from '../includes';
+import { privateCloudRequestDetailInclude, privateCloudRequestSimpleInclude, userWithGitHubAccount } from '../includes';
 import { createSessionModel } from './core';
 import { privateCloudProductModel } from './private-cloud-product';
 
@@ -99,7 +99,14 @@ async function decorate<T extends PrivateCloudRequestSimple | PrivateCloudReques
     }
 
     memberIds = getUniqueNonFalsyItems(memberIds);
-    const users = await prisma.user.findMany({ where: { id: { in: memberIds } } });
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          in: memberIds,
+        },
+      },
+      include: userWithGitHubAccount.include,
+    });
 
     if (detailedData.originalData) {
       detailedData.originalData.members = detailedData.originalData.members.map((member) => {

@@ -20,6 +20,13 @@ import { MsGraphAppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
 import { UserSearchBody } from '@/validation-schemas';
 
+const githubAccountSelect = {
+  select: {
+    username: true,
+    accountId: true,
+  },
+} as const;
+
 export async function prepareUserData(user: MsGraphAppUser, extra = {}) {
   const email = user.email.toLowerCase();
 
@@ -96,8 +103,7 @@ type SearchUser = Prisma.UserGetPayload<{
     idir: true;
     idirGuid: true;
     isGuidValid: true;
-    githubUsername: true;
-    githubAccountId: true;
+    githubAccount: typeof githubAccountSelect;
     officeLocation: true;
     jobTitle: true;
     image: true;
@@ -160,8 +166,7 @@ export async function searchUsers({
         upn: true,
         idir: true,
         idirGuid: true,
-        githubUsername: true,
-        githubAccountId: true,
+        githubAccount: githubAccountSelect,
         isGuidValid: true,
         officeLocation: true,
         jobTitle: true,

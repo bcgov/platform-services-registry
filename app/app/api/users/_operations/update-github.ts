@@ -2,6 +2,7 @@ import { Session } from 'next-auth';
 import { TypeOf } from 'zod';
 import prisma from '@/core/prisma';
 import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { Prisma } from '@/prisma/client';
 import { sendGitHubAccountUpdatedEmail } from '@/services/ches/users';
 import { usersShareActiveProduct } from '@/services/db';
 import { validateGitHubUsername } from '@/services/github';
@@ -27,8 +28,12 @@ export default async function updateGitHubOp({
       id: true,
       email: true,
       firstName: true,
-      githubUsername: true,
-      githubAccountId: true,
+      githubAccount: {
+        select: {
+          username: true,
+          accountId: true,
+        },
+      },
     },
   });
 
@@ -51,21 +56,28 @@ export default async function updateGitHubOp({
   }
 
   const githubUsername = validation.user.username.toLowerCase();
+  const githubAccountId = validation.user.accountId;
+
   const githubWasChanged =
-    user.githubUsername?.toLowerCase() !== githubUsername || user.githubAccountId !== validation.user.accountId;
+    user.githubAccount?.username?.toLowerCase() !== githubUsername || user.githubAccount?.accountId !== githubAccountId;
+
   const duplicateUser = await prisma.user.findFirst({
     where: {
       id: {
         not: id,
       },
-      OR: [
-        {
-          githubUsername,
+      githubAccount: {
+        is: {
+          OR: [
+            {
+              username: githubUsername,
+            },
+            {
+              accountId: githubAccountId,
+            },
+          ],
         },
-        {
-          githubAccountId: validation.user.accountId,
-        },
-      ],
+      },
     },
     select: {
       id: true,
@@ -89,26 +101,50 @@ export default async function updateGitHubOp({
     return BadRequestResponse('This GitHub account is already associated with another Registry user.');
   }
 
-  const updatedUser = await prisma.user.update({
-    where: {
-      id,
-    },
-    data: {
-      githubUsername,
-      githubAccountId: validation.user.accountId,
-    },
-    select: {
-      id: true,
-      githubUsername: true,
-      githubAccountId: true,
-    },
-  });
+  let updatedUser;
+
+  try {
+    updatedUser = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        githubAccount: {
+          upsert: {
+            create: {
+              username: githubUsername,
+              accountId: githubAccountId,
+            },
+            update: {
+              username: githubUsername,
+              accountId: githubAccountId,
+            },
+          },
+        },
+      },
+      select: {
+        id: true,
+        githubAccount: {
+          select: {
+            username: true,
+            accountId: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      return BadRequestResponse('This GitHub account is already associated with another Registry user.');
+    }
+
+    throw error;
+  }
   if (githubWasChanged) {
     await sendGitHubAccountUpdatedEmail({
       email: user.email,
       firstName: user.firstName,
       githubUsername,
-      previousGithubUsername: user.githubUsername,
+      previousGithubUsername: user.githubAccount?.username ?? null,
       updatedBy: session.user.name,
     });
   }
