@@ -2,148 +2,129 @@
  * Silver dev only. Prisma cannot load PublicCloudProduct when organizationId or a
  * required contact id is null / points at a missing document. That 500s
  * GET /api/v1/public-cloud/products and blocks the finance ingest DAG.
+ *
+ * Writes are per-document and idempotent. No shared helper with the already-applied
+ * account-id backfill (changing that file would rewrite a ran migration).
  */
-function isDevOnly() {
-  return process.env.APP_ENV === 'dev';
+function asId(value) {
+  return value == null ? '' : String(value);
 }
 
-function idString(value) {
-  if (value == null) return '';
-  return String(value);
+function isKnown(value, known) {
+  const key = asId(value);
+  return Boolean(key) && known.has(key);
 }
 
-function knownId(value, known) {
-  const key = idString(value);
-  return key.length > 0 && known.has(key);
+function canonicalId(value, known) {
+  return known.get(asId(value));
 }
 
-function pickOrganization(product, orgById, orgByCode, fallbackOrg) {
-  if (knownId(product.organizationId, orgById)) return product.organizationId;
-  const code = typeof product.ministry === 'string' ? product.ministry.trim().toUpperCase() : '';
-  if (code && orgByCode.has(code)) return orgByCode.get(code)._id;
-  return fallbackOrg._id;
+function organizationFor(product, byId, byCode, fallback) {
+  if (isKnown(product.organizationId, byId)) return canonicalId(product.organizationId, byId);
+  const ministry = typeof product.ministry === 'string' ? product.ministry.trim().toUpperCase() : '';
+  return (ministry && byCode.get(ministry)?._id) || fallback._id;
 }
 
-function pickUser(preferred, userIds, fallbacks) {
-  if (knownId(preferred, userIds)) return preferred;
-  for (const id of fallbacks) {
-    if (knownId(id, userIds)) return id;
-  }
-  return fallbacks[fallbacks.length - 1];
+function userFor(current, knownUsers, candidates) {
+  if (isKnown(current, knownUsers)) return canonicalId(current, knownUsers);
+  const match = candidates.find((id) => isKnown(id, knownUsers));
+  return match ? canonicalId(match, knownUsers) : candidates.at(-1);
 }
 
-function refsChanged(product, next) {
-  return (
-    idString(product.organizationId) !== idString(next.organizationId) ||
-    idString(product.projectOwnerId) !== idString(next.projectOwnerId) ||
-    idString(product.primaryTechnicalLeadId) !== idString(next.primaryTechnicalLeadId) ||
-    idString(product.expenseAuthorityId) !== idString(next.expenseAuthorityId) ||
-    idString(product.secondaryTechnicalLeadId) !== idString(next.secondaryTechnicalLeadId)
-  );
+function needsWrite(product, patch) {
+  return Object.entries(patch).some(([field, value]) => {
+    const current = product[field];
+    if (asId(current) !== asId(value)) return true;
+    if (value == null) return false;
+    // Rewrite a hex string to the collection's BSON ObjectId so Prisma can load the ref.
+    return value._bsontype === 'ObjectId' && current?._bsontype !== 'ObjectId';
+  });
 }
 
-export const up = async (db, client) => {
-  if (!isDevOnly()) {
-    console.log(`backfill_dev_public_cloud_required_refs: skip (APP_ENV=${process.env.APP_ENV || 'unset'})`);
-    return;
-  }
-
-  const organizations = await db.collection('Organization').find({}).toArray();
-  const users = await db
-    .collection('User')
-    .find({}, { projection: { _id: 1, email: 1 } })
-    .toArray();
-
-  if (organizations.length === 0) {
-    console.log('backfill_dev_public_cloud_required_refs: no Organization documents; skip writes.');
-    return;
-  }
-  if (users.length === 0) {
-    console.log('backfill_dev_public_cloud_required_refs: no User documents; skip writes.');
-    return;
-  }
-
-  const orgById = new Map(organizations.map((org) => [idString(org._id), org]));
-  const orgByCode = new Map(
+function lookupTables(organizations, users) {
+  const byId = new Map(organizations.map((org) => [asId(org._id), org._id]));
+  const byCode = new Map(
     organizations.filter((org) => typeof org.code === 'string').map((org) => [org.code.trim().toUpperCase(), org]),
   );
-  const fallbackOrg = orgByCode.get('CITZ') || organizations[0];
-  const userIds = new Set(users.map((user) => idString(user._id)));
+  const knownUsers = new Map(users.map((user) => [asId(user._id), user._id]));
   const fallbackUser =
-    users.find((user) => String(user.email || '').toLowerCase() === 'admin.system@gov.bc.ca') || users[0];
+    users.find((user) => String(user.email || '').toLowerCase() === 'admin.system@gov.bc.ca') ?? users[0];
+  return { byId, byCode, fallbackOrg: byCode.get('CITZ') ?? organizations[0], knownUsers, fallbackUser };
+}
 
-  const session = client.startSession();
+function patchFor(product, tables) {
+  const projectOwnerId = userFor(product.projectOwnerId, tables.knownUsers, [tables.fallbackUser._id]);
+  const primaryTechnicalLeadId = userFor(product.primaryTechnicalLeadId, tables.knownUsers, [
+    projectOwnerId,
+    tables.fallbackUser._id,
+  ]);
+  return {
+    organizationId: organizationFor(product, tables.byId, tables.byCode, tables.fallbackOrg),
+    projectOwnerId,
+    primaryTechnicalLeadId,
+    expenseAuthorityId: userFor(product.expenseAuthorityId, tables.knownUsers, [
+      projectOwnerId,
+      primaryTechnicalLeadId,
+      tables.fallbackUser._id,
+    ]),
+    secondaryTechnicalLeadId: isKnown(product.secondaryTechnicalLeadId, tables.knownUsers)
+      ? canonicalId(product.secondaryTechnicalLeadId, tables.knownUsers)
+      : null,
+  };
+}
 
-  try {
-    await session.withTransaction(async () => {
-      const PublicCloudProduct = db.collection('PublicCloudProduct');
-      const products = await PublicCloudProduct.find(
-        {},
-        {
-          projection: {
-            licencePlate: 1,
-            ministry: 1,
-            organizationId: 1,
-            projectOwnerId: 1,
-            primaryTechnicalLeadId: 1,
-            secondaryTechnicalLeadId: 1,
-            expenseAuthorityId: 1,
-          },
-          session,
-        },
-      ).toArray();
-
-      const writes = [];
-      for (const product of products) {
-        const projectOwnerId = pickUser(product.projectOwnerId, userIds, [fallbackUser._id]);
-        const primaryTechnicalLeadId = pickUser(product.primaryTechnicalLeadId, userIds, [
-          projectOwnerId,
-          fallbackUser._id,
-        ]);
-        const expenseAuthorityId = pickUser(product.expenseAuthorityId, userIds, [
-          projectOwnerId,
-          primaryTechnicalLeadId,
-          fallbackUser._id,
-        ]);
-        const organizationId = pickOrganization(product, orgById, orgByCode, fallbackOrg);
-        const secondaryTechnicalLeadId = knownId(product.secondaryTechnicalLeadId, userIds)
-          ? product.secondaryTechnicalLeadId
-          : null;
-        const next = {
-          organizationId,
-          projectOwnerId,
-          primaryTechnicalLeadId,
-          expenseAuthorityId,
-          secondaryTechnicalLeadId,
-        };
-        if (!refsChanged(product, next)) continue;
-
-        writes.push({
-          updateOne: {
-            filter: { _id: product._id },
-            update: { $set: next },
-          },
-        });
-      }
-
-      if (writes.length === 0) {
-        console.log('backfill_dev_public_cloud_required_refs: all public-cloud products already have valid refs.');
-        return;
-      }
-
-      const result = await PublicCloudProduct.bulkWrite(writes, { ordered: false, session });
-      console.log(
-        `backfill_dev_public_cloud_required_refs: updated ${result.modifiedCount} of ${writes.length} public-cloud products.`,
-      );
-    });
-  } catch (error) {
-    console.error('backfill_dev_public_cloud_required_refs failed:', error);
-    throw error;
-  } finally {
-    await session.endSession();
+export const up = async (db) => {
+  const appEnv = process.env.APP_ENV;
+  if (appEnv !== 'dev') {
+    console.log(
+      `backfill_dev_public_cloud_required_refs: not running outside Silver dev (APP_ENV=${appEnv || 'unset'})`,
+    );
+    return;
   }
+
+  const [organizations, users] = await Promise.all([
+    db.collection('Organization').find({}).toArray(),
+    db
+      .collection('User')
+      .find({}, { projection: { _id: 1, email: 1 } })
+      .toArray(),
+  ]);
+  if (!organizations.length || !users.length) {
+    console.log(
+      `backfill_dev_public_cloud_required_refs: missing ${
+        organizations.length ? 'users' : 'organizations'
+      }; no writes.`,
+    );
+    return;
+  }
+
+  const tables = lookupTables(organizations, users);
+  const products = db.collection('PublicCloudProduct');
+  const docs = await products
+    .find(
+      {},
+      {
+        projection: {
+          ministry: 1,
+          organizationId: 1,
+          projectOwnerId: 1,
+          primaryTechnicalLeadId: 1,
+          secondaryTechnicalLeadId: 1,
+          expenseAuthorityId: 1,
+        },
+      },
+    )
+    .toArray();
+
+  let modified = 0;
+  for (const product of docs) {
+    const patch = patchFor(product, tables);
+    if (!needsWrite(product, patch)) continue;
+    const result = await products.updateOne({ _id: product._id }, { $set: patch });
+    modified += result.modifiedCount;
+  }
+
+  console.log(`backfill_dev_public_cloud_required_refs: wrote ${modified} PublicCloudProduct document(s).`);
 };
 
-export const down = async () => {
-  console.log('backfill_dev_public_cloud_required_refs: down is a no-op (filled refs are not restored).');
-};
+export const down = async () => {};
