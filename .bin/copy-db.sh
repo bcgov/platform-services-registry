@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o allexport
 eval "$(sed -E '/^\s*($|#)/d; s/^/export /' app/.env.local 2>/dev/null)" >/dev/null 2>&1

@@ -1,0 +1,7 @@
+# Normalize line endings to LF everywhere.
+#
+# Every tracked file is already stored with LF, prettier is configured with
+# endOfLine: lf, and CI runs on Linux. Without this, a developer with
+# core.autocrlf=true checks out CRLF, prettier rewrites those files on every
+# pre-commit run, and they are left showing as modified with an empty diff.
+* text=auto eol=lf

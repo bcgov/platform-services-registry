@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Initialize a new array to hold the modified file paths
 modified_files=""

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 editmsg="$(git rev-parse --git-path COMMIT_EDITMSG)"
 
