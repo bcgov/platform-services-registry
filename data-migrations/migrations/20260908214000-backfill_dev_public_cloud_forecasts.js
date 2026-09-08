@@ -13,14 +13,11 @@ import { ObjectId } from 'mongodb';
 
 const FINANCE_PROVIDERS = ['AWS_LZA', 'AZURE'];
 const HORIZON_MONTHS = 24;
-const FISCAL_YEAR_START_MONTH = 4;
-const FISCAL_YEAR_END_MONTH = 3;
 const CURRENCY = 'CAD';
-const DEFAULT_MONTHLY_AZURE = 5000;
-const DEFAULT_MONTHLY_AWS = 4000;
+const DEFAULT_MONTHLY = { AZURE: 5000, AWS_LZA: 4000 };
 const SPARSE_OPTIONAL_AMOUNT = 100;
 const LOW_LAST_PAST_AMOUNT = 50;
-const INCOMPLETE_REQUIRED_COUNT = 3;
+const INCOMPLETE_TAIL = 3;
 
 const SPECIAL_PROFILES = [
   'missing',
@@ -47,115 +44,53 @@ const PROFILE_START_MONTH = {
   'from-aug': 8,
 };
 
-function monthKey(year, month) {
-  return `${year}-${month}`;
+function shiftMonth(year, month, delta) {
+  const date = new Date(Date.UTC(year, month - 1 + delta, 1));
+  return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1 };
 }
 
-function getFiscalYearStartForMonth(year, month) {
-  return month >= FISCAL_YEAR_START_MONTH ? year : year - 1;
+function monthIndex(year, month) {
+  return year * 12 + month;
 }
 
-function getFiscalYearStartYear(now) {
-  return getFiscalYearStartForMonth(now.getUTCFullYear(), now.getUTCMonth() + 1);
+function fiscalOrder(month) {
+  return month >= 4 ? month : month + 12;
 }
 
-function getRequiredHorizonEndDate(now, horizonMonths = HORIZON_MONTHS) {
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + horizonMonths - 1, 1));
+function cellKind(year, month, now) {
+  const nowIndex = monthIndex(now.getUTCFullYear(), now.getUTCMonth() + 1);
+  const cellIndex = monthIndex(year, month);
+  if (cellIndex < nowIndex) return 'past';
+  if (cellIndex > nowIndex + HORIZON_MONTHS - 1) return 'optional';
+  return 'required';
 }
 
-function isPastMonth(year, month, now) {
-  const currentYear = now.getUTCFullYear();
-  const currentMonth = now.getUTCMonth() + 1;
-  return year < currentYear || (year === currentYear && month < currentMonth);
-}
-
-function isBeyondRequiredHorizon(year, month, now, horizonMonths = HORIZON_MONTHS) {
-  const end = getRequiredHorizonEndDate(now, horizonMonths);
-  return year * 12 + month > end.getUTCFullYear() * 12 + (end.getUTCMonth() + 1);
-}
-
-function isRequiredForecastMonth(year, month, now, horizonMonths = HORIZON_MONTHS) {
-  return !isPastMonth(year, month, now) && !isBeyondRequiredHorizon(year, month, now, horizonMonths);
-}
-
-function fiscalMonthOrder(month) {
-  return month >= FISCAL_YEAR_START_MONTH ? month : month + 12;
-}
-
-function monthlyAmountFor(provider) {
-  return provider === 'AZURE' ? DEFAULT_MONTHLY_AZURE : DEFAULT_MONTHLY_AWS;
-}
-
-function buildRollingFiscalForecastMonths(monthlyAmount, now, horizonMonths = HORIZON_MONTHS) {
-  const fiscalStartYear = getFiscalYearStartYear(now);
-  const startDate = new Date(Date.UTC(fiscalStartYear, FISCAL_YEAR_START_MONTH - 1, 1));
-  const horizonEnd = getRequiredHorizonEndDate(now, horizonMonths);
-  const horizonEndFyStart = getFiscalYearStartForMonth(horizonEnd.getUTCFullYear(), horizonEnd.getUTCMonth() + 1);
-  const endDate = new Date(Date.UTC(horizonEndFyStart + 1, FISCAL_YEAR_END_MONTH - 1, 1));
-  const monthCount =
-    (endDate.getUTCFullYear() - startDate.getUTCFullYear()) * 12 +
-    (endDate.getUTCMonth() - startDate.getUTCMonth()) +
-    1;
-
-  const monthlyValues = [];
-  for (let i = 0; i < monthCount; i += 1) {
-    const date = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth() + i, 1));
-    const year = date.getUTCFullYear();
-    const month = date.getUTCMonth() + 1;
-    monthlyValues.push({
-      year,
-      month,
-      amount: isRequiredForecastMonth(year, month, now, horizonMonths) ? monthlyAmount : 0,
-      currency: CURRENCY,
-    });
+function fiscalGrid(now) {
+  const nowYear = now.getUTCFullYear();
+  const nowMonth = now.getUTCMonth() + 1;
+  const fyStartYear = nowMonth >= 4 ? nowYear : nowYear - 1;
+  const horizonEnd = shiftMonth(nowYear, nowMonth, HORIZON_MONTHS - 1);
+  const horizonFyStart = horizonEnd.month >= 4 ? horizonEnd.year : horizonEnd.year - 1;
+  const lastIndex = monthIndex(horizonFyStart + 1, 3);
+  const cells = [];
+  let cursor = { year: fyStartYear, month: 4 };
+  while (monthIndex(cursor.year, cursor.month) <= lastIndex) {
+    cells.push(cursor);
+    cursor = shiftMonth(cursor.year, cursor.month, 1);
   }
-  return monthlyValues;
+  return cells;
 }
 
-function applyPastFiscalMonths(values, now, fromMonth = FISCAL_YEAR_START_MONTH) {
-  const sampleAmount =
-    values.find((value) => isRequiredForecastMonth(value.year, value.month, now) && value.amount > 0)?.amount ?? 0;
-  if (sampleAmount <= 0) return values;
-  const startOrder = fiscalMonthOrder(fromMonth);
-
-  return values.map((value) => {
-    if (!isPastMonth(value.year, value.month, now)) return value;
-    if (fiscalMonthOrder(value.month) < startOrder) return { ...value, amount: 0 };
-    return { ...value, amount: sampleAmount };
-  });
-}
-
-function lastRequiredKeys(values, now, count = INCOMPLETE_REQUIRED_COUNT) {
-  return values
-    .filter((value) => isRequiredForecastMonth(value.year, value.month, now))
-    .slice(-count)
-    .map((value) => monthKey(value.year, value.month));
-}
-
-function applyIncompleteRequiredMonths(values, now) {
-  const toClear = new Set(lastRequiredKeys(values, now));
-  return values.map((value) => (toClear.has(monthKey(value.year, value.month)) ? { ...value, amount: 0 } : value));
-}
-
-function applyIncompleteGaps(values, now) {
-  const toOmit = new Set(lastRequiredKeys(values, now));
-  return values.filter((value) => !toOmit.has(monthKey(value.year, value.month)));
-}
-
-function applySparseOptionalMonth(values, amount = SPARSE_OPTIONAL_AMOUNT, now) {
-  const firstOptional = values.find((value) => isBeyondRequiredHorizon(value.year, value.month, now));
-  if (!firstOptional) return values;
-  return values.map((value) =>
-    value.year === firstOptional.year && value.month === firstOptional.month ? { ...value, amount } : value,
-  );
-}
-
-function applyLastPastMonthLowForecast(values, amount = LOW_LAST_PAST_AMOUNT, now) {
-  const lastPast = [...values].reverse().find((value) => isPastMonth(value.year, value.month, now) && value.amount > 0);
-  if (!lastPast) return values;
-  return values.map((value) =>
-    value.year === lastPast.year && value.month === lastPast.month ? { ...value, amount } : value,
-  );
+function amountForCell(cell, kind, profile, defaultAmount, extras) {
+  const key = `${cell.year}-${cell.month}`;
+  if (kind === 'required') {
+    return extras.zeroRequired.has(key) ? 0 : defaultAmount;
+  }
+  if (kind === 'optional') {
+    return extras.firstOptionalKey === key ? SPARSE_OPTIONAL_AMOUNT : 0;
+  }
+  if (!extras.onboardFrom || fiscalOrder(cell.month) < extras.onboardFrom) return 0;
+  return extras.lowPastKey === key ? LOW_LAST_PAST_AMOUNT : defaultAmount;
 }
 
 export function assignProfiles(products) {
@@ -185,21 +120,38 @@ export function assignProfiles(products) {
 export function buildMonthlyValues(profile, provider, now) {
   if (profile === 'missing') return null;
 
-  let values = buildRollingFiscalForecastMonths(monthlyAmountFor(provider), now);
-  const startMonth = PROFILE_START_MONTH[profile];
-  if (startMonth) {
-    values = applyPastFiscalMonths(values, now, startMonth);
+  const defaultAmount = DEFAULT_MONTHLY[provider] ?? DEFAULT_MONTHLY.AWS_LZA;
+  const onboardFrom = PROFILE_START_MONTH[profile];
+  const grid = fiscalGrid(now);
+  const required = grid.filter((cell) => cellKind(cell.year, cell.month, now) === 'required');
+  const tail = required.slice(-INCOMPLETE_TAIL).map((cell) => `${cell.year}-${cell.month}`);
+  const firstOptional = grid.find((cell) => cellKind(cell.year, cell.month, now) === 'optional');
+  const lastOnboardedPast = [...grid].reverse().find((cell) => {
+    if (cellKind(cell.year, cell.month, now) !== 'past' || !onboardFrom) return false;
+    return fiscalOrder(cell.month) >= onboardFrom;
+  });
+
+  const extras = {
+    onboardFrom,
+    zeroRequired: new Set(profile === 'incomplete-required' ? tail : []),
+    firstOptionalKey:
+      profile === 'sparse-optional' && firstOptional ? `${firstOptional.year}-${firstOptional.month}` : '',
+    lowPastKey:
+      profile === 'low-last-past' && lastOnboardedPast ? `${lastOnboardedPast.year}-${lastOnboardedPast.month}` : '',
+  };
+
+  const monthlyValues = [];
+  for (const cell of grid) {
+    const key = `${cell.year}-${cell.month}`;
+    if (profile === 'incomplete-gaps' && tail.includes(key)) continue;
+    monthlyValues.push({
+      year: cell.year,
+      month: cell.month,
+      amount: amountForCell(cell, cellKind(cell.year, cell.month, now), profile, defaultAmount, extras),
+      currency: CURRENCY,
+    });
   }
-  if (profile === 'incomplete-required') {
-    values = applyIncompleteRequiredMonths(values, now);
-  } else if (profile === 'incomplete-gaps') {
-    values = applyIncompleteGaps(values, now);
-  } else if (profile === 'sparse-optional') {
-    values = applySparseOptionalMonth(values, SPARSE_OPTIONAL_AMOUNT, now);
-  } else if (profile === 'low-last-past') {
-    values = applyLastPastMonthLowForecast(values, LOW_LAST_PAST_AMOUNT, now);
-  }
-  return values;
+  return monthlyValues;
 }
 
 function emptyProfileCounts() {
