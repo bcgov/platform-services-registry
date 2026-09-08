@@ -27,15 +27,24 @@ function countIdentifiers(products) {
   };
 
   for (const product of products) {
+    // One identity per environment: account/subscription wins over a matching billing link.
+    const byEnv = new Map();
+    const add = (environment, value) => {
+      if (!environment || byEnv.has(environment)) return;
+      byEnv.set(environment, value);
+    };
+
     for (const account of Array.isArray(product.awsAccounts) ? product.awsAccounts : []) {
-      bump(account?.accountId);
+      add(account?.environment, account?.accountId);
     }
     for (const subscription of Array.isArray(product.azureSubscriptions) ? product.azureSubscriptions : []) {
-      bump(subscription?.subscriptionId);
+      add(subscription?.environment, subscription?.subscriptionId);
     }
     for (const link of Array.isArray(product.billingAccountLinks) ? product.billingAccountLinks : []) {
-      bump(link?.accountIdentifier);
+      add(link?.environment, link?.accountIdentifier);
     }
+
+    for (const value of byEnv.values()) bump(value);
   }
 
   return counts;
