@@ -71,18 +71,19 @@ model User {
 }
 
 model UserSession {
-  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
-  idirGuid             String   @unique
+  id                   String        @id @default(auto()) @map("_id") @db.ObjectId
+  idirGuid             String        @unique
   nextTokenRefreshTime DateTime
   accessToken          String
   refreshToken         String
   idToken              String
   sub                  String
   roles                String[]
-  teams                Team[]
+  teams                SessionTeam[]
 }
 
-type Team {
+/// A Keycloak service account on a user session, not a team of people. See docs/business-logic/team-terminology.md.
+type SessionTeam {
   clientId String
   roles    String[]
 }
