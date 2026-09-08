@@ -3,7 +3,7 @@
   "description": "B.C. Government's Platform Product Registry - App",
   "version": "0.84.0",
   "private": true,
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@11.26.0",
   "scripts": {
     "dev": "npx prisma generate && next dev --webpack",
     "build": "next build",
