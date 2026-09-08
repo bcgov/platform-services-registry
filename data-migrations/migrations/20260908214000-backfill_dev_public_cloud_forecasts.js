@@ -8,6 +8,7 @@
  * - required months present at $0 → platform "Incomplete required" filter
  *
  * Classic AWS is left alone. Test and prod skip (APP_ENV !== 'dev').
+ * Month classification uses local Date math, same as forecast-grid-utils.
  */
 import { ObjectId } from 'mongodb';
 
@@ -45,8 +46,8 @@ const PROFILE_START_MONTH = {
 };
 
 function shiftMonth(year, month, delta) {
-  const date = new Date(Date.UTC(year, month - 1 + delta, 1));
-  return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1 };
+  const date = new Date(year, month - 1 + delta, 1);
+  return { year: date.getFullYear(), month: date.getMonth() + 1 };
 }
 
 function monthIndex(year, month) {
@@ -58,7 +59,7 @@ function fiscalOrder(month) {
 }
 
 function cellKind(year, month, now) {
-  const nowIndex = monthIndex(now.getUTCFullYear(), now.getUTCMonth() + 1);
+  const nowIndex = monthIndex(now.getFullYear(), now.getMonth() + 1);
   const cellIndex = monthIndex(year, month);
   if (cellIndex < nowIndex) return 'past';
   if (cellIndex > nowIndex + HORIZON_MONTHS - 1) return 'optional';
@@ -66,8 +67,8 @@ function cellKind(year, month, now) {
 }
 
 function fiscalGrid(now) {
-  const nowYear = now.getUTCFullYear();
-  const nowMonth = now.getUTCMonth() + 1;
+  const nowYear = now.getFullYear();
+  const nowMonth = now.getMonth() + 1;
   const fyStartYear = nowMonth >= 4 ? nowYear : nowYear - 1;
   const horizonEnd = shiftMonth(nowYear, nowMonth, HORIZON_MONTHS - 1);
   const horizonFyStart = horizonEnd.month >= 4 ? horizonEnd.year : horizonEnd.year - 1;
