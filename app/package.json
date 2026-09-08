@@ -63,7 +63,7 @@
     "@tiptap/react": "^3.0.9",
     "@tiptap/starter-kit": "^3.0.9",
     "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.5",
+    "@types/react-dom": "19.2.7",
     "axios": "^1.11.0",
     "canvas": "3.2.3",
     "chart.js": "^4.5.0",
