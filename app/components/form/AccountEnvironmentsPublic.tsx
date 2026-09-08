@@ -4,9 +4,15 @@ import { useFormContext } from 'react-hook-form';
 import ExternalLink from '@/components/generic/button/ExternalLink';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import AwsLzaAccessLinks from '@/components/public-cloud/AwsLzaAccessLinks';
-import { getAwsLzaConsoleUrl, publicCloudEnvironments, PublicCloudEnvironmentKey } from '@/constants/public-cloud';
+import {
+  getAwsLzaConsoleUrl,
+  getAzurePortalUrl,
+  publicCloudEnvironments,
+  PublicCloudEnvironmentKey,
+} from '@/constants/public-cloud';
 import { ProjectStatus, Provider } from '@/prisma/client';
 import { useAppState } from '@/states/global';
+
 interface EnvironmentsEnabled {
   production: boolean;
   productionRequiresNetworking?: boolean;
@@ -26,17 +32,24 @@ interface AwsAccount {
   accountId: string;
 }
 
+interface AzureSubscription {
+  environment: PublicCloudEnvironmentKey;
+  subscriptionId: string;
+}
+
 export default function AccountEnvironmentsPublic({
   mode,
   disabled,
   selected,
   awsAccounts,
+  azureSubscriptions,
   product,
 }: {
   mode: string;
   disabled?: boolean;
   selected?: EnvironmentsEnabled;
   awsAccounts?: AwsAccount[];
+  azureSubscriptions?: AzureSubscription[];
   product?: {
     provider: Provider;
     status: ProjectStatus;
@@ -52,6 +65,8 @@ export default function AccountEnvironmentsPublic({
 
   const isAzure = watch('provider') === Provider.AZURE;
   const showAwsConsoleLinks = watch('provider') === Provider.AWS_LZA && Array.isArray(awsAccounts);
+  const showAzurePortalLinks = isAzure && Array.isArray(azureSubscriptions);
+  const showProviderConsoleLinks = showAwsConsoleLinks || showAzurePortalLinks;
   const requiresNetworking = watch('requiresNetworking');
 
   const renderNetworkingCheckbox = (key: EnvironmentKey) => {
@@ -87,6 +102,28 @@ export default function AccountEnvironmentsPublic({
         ) : (
           <span className="inline-flex items-center gap-1 text-gray-400" aria-disabled="true">
             Sign in to console
+            <IconExternalLink size={14} />
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  const renderAzurePortalLink = (key: EnvironmentKey) => {
+    if (!showAzurePortalLinks) return null;
+
+    const environmentEnabled = watch(`environmentsEnabled.${key}`);
+    const subscription = azureSubscriptions?.find((item) => item.environment === key);
+
+    return (
+      <div className="ml-7 mt-1 min-w-40 text-sm sm:ml-4">
+        {environmentEnabled && subscription?.subscriptionId ? (
+          <ExternalLink href={getAzurePortalUrl(subscription.subscriptionId)} className="font-medium">
+            Open in Azure portal
+          </ExternalLink>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-gray-400" aria-disabled="true">
+            Open in Azure portal
             <IconExternalLink size={14} />
           </span>
         )}
@@ -154,7 +191,7 @@ export default function AccountEnvironmentsPublic({
         )}
 
         {environments.map(({ key, label }) => {
-          if (!showAwsConsoleLinks) {
+          if (!showProviderConsoleLinks) {
             return (
               <div className="mt-1" key={key}>
                 {renderEnvironmentControls(key, label)}
@@ -167,6 +204,7 @@ export default function AccountEnvironmentsPublic({
               <div>{renderEnvironmentControls(key, label)}</div>
 
               {renderAwsConsoleLink(key)}
+              {renderAzurePortalLink(key)}
             </div>
           );
         })}

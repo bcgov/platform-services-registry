@@ -161,7 +161,7 @@ export default publicCloudProductRequest(({ session, router }) => {
       componentArgs: { disabled: isDisabled },
       initialOpen: true,
     },
-    ...(session?.previews.publicCloudForecast && publicProductSnap.currentRequest.type === RequestType.CREATE
+    ...(publicProductSnap.currentRequest.type === RequestType.CREATE
       ? [
           {
             LeftIcon: IconChartBar,

@@ -63,6 +63,8 @@ export function createSamplePublicCloudProduct(args?: {
       toolsRequiresNetworking: false,
     },
     awsAccounts: [],
+    azureSubscriptions: [],
+    billingAccountLinks: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: new Date(),

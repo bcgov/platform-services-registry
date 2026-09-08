@@ -1,13 +1,32 @@
-import { defaultAccountCoding } from '../constants/public-cloud';
+import {
+  defaultAccountCoding,
+  getAwsLzaAccountName,
+  getAzureSubscriptionName,
+  type PublicCloudEnvironmentKey,
+} from '../constants/public-cloud';
 import prisma from '../core/prisma';
-import { ProjectStatus, Provider, PublicCloudProductMemberRole } from '../prisma/client';
+import { Prisma, ProjectStatus, Provider, PublicCloudProductMemberRole } from '../prisma/client';
+import { inventDemoAzureSubscriptions } from '../services/azure/subscriptions';
+import { inventDemoBillingLinks } from '../services/public-cloud-finance/billing-account-links';
+import { getForecastStartMonth } from './seed-forecast-local';
+
+function billingStartedAtForPlate(licencePlate: string) {
+  const start = getForecastStartMonth(licencePlate);
+  return new Date(Date.UTC(start.year, start.month - 1, 1));
+}
 
 export type DemoProductConfig = {
   licencePlate: string;
   name: string;
-  provider: Provider;
+  provider: typeof Provider.AZURE | typeof Provider.AWS_LZA;
   description: string;
   budget: { dev: number; test: number; prod: number; tools: number };
+  /** Real AWS account or Azure subscription ID. Invented links are used when omitted. */
+  accountIdentifier?: string;
+  /** Real env accounts for one licence plate. Wins over a single accountIdentifier. */
+  accountLinks?: Array<{ accountIdentifier: string; environment: PublicCloudEnvironmentKey }>;
+  /** When set, product createdAt is this date so ingested months stay in finance scope. */
+  billingStartedAt?: Date;
 };
 
 function monthlyBudgetTotal(budget: DemoProductConfig['budget']) {
@@ -33,8 +52,9 @@ function generatedDemoProducts({
     const index = startIndex + offset;
     const budgetStep = (index % 8) + 1;
 
+    const licencePlate = `${prefix}${String(index).padStart(4, '0')}`;
     return {
-      licencePlate: `${prefix}${String(index).padStart(4, '0')}`,
+      licencePlate,
       name: `Cost Model Scale Test ${index} (${providerLabel})`,
       provider,
       description: `Generated local seed ${providerLabel} product for large forecast rollup testing.`,
@@ -44,6 +64,7 @@ function generatedDemoProducts({
         prod: baseBudget.prod + budgetStep * 250,
         tools: baseBudget.tools + budgetStep * 50,
       },
+      billingStartedAt: billingStartedAtForPlate(licencePlate),
     };
   });
 }
@@ -55,6 +76,7 @@ const BASE_AZURE_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AZURE,
     description: 'Local seed Azure product for forecast and cost testing.',
     budget: { dev: 12000, test: 10000, prod: 20000, tools: 5000 },
+    billingStartedAt: billingStartedAtForPlate('e71b0e'),
   },
   {
     licencePlate: 'a1c2d3',
@@ -62,6 +84,7 @@ const BASE_AZURE_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AZURE,
     description: 'Second local seed Azure product to exercise multi-project forecast rollups.',
     budget: { dev: 5000, test: 4000, prod: 8000, tools: 2000 },
+    billingStartedAt: billingStartedAtForPlate('a1c2d3'),
   },
 ];
 
@@ -72,6 +95,7 @@ const BASE_AWS_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AWS_LZA,
     description: 'Local seed AWS LZA product for forecast and cost testing (forecasted in CAD).',
     budget: { dev: 8000, test: 6000, prod: 15000, tools: 3000 },
+    billingStartedAt: billingStartedAtForPlate('f82c1a'),
   },
   {
     licencePlate: 'b4e5f6',
@@ -79,6 +103,7 @@ const BASE_AWS_PRODUCTS: DemoProductConfig[] = [
     provider: Provider.AWS_LZA,
     description: 'Second local seed AWS LZA product to exercise multi-project forecast rollups.',
     budget: { dev: 6000, test: 5000, prod: 10000, tools: 2000 },
+    billingStartedAt: billingStartedAtForPlate('b4e5f6'),
   },
 ];
 
@@ -128,17 +153,95 @@ async function requireUser(email: string) {
   return user;
 }
 
-async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
+function resolvedAccountLinks(config: DemoProductConfig) {
+  if (config.accountLinks && config.accountLinks.length > 0) return config.accountLinks;
+  if (config.accountIdentifier) {
+    return [{ accountIdentifier: config.accountIdentifier, environment: 'production' as const }];
+  }
+  return [];
+}
+
+function billingLinksFor(config: DemoProductConfig) {
+  const links = resolvedAccountLinks(config);
+  if (links.length > 0) {
+    return links.map((link) => ({
+      provider: config.provider,
+      accountIdentifier: link.accountIdentifier,
+      environment: link.environment,
+    }));
+  }
+  return inventDemoBillingLinks(config.licencePlate, config.provider);
+}
+
+function azureSubscriptionsFor(config: DemoProductConfig) {
+  if (config.provider !== Provider.AZURE) return undefined;
+  const links = resolvedAccountLinks(config);
+  if (links.length > 0) {
+    return links.map((link) => ({
+      environment: link.environment,
+      name: getAzureSubscriptionName(config.licencePlate, link.environment),
+      subscriptionId: link.accountIdentifier,
+    }));
+  }
+  return inventDemoAzureSubscriptions(config.licencePlate);
+}
+
+function awsAccountsFor(config: DemoProductConfig) {
+  if (config.provider !== Provider.AWS_LZA) return undefined;
+  const links = resolvedAccountLinks(config);
+  if (links.length === 0) return undefined;
+  return links.map((link) => ({
+    environment: link.environment,
+    name: getAwsLzaAccountName(config.licencePlate, link.environment),
+    accountId: link.accountIdentifier,
+  }));
+}
+
+function demoProductNeedsUpdate(
+  existing: {
+    provider: string;
+    name: string;
+    description: string;
+    billingAccountLinks: unknown;
+    azureSubscriptions: unknown;
+    createdAt: Date;
+  },
+  config: DemoProductConfig,
+) {
+  return (
+    existing.provider !== config.provider ||
+    existing.name !== config.name ||
+    existing.description !== config.description ||
+    !existing.billingAccountLinks ||
+    Boolean(config.accountIdentifier) ||
+    (config.accountLinks?.length ?? 0) > 0 ||
+    (config.provider === Provider.AZURE && !existing.azureSubscriptions) ||
+    (config.billingStartedAt != null && existing.createdAt.getTime() !== config.billingStartedAt.getTime())
+  );
+}
+
+function optionalSeedFields(
+  azureSubscriptions: ReturnType<typeof azureSubscriptionsFor>,
+  awsAccounts: ReturnType<typeof awsAccountsFor>,
+  billingStartedAt?: Date,
+) {
+  return {
+    ...(azureSubscriptions ? { azureSubscriptions: azureSubscriptions as unknown as Prisma.InputJsonValue } : {}),
+    ...(awsAccounts ? { awsAccounts: awsAccounts as unknown as Prisma.InputJsonValue } : {}),
+    ...(billingStartedAt ? { createdAt: billingStartedAt } : {}),
+  };
+}
+
+export async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
+  const billingAccountLinks = billingLinksFor(config);
+  const azureSubscriptions = azureSubscriptionsFor(config);
+  const awsAccounts = awsAccountsFor(config);
   const existing = await prisma.publicCloudProduct.findFirst({
     where: { licencePlate: config.licencePlate },
   });
 
   if (existing) {
-    if (
-      existing.provider !== config.provider ||
-      existing.name !== config.name ||
-      existing.description !== config.description
-    ) {
+    if (demoProductNeedsUpdate(existing, config)) {
       const updated = await prisma.publicCloudProduct.update({
         where: { id: existing.id },
         data: {
@@ -146,10 +249,12 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
           name: config.name,
           description: config.description,
           providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
+          billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
+          ...optionalSeedFields(azureSubscriptions, awsAccounts, config.billingStartedAt),
         },
       });
       console.log(
-        `  updated ${config.provider} product ${config.licencePlate} (${updated.name}) — provider/name synced`,
+        `  updated ${config.provider} product ${config.licencePlate} (${updated.name}) — provider/name/billing links synced`,
       );
       return updated;
     }
@@ -199,6 +304,8 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
       providerSelectionReasons: ['Cost Efficiency'],
       providerSelectionReasonsNote: `Local development seed product (${config.provider}).`,
       environmentsEnabled,
+      billingAccountLinks: billingAccountLinks as unknown as Prisma.InputJsonValue,
+      ...optionalSeedFields(azureSubscriptions, awsAccounts, config.billingStartedAt),
       members: [
         { userId: projectOwner.id, roles: [PublicCloudProductMemberRole.EDITOR] },
         { userId: primaryTechnicalLead.id, roles: [PublicCloudProductMemberRole.EDITOR] },
@@ -233,6 +340,33 @@ async function seedDemoPublicCloudProduct(config: DemoProductConfig) {
     ).toLocaleString()}/mo)`,
   );
   return product;
+}
+
+export async function removeDemoPublicCloudProducts() {
+  const plates = DEMO_PRODUCTS.map((product) => product.licencePlate);
+  const [billings, forecasts, spend, rollups, flags, products] = await Promise.all([
+    prisma.publicCloudBilling.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.cloudCostForecast.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.actualSpend.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.monthlyProductSpendRollup.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.spendFlag.deleteMany({ where: { licencePlate: { in: plates } } }),
+    prisma.publicCloudProduct.deleteMany({ where: { licencePlate: { in: plates } } }),
+  ]);
+  const removed = products.count;
+  if (removed === 0) {
+    console.log('  no invented demo products to remove');
+    return 0;
+  }
+  console.log(
+    `  removed ${removed} invented demo products (${billings.count} billings, ${forecasts.count} forecasts, ${spend.count} spend rows, ${rollups.count} rollups, ${flags.count} flags)`,
+  );
+  return removed;
+}
+
+export async function countDemoPublicCloudProducts() {
+  return prisma.publicCloudProduct.count({
+    where: { licencePlate: { in: DEMO_PRODUCTS.map((product) => product.licencePlate) } },
+  });
 }
 
 export async function seedDemoPublicCloudProducts() {

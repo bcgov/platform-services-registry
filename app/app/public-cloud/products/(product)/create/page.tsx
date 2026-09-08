@@ -89,17 +89,13 @@ export default publicCloudProductNew(({ session }) => {
         mode: 'create',
       },
     },
-    ...(session?.previews.publicCloudForecast
-      ? [
-          {
-            LeftIcon: IconChartBar,
-            label: 'Spend forecast',
-            description: '',
-            Component: PublicCloudCreateForecastSection,
-            componentArgs: {},
-          },
-        ]
-      : []),
+    {
+      LeftIcon: IconChartBar,
+      label: 'Spend forecast',
+      description: '',
+      Component: PublicCloudCreateForecastSection,
+      componentArgs: {},
+    },
   ];
 
   return (
@@ -115,10 +111,7 @@ export default publicCloudProductNew(({ session }) => {
           autoComplete="off"
           onSubmit={form.handleSubmit(async (formData) => {
             // If the spend forecast accordion was never opened, seed an empty CAD template.
-            if (
-              session?.previews.publicCloudForecast &&
-              (!formData.forecastMonthlyValues || formData.forecastMonthlyValues.length === 0)
-            ) {
+            if (!formData.forecastMonthlyValues || formData.forecastMonthlyValues.length === 0) {
               formData.forecastMonthlyValues = buildRollingFiscalForecastMonths(0, 'CAD', new Date());
             }
 

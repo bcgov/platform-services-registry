@@ -47,4 +47,4 @@ If the DAG files exceed this limit in the future, alternative synchronization me
 Airflow is deployed as part of the group of tools in the `tools` namespace. Two secrets must be managed manually:
 
 -   `airflow-ui-creds`: Contains the admin credentials for the Airflow UI console.
--   `airflow-variables`: Stores environment variables used by Airflow tasks.
+-   `airflow-variables`: Stores environment variables used by Airflow tasks, including public-cloud finance AWS/Azure billing credentials and the Keycloak finance service-account id/secret.

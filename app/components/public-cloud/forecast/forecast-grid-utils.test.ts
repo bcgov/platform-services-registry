@@ -1,4 +1,5 @@
 import {
+  aggregateMonthlyActualsFromProducts,
   applyAmountToFutureMonths,
   buildFiscalForecastMonths,
   buildRollingFiscalForecastMonths,
@@ -6,6 +7,7 @@ import {
   FISCAL_FORECAST_HORIZON_MONTHS,
   fiscalYearChunkHasOptionalMonths,
   formatFiscalYearLabel,
+  formatForecastProviderLabel,
   getFiscalYearChunks,
   getFiscalYearStartYear,
   getFiscalYearTotalSummary,
@@ -344,14 +346,51 @@ describe('isForecastHorizonComplete', () => {
 
 describe('display helpers', () => {
   it('maps provider to spend label', () => {
-    expect(getProviderSpendLabel('AZURE')).toBe('Azure Spend');
+    expect(getProviderSpendLabel('AZURE')).toBe('MS Azure Spend');
     expect(getProviderSpendLabel('AWS')).toBe('AWS Spend');
     expect(getProviderSpendLabel(undefined)).toBe('Cloud Spend');
+  });
+
+  it('uses shared provider labels', () => {
+    expect(formatForecastProviderLabel('AZURE')).toBe('MS Azure');
+    expect(formatForecastProviderLabel('AWS_LZA')).toBe('AWS LZA');
+    expect(formatForecastProviderLabel('AWS')).toBe('AWS');
   });
 
   it('maps provider to budget currency', () => {
     expect(getProviderBudgetCurrency('AZURE')).toBe('CAD');
     expect(getProviderBudgetCurrency('AWS')).toBe('USD');
     expect(getProviderBudgetCurrency('AWS_LZA')).toBe('USD');
+  });
+});
+
+describe('aggregateMonthlyActualsFromProducts', () => {
+  const months = [
+    { year: 2026, month: 4 },
+    { year: 2026, month: 5 },
+  ];
+
+  it('returns null when an in-scope product is missing a rollup', () => {
+    expect(
+      aggregateMonthlyActualsFromProducts(
+        [
+          { monthlyActuals: [10, 10], billingStartedAt: '2026-04-01T00:00:00.000Z' },
+          { monthlyActuals: [null, 5], billingStartedAt: '2026-04-01T00:00:00.000Z' },
+        ],
+        months,
+      ),
+    ).toEqual([null, 15]);
+  });
+
+  it('ignores products that did not exist in the month', () => {
+    expect(
+      aggregateMonthlyActualsFromProducts(
+        [
+          { monthlyActuals: [10, 10], billingStartedAt: '2026-04-01T00:00:00.000Z' },
+          { monthlyActuals: [null, 5], billingStartedAt: '2026-05-01T00:00:00.000Z' },
+        ],
+        months,
+      ),
+    ).toEqual([10, 15]);
   });
 });

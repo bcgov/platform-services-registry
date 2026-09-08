@@ -1,5 +1,8 @@
 /**
- * Full local dev seed: ministries, users, demo products, forecast demo data.
+ * Demo seed: ministries, users, invented public-cloud products, forecast data.
+ * Use this for UI / forecast / filter testing. For live billing joins, use
+ * `pnpm run seed-forge-finance-local` instead.
+ *
  * Run: pnpm run seed-all-local [--reset]
  */
 import prisma from '../core/prisma';
@@ -16,7 +19,7 @@ import { seedFoundation } from './seed-foundation';
 async function main() {
   const reset = process.argv.includes('--reset');
 
-  console.log('=== Local full seed ===\n');
+  console.log('=== Local demo seed ===\n');
 
   console.log('1. Foundation (organizations, users)...');
   await seedFoundation();
@@ -27,7 +30,7 @@ async function main() {
   await seedDemoPublicCloudProducts();
 
   console.log('\n3. Forecast demo data...');
-  console.log('   Non-complete profiles:');
+  console.log('   Override profiles (default is with-past from April):');
   for (const [plate, profile] of Object.entries(FORECAST_SEED_PROFILES)) {
     console.log(`     ${plate} → ${profile}`);
   }
@@ -43,7 +46,9 @@ async function main() {
     await seedForecastForProduct(licencePlate, { reset });
   }
 
-  console.log('\n=== Seed complete ===');
+  console.log('\n=== Demo seed complete ===');
+  console.log('These products use invented account IDs. Live ingest will not match them.');
+  console.log('For Forge billing tests: pnpm run seed-forge-finance-local -- --reset');
   console.log(`Login: admin.system@gov.bc.ca`);
   console.log('Azure products:');
   for (const plate of AZURE_DEMO_PLATES) {
@@ -54,6 +59,7 @@ async function main() {
     console.log(`  http://localhost:3000/public-cloud/products/${plate}/edit`);
   }
   console.log(`Public Cloud Forecast: http://localhost:3000/public-cloud/forecast`);
+  console.log(`Public Cloud Finance: http://localhost:3000/public-cloud/finance`);
   console.log('  → Show products: "Incomplete required months" / "Missing forecast" to verify filters');
   console.log(
     `Budget-based monthly totals (if every product were fully forecast): Azure CA$${expectedMonthlyForecastRollup(

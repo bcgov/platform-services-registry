@@ -56,6 +56,18 @@ spec:
             export GOLDDR_METRICS_READER_TOKEN='{{.Data.data.GOLDDR_METRICS_READER_TOKEN}}'
             export GOLD_METRICS_READER_TOKEN='{{.Data.data.GOLD_METRICS_READER_TOKEN}}'
             export EMERALD_METRICS_READER_TOKEN='{{.Data.data.EMERALD_METRICS_READER_TOKEN}}'
+            {{- if .Data.data.AIRFLOW_API_URL }}
+            export AIRFLOW_API_URL='{{ .Data.data.AIRFLOW_API_URL }}'
+            {{- end }}
+            {{- if .Data.data.AIRFLOW_API_USERNAME }}
+            export AIRFLOW_API_USERNAME='{{ .Data.data.AIRFLOW_API_USERNAME }}'
+            {{- end }}
+            {{- if .Data.data.AIRFLOW_API_PASSWORD }}
+            export AIRFLOW_API_PASSWORD='{{ .Data.data.AIRFLOW_API_PASSWORD }}'
+            {{- end }}
+            {{- if .Data.data.AIRFLOW_FINANCE_DAG_ID }}
+            export AIRFLOW_FINANCE_DAG_ID='{{ .Data.data.AIRFLOW_FINANCE_DAG_ID }}'
+            {{- end }}
           {{- end }}`}}
       labels:
         {{- include "app.labels" . | nindent 8 }}

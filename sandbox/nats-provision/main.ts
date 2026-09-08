@@ -16,6 +16,7 @@ import { KcAdmin } from '../_packages/keycloak-admin/src/main.js';
 
 const natsServer = `${NATS_HOST}:${NATS_PORT}`;
 const mockAwsAccountId = '123456789012';
+const mockAzureSubscriptionId = '00000000-0000-4000-8000-000000000001';
 
 const awsLzaEnvironmentMap = {
   dev: { environment: 'development', suffix: 'dev' },
@@ -24,21 +25,37 @@ const awsLzaEnvironmentMap = {
   tools: { environment: 'tools', suffix: 'tools' },
 } as const;
 
-function getPublicCloudProvisionPayload(provider: string, data: any) {
-  if (provider !== 'aws_lza') return {};
+const azureEnvironmentMap = awsLzaEnvironmentMap;
 
+function getPublicCloudProvisionPayload(provider: string, data: any) {
   const licencePlate = data.project_set_info.licence_plate;
   const requestedEnvironments = data.project_set_info.requested_environments ?? {};
 
-  return {
-    awsAccounts: Object.entries(awsLzaEnvironmentMap)
-      .filter(([environmentKey]) => requestedEnvironments[environmentKey])
-      .map(([, account]) => ({
-        environment: account.environment,
-        name: `${licencePlate}-${account.suffix}`,
-        accountId: mockAwsAccountId,
-      })),
-  };
+  if (provider === 'aws_lza') {
+    return {
+      awsAccounts: Object.entries(awsLzaEnvironmentMap)
+        .filter(([environmentKey]) => requestedEnvironments[environmentKey])
+        .map(([, account]) => ({
+          environment: account.environment,
+          name: `${licencePlate}-${account.suffix}`,
+          accountId: mockAwsAccountId,
+        })),
+    };
+  }
+
+  if (provider === 'azure') {
+    return {
+      azureSubscriptions: Object.entries(azureEnvironmentMap)
+        .filter(([environmentKey]) => requestedEnvironments[environmentKey])
+        .map(([, account]) => ({
+          environment: account.environment,
+          name: `${licencePlate}-${account.suffix}`,
+          subscriptionId: mockAzureSubscriptionId,
+        })),
+    };
+  }
+
+  return {};
 }
 
 async function getkeyCloakAccessToken() {

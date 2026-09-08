@@ -28,6 +28,7 @@ checks:
   - required-label-owner
   - restart-policy
   - run-as-non-root
+  - sorted-keys
   - unset-cpu-requirements
   - unset-memory-requirements
   - use-namespace

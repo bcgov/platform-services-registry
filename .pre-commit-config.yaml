@@ -84,7 +84,8 @@ repos:
     name: kube-linter
     entry: .bin/kube-linter.sh
     language: script
-    files: helm/.*
+    # Airflow DAGs live under helm/tools/dags but are Python, not K8s manifests.
+    files: helm/.*\.(ya?ml|tpl)$
     verbose: true
     pass_filenames: false
   - id: commitlint

@@ -7,10 +7,13 @@ import {
   preserveLockedPastMonthlyValues,
   shortMonthLabel,
   sumMonthlyValues,
+  aggregateMonthlyActualsFromProducts,
+  type FiscalYearChunk,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import prisma from '@/core/prisma';
 import { Provider, ProjectStatus } from '@/prisma/client';
+import { loadProductBillingStartByPlate } from '@/services/public-cloud-finance/product-billing-start';
 
 export async function getProductForecast(licencePlate: string) {
   return prisma.cloudCostForecast.findUnique({ where: { licencePlate } });
@@ -27,51 +30,181 @@ export type PlatformForecastProduct = {
   licencePlate: string;
   name: string;
   provider: Provider;
+  status: ProjectStatus;
   currency: 'CAD';
   hasForecast: boolean;
   monthlyTotals: MonthlyValue[];
+  /** Parallel to monthlyTotals; null when no ingest rollup for that month. */
+  monthlyActuals: Array<number | null>;
+  /** ISO timestamp used so estate actuals skip months before the product existed. */
+  billingStartedAt?: string | null;
   forecastTotal: number;
+  actualTotal: number;
 };
 
-export async function getPlatformForecastSummary() {
+type CurrencyGroup = {
+  currency: 'CAD';
+  providers: Set<Provider>;
+  productCount: number;
+  forecastCount: number;
+  totalsByMonth: Map<string, MonthlyValue>;
+  products: PlatformForecastProduct[];
+};
+
+type ForecastExportRow = Record<string, string | number>;
+
+function alignActualsToHorizon(
+  monthlyTotals: MonthlyValue[],
+  actualByMonth: Map<string, number>,
+): Array<number | null> {
+  return monthlyTotals.map((value) => {
+    const key = monthKey(value.year, value.month);
+    return actualByMonth.has(key) ? actualByMonth.get(key) ?? null : null;
+  });
+}
+
+function sumKnownActuals(monthlyActuals: Array<number | null>) {
+  return monthlyActuals.reduce<number>((sum, amount) => sum + (amount ?? 0), 0);
+}
+
+function indexRollupsByPlateMonth(
+  rollups: Array<{ licencePlate: string; year: number; month: number; amountCad: number }>,
+) {
+  const actualByPlateMonth = new Map<string, Map<string, number>>();
+  for (const row of rollups) {
+    let byMonth = actualByPlateMonth.get(row.licencePlate);
+    if (!byMonth) {
+      byMonth = new Map();
+      actualByPlateMonth.set(row.licencePlate, byMonth);
+    }
+    const key = monthKey(row.year, row.month);
+    byMonth.set(key, (byMonth.get(key) ?? 0) + row.amountCad);
+  }
+  return actualByPlateMonth;
+}
+
+function emptyCurrencyGroup(currency: 'CAD'): CurrencyGroup {
+  return {
+    currency,
+    providers: new Set(),
+    productCount: 0,
+    forecastCount: 0,
+    totalsByMonth: new Map(),
+    products: [],
+  };
+}
+
+function addForecastToGroupTotals(group: CurrencyGroup, values: MonthlyValue[]) {
+  for (const value of values) {
+    const key = monthKey(value.year, value.month);
+    const existing = group.totalsByMonth.get(key);
+    if (existing) {
+      existing.amount += value.amount;
+    } else {
+      group.totalsByMonth.set(key, {
+        year: value.year,
+        month: value.month,
+        amount: value.amount,
+        currency: group.currency,
+      });
+    }
+  }
+}
+
+function exportVariance(forecast: number, actual: number | null | undefined) {
+  if (actual == null || forecast === 0) return '';
+  return actual - forecast;
+}
+
+function exportMonthColumns(month: Pick<MonthlyValue, 'year' | 'month'>, fiscalYear: string) {
+  return {
+    'Fiscal year': fiscalYear,
+    Month: shortMonthLabel(month.year, month.month),
+    'Month key': `${month.year}-${String(month.month).padStart(2, '0')}`,
+  };
+}
+
+function appendProductMonthRows(
+  rows: ForecastExportRow[],
+  product: PlatformForecastProduct,
+  fyChunk: FiscalYearChunk,
+  includeActuals: boolean,
+) {
+  for (let i = 0; i < fyChunk.months.length; i++) {
+    const month = fyChunk.months[i];
+    const forecast = product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0;
+    const actual = includeActuals ? product.monthlyActuals[fyChunk.startIndex + i] : null;
+    rows.push({
+      Level: 'Product',
+      'Licence plate': product.licencePlate,
+      'Product name': product.name,
+      Currency: product.currency,
+      Providers: formatForecastProviderList([product.provider]),
+      ...exportMonthColumns(month, fyChunk.label),
+      Forecast: forecast,
+      ...(includeActuals ? { Actual: actual ?? '', Variance: exportVariance(forecast, actual) } : {}),
+    });
+  }
+}
+
+function appendCurrencyTotalRows(
+  rows: ForecastExportRow[],
+  group: { currency: 'CAD'; monthlyActuals: Array<number | null> },
+  providers: string,
+  fyChunk: FiscalYearChunk,
+  includeActuals: boolean,
+) {
+  for (let i = 0; i < fyChunk.months.length; i++) {
+    const month = fyChunk.months[i];
+    const actual = includeActuals ? group.monthlyActuals[fyChunk.startIndex + i] : null;
+    rows.push({
+      Level: 'Currency total',
+      'Licence plate': '',
+      'Product name': '',
+      Currency: group.currency,
+      Providers: providers,
+      ...exportMonthColumns(month, fyChunk.label),
+      Forecast: month.amount,
+      ...(includeActuals ? { Actual: actual ?? '', Variance: exportVariance(month.amount, actual) } : {}),
+    });
+  }
+}
+
+/** Estate billing actuals stay off unless the caller opts in (finance preview). */
+export async function getPlatformForecastSummary(options?: { includeActuals?: boolean }) {
+  const includeActuals = options?.includeActuals === true;
+  // Include ACTIVE and INACTIVE so archived products keep historical forecast rollups.
   const products = await prisma.publicCloudProduct.findMany({
-    where: { status: ProjectStatus.ACTIVE },
-    select: { licencePlate: true, name: true, provider: true },
+    select: { licencePlate: true, name: true, provider: true, status: true },
     orderBy: [{ provider: 'asc' }, { name: 'asc' }],
   });
   const licencePlates = products.map((p) => p.licencePlate);
 
-  const forecasts = await prisma.cloudCostForecast.findMany({
-    where: { licencePlate: { in: licencePlates } },
-    select: { licencePlate: true, monthlyValues: true },
-  });
+  const [forecasts, rollups, billingStartedByPlate] = await Promise.all([
+    prisma.cloudCostForecast.findMany({
+      where: { licencePlate: { in: licencePlates } },
+      select: { licencePlate: true, monthlyValues: true },
+    }),
+    includeActuals
+      ? prisma.monthlyProductSpendRollup.findMany({
+          where: { licencePlate: { in: licencePlates } },
+          select: { licencePlate: true, year: true, month: true, amountCad: true },
+        })
+      : Promise.resolve([]),
+    loadProductBillingStartByPlate(licencePlates),
+  ]);
 
   const forecastByPlate = new Map(
     forecasts.map((forecast) => [forecast.licencePlate, forecast.monthlyValues as MonthlyValue[]]),
   );
-
-  type CurrencyGroup = {
-    currency: 'CAD';
-    providers: Set<Provider>;
-    productCount: number;
-    forecastCount: number;
-    totalsByMonth: Map<string, MonthlyValue>;
-    products: PlatformForecastProduct[];
-  };
+  const actualByPlateMonth = indexRollupsByPlateMonth(rollups);
   const groups = new Map<'CAD', CurrencyGroup>();
 
   for (const product of products) {
     const currency = PROVIDER_FORECAST_CURRENCY[product.provider];
     let group = groups.get(currency);
     if (!group) {
-      group = {
-        currency,
-        providers: new Set(),
-        productCount: 0,
-        forecastCount: 0,
-        totalsByMonth: new Map(),
-        products: [],
-      };
+      group = emptyCurrencyGroup(currency);
       groups.set(currency, group);
     }
     group.providers.add(product.provider);
@@ -81,53 +214,61 @@ export async function getPlatformForecastSummary() {
     const hasForecast = !!rawForecast;
     if (hasForecast) {
       group.forecastCount += 1;
-      for (const value of rawForecast) {
-        const key = monthKey(value.year, value.month);
-        const existing = group.totalsByMonth.get(key);
-        if (existing) {
-          existing.amount += value.amount;
-        } else {
-          group.totalsByMonth.set(key, { year: value.year, month: value.month, amount: value.amount, currency });
-        }
-      }
+      addForecastToGroupTotals(group, rawForecast);
     }
 
     const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon(
       (rawForecast ?? []).map((value) => ({ ...value, currency })),
       currency,
     );
+    const monthlyActuals = includeActuals
+      ? alignActualsToHorizon(monthlyTotals, actualByPlateMonth.get(product.licencePlate) ?? new Map())
+      : monthlyTotals.map(() => null);
 
     group.products.push({
       licencePlate: product.licencePlate,
       name: product.name,
       provider: product.provider,
+      status: product.status,
       currency,
       hasForecast,
       monthlyTotals,
+      monthlyActuals,
+      billingStartedAt: billingStartedByPlate.get(product.licencePlate)?.toISOString() ?? null,
       forecastTotal: sumMonthlyValues(monthlyTotals),
+      actualTotal: includeActuals ? sumKnownActuals(monthlyActuals) : 0,
     });
   }
 
   return {
     totalProducts: products.length,
     productsWithForecast: forecastByPlate.size,
-    groups: [...groups.values()].map((group) => ({
-      currency: group.currency,
-      providers: [...group.providers].sort((a, b) => a.localeCompare(b)),
-      productCount: group.productCount,
-      forecastCount: group.forecastCount,
-      monthlyTotals: mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency),
-      products: group.products,
-    })),
+    groups: [...groups.values()].map((group) => {
+      const monthlyTotals = mergeMonthlyValuesOntoFiscalHorizon([...group.totalsByMonth.values()], group.currency);
+      const monthlyActuals = includeActuals
+        ? aggregateMonthlyActualsFromProducts(group.products, monthlyTotals)
+        : monthlyTotals.map(() => null);
+      return {
+        currency: group.currency,
+        providers: [...group.providers].sort((a, b) => a.localeCompare(b)),
+        productCount: group.productCount,
+        forecastCount: group.forecastCount,
+        monthlyTotals,
+        monthlyActuals,
+        hasActuals: includeActuals && monthlyActuals.some((amount) => amount != null),
+        products: group.products,
+      };
+    }),
   };
 }
 
 export type PlatformForecastSummary = Awaited<ReturnType<typeof getPlatformForecastSummary>>;
 
 /** Tall CSV-friendly rows: product line items plus currency totals. */
-export async function buildPlatformForecastExportCsvRows() {
-  const summary = await getPlatformForecastSummary();
-  const rows: Record<string, string | number>[] = [];
+export async function buildPlatformForecastExportCsvRows(options?: { includeActuals?: boolean }) {
+  const includeActuals = options?.includeActuals === true;
+  const summary = await getPlatformForecastSummary({ includeActuals });
+  const rows: ForecastExportRow[] = [];
 
   for (const group of summary.groups) {
     const providers = formatForecastProviderList(group.providers);
@@ -136,35 +277,9 @@ export async function buildPlatformForecastExportCsvRows() {
 
     for (const fyChunk of fiscalYearChunks) {
       for (const product of lineItemProducts) {
-        for (let i = 0; i < fyChunk.months.length; i++) {
-          const month = fyChunk.months[i];
-          rows.push({
-            Level: 'Product',
-            'Licence plate': product.licencePlate,
-            'Product name': product.name,
-            Currency: product.currency,
-            Providers: formatForecastProviderList([product.provider]),
-            'Fiscal year': fyChunk.label,
-            Month: shortMonthLabel(month.year, month.month),
-            'Month key': `${month.year}-${String(month.month).padStart(2, '0')}`,
-            Forecast: product.monthlyTotals[fyChunk.startIndex + i]?.amount ?? 0,
-          });
-        }
+        appendProductMonthRows(rows, product, fyChunk, includeActuals);
       }
-
-      for (const month of fyChunk.months) {
-        rows.push({
-          Level: 'Currency total',
-          'Licence plate': '',
-          'Product name': '',
-          Currency: group.currency,
-          Providers: providers,
-          'Fiscal year': fyChunk.label,
-          Month: shortMonthLabel(month.year, month.month),
-          'Month key': `${month.year}-${String(month.month).padStart(2, '0')}`,
-          Forecast: month.amount,
-        });
-      }
+      appendCurrencyTotalRows(rows, group, providers, fyChunk, includeActuals);
     }
   }
 

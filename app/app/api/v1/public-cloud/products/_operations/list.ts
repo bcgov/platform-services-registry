@@ -2,6 +2,7 @@ import { OkResponse } from '@/core/responses';
 import { ProjectStatus } from '@/prisma/client';
 import { searchPublicCloudProducts, SearchPublicCloudProductsProps } from '@/services/db';
 import { getOrganizationMap } from '@/services/db/organization';
+import { resolveBillingAccountIdentifiers } from '@/services/public-cloud-finance/billing-account-links';
 
 export default async function listOp({
   session,
@@ -35,6 +36,7 @@ export default async function listOp({
       ministry: org.code,
       ministryName: org.name,
       provider: doc.provider,
+      accountId: resolveBillingAccountIdentifiers(doc),
       projectOwner: {
         id: doc.projectOwner.id,
         email: doc.projectOwner.email,

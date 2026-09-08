@@ -9,6 +9,7 @@
 .DS_Store
 *.pem
 .vscode
+__pycache__/
 
 # debug
 npm-debug.log*
