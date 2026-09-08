@@ -11,11 +11,13 @@ export default function GitHubAccountUpdated({
 }: Readonly<Omit<GitHubAccountUpdatedEmailData, 'email'>>) {
   const wasRemoved = githubUsername === null;
 
-  const message = wasRemoved
-    ? 'removed your GitHub username from'
-    : previousGithubUsername
-      ? 'changed your GitHub username in'
-      : 'added your GitHub username to';
+  let message = 'added your GitHub username to';
+
+  if (wasRemoved) {
+    message = 'removed your GitHub username from';
+  } else if (previousGithubUsername) {
+    message = 'changed your GitHub username in';
+  }
 
   return (
     <Layout>
