@@ -65,7 +65,7 @@ const decisionResolver: Resolver<PublicCloudRequestDecisionBody> = async (values
   return zodDecisionResolver(values, context, options);
 };
 
-export default publicCloudProductRequest(({ router }) => {
+export default publicCloudProductRequest(({ session, router }) => {
   const [, publicProductSnap] = usePublicProductState();
 
   useEffect(() => {
