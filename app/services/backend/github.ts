@@ -53,7 +53,7 @@ function getApiErrorMessage(response: ApiErrorResponse): string {
   return 'Unable to save the GitHub account.';
 }
 
-export async function updateUserGitHub(userId: string, username: string): Promise<UpdateUserGitHubResult> {
+export async function updateUserGitHub(userId: string, username: string | null): Promise<UpdateUserGitHubResult> {
   const response = await baseInstance
     .patch<UpdatedGitHubUser | ApiErrorResponse>(
       `/users/${userId}`,

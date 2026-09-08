@@ -49,6 +49,45 @@ export default async function updateGitHubOp({
     return UnauthorizedResponse();
   }
 
+  if (username === null) {
+    if (!user.githubAccount) {
+      return OkResponse({
+        id: user.id,
+        githubAccount: null,
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        githubAccount: {
+          delete: true,
+        },
+      },
+      select: {
+        id: true,
+        githubAccount: {
+          select: {
+            username: true,
+            accountId: true,
+          },
+        },
+      },
+    });
+
+    await sendGitHubAccountUpdatedEmail({
+      email: user.email,
+      firstName: user.firstName,
+      githubUsername: null,
+      previousGithubUsername: user.githubAccount.username,
+      updatedBy: session.user.name,
+    });
+
+    return OkResponse(updatedUser);
+  }
+
   const validation = await validateGitHubUsername(username);
 
   if (!validation.valid) {

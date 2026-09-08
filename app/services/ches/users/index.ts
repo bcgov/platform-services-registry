@@ -1,10 +1,10 @@
 import { logger } from '@/core/logging';
 import { sendGitHubAccountUpdated } from './emails';
 
-interface GitHubAccountUpdatedEmailData {
+export interface GitHubAccountUpdatedEmailData {
   email: string;
   firstName: string | null;
-  githubUsername: string;
+  githubUsername: string | null;
   previousGithubUsername: string | null;
   updatedBy: string;
 }

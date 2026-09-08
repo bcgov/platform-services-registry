@@ -13,5 +13,5 @@ export const deletePathParamSchema = z.object({
 });
 
 export const githubUserUpdateBodySchema = z.object({
-  username: z.string().trim().default(''),
+  username: z.string().trim().nullable().default(null),
 });
