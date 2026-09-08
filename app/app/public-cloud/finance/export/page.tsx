@@ -5,9 +5,8 @@ import { useState } from 'react';
 import { failure, success } from '@/components/notification';
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
-import { GlobalPermissions } from '@/constants';
+import { GlobalPermissions, providerFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { Provider } from '@/prisma/client';
 import { downloadFinanceExport } from '@/services/backend/public-cloud/finance';
 
 const DATASET_OPTIONS = [
@@ -43,12 +42,7 @@ export default publicCloudFinanceExportPage(({ session }) => {
         <SegmentedControl
           value={provider}
           onChange={setProvider}
-          data={[
-            { label: 'All', value: 'ALL' },
-            { label: 'AWS LZA', value: Provider.AWS_LZA },
-            { label: 'Azure', value: Provider.AZURE },
-            { label: 'AWS', value: Provider.AWS },
-          ]}
+          data={[{ label: 'All', value: 'ALL' }, ...providerFilterOptions]}
           aria-label="Provider filter"
         />
         <Select

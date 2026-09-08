@@ -20,7 +20,7 @@ import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
 import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/forecast-grid-utils';
-import { GlobalPermissions } from '@/constants';
+import { GlobalPermissions, providerFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
 import {
@@ -29,7 +29,7 @@ import {
   triggerFinanceIngestDag,
 } from '@/services/backend/public-cloud/finance';
 
-type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
+type ProviderFilter = 'ALL' | Provider;
 
 function SummaryCard({
   label,
@@ -168,12 +168,7 @@ export default publicCloudFinancePage(({ session }) => {
         <SegmentedControl
           value={provider}
           onChange={(value) => setProvider(value as ProviderFilter)}
-          data={[
-            { label: 'All providers', value: 'ALL' },
-            { label: 'AWS LZA', value: Provider.AWS_LZA },
-            { label: 'Azure', value: Provider.AZURE },
-            { label: 'AWS', value: Provider.AWS },
-          ]}
+          data={[{ label: 'All providers', value: 'ALL' }, ...providerFilterOptions]}
           aria-label="Provider filter"
         />
       </div>

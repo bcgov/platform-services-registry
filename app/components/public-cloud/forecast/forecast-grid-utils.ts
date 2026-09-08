@@ -1,3 +1,5 @@
+import { getProviderLabel } from '@/constants/public-cloud';
+
 export type MonthlyValue = {
   year: number;
   month: number;
@@ -562,7 +564,7 @@ export function sumEnabledEnvironmentBudgets(
 export function getProviderSpendLabel(provider?: string) {
   switch (provider) {
     case 'AZURE':
-      return 'Azure Spend';
+      return `${getProviderLabel('AZURE')} Spend`;
     case 'AWS':
     case 'AWS_LZA':
       return 'AWS Spend';
@@ -573,10 +575,7 @@ export function getProviderSpendLabel(provider?: string) {
 
 /** Short provider name for filters, tables, and export sheets. */
 export function formatForecastProviderLabel(provider: string) {
-  if (provider === 'AWS_LZA') return 'AWS LZA';
-  if (provider === 'AWS') return 'AWS';
-  if (provider === 'AZURE') return 'Azure';
-  return provider;
+  return getProviderLabel(provider);
 }
 
 export function formatForecastProviderList(providers: string[]) {

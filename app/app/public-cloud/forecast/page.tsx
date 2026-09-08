@@ -35,7 +35,7 @@ import {
   type FiscalYearChunk,
   type MonthlyValue,
 } from '@/components/public-cloud/forecast/forecast-grid-utils';
-import { GlobalPermissions } from '@/constants';
+import { GlobalPermissions, providerFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { Provider } from '@/prisma/client';
 import { downloadPlatformForecastExport, getPlatformForecast } from '@/services/backend/public-cloud/forecast';
@@ -46,13 +46,7 @@ const PRODUCT_LIMIT_INCREMENT = 10;
 
 type ProductSort = 'forecast-desc' | 'name-asc';
 type ProductListFilter = 'all' | 'with-forecast' | 'missing-forecast' | 'incomplete-required';
-type ProviderFilter = 'ALL' | 'AWS_LZA' | 'AZURE' | 'AWS';
-
-const PROVIDER_FILTER_OPTIONS: { value: Exclude<ProviderFilter, 'ALL'>; label: string }[] = [
-  { value: Provider.AWS_LZA, label: 'AWS LZA' },
-  { value: Provider.AZURE, label: 'Azure' },
-  { value: Provider.AWS, label: 'AWS' },
-];
+type ProviderFilter = 'ALL' | Provider;
 
 function providerFilterLabel(provider: string) {
   return formatForecastProviderLabel(provider);
@@ -197,9 +191,9 @@ function PlatformForecastGrid({
   group,
   showActualVariance,
 }: Readonly<{ group: PlatformForecastSummary['groups'][number]; showActualVariance: boolean }>) {
-  const availableProviders = PROVIDER_FILTER_OPTIONS.filter((option) => group.providers.includes(option.value)).map(
-    (option) => option.value,
-  );
+  const availableProviders = providerFilterOptions
+    .filter((option) => group.providers.includes(option.value))
+    .map((option) => option.value);
   const [showProducts, setShowProducts] = useState(false);
   const [productSearch, setProductSearch] = useState('');
   const [productSort, setProductSort] = useState<ProductSort>('forecast-desc');
@@ -249,7 +243,7 @@ function PlatformForecastGrid({
   const showOtherRow = showProducts && otherRowEnabled && otherProductCount > 0;
   const providerControlData = [
     { value: 'ALL', label: 'All providers' },
-    ...PROVIDER_FILTER_OPTIONS.filter((option) => availableProviders.includes(option.value)),
+    ...providerFilterOptions.filter((option) => availableProviders.includes(option.value)),
   ];
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import {
   FISCAL_FORECAST_HORIZON_MONTHS,
   fiscalYearChunkHasOptionalMonths,
   formatFiscalYearLabel,
+  formatForecastProviderLabel,
   getFiscalYearChunks,
   getFiscalYearStartYear,
   getFiscalYearTotalSummary,
@@ -345,9 +346,15 @@ describe('isForecastHorizonComplete', () => {
 
 describe('display helpers', () => {
   it('maps provider to spend label', () => {
-    expect(getProviderSpendLabel('AZURE')).toBe('Azure Spend');
+    expect(getProviderSpendLabel('AZURE')).toBe('MS Azure Spend');
     expect(getProviderSpendLabel('AWS')).toBe('AWS Spend');
     expect(getProviderSpendLabel(undefined)).toBe('Cloud Spend');
+  });
+
+  it('uses shared provider labels', () => {
+    expect(formatForecastProviderLabel('AZURE')).toBe('MS Azure');
+    expect(formatForecastProviderLabel('AWS_LZA')).toBe('AWS LZA');
+    expect(formatForecastProviderLabel('AWS')).toBe('AWS');
   });
 
   it('maps provider to budget currency', () => {

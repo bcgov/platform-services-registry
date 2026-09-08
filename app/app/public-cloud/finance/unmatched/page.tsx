@@ -9,9 +9,8 @@ import { currentCalendarMonth, formatCadAmount } from '@/components/public-cloud
 import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
-import { GlobalPermissions } from '@/constants';
+import { GlobalPermissions, providerFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
-import { Provider } from '@/prisma/client';
 import { getFinanceUnmatched, resolveFinanceUnmatched } from '@/services/backend/public-cloud/finance';
 
 const publicCloudFinanceUnmatchedPage = createClientPage({
@@ -57,12 +56,7 @@ export default publicCloudFinanceUnmatchedPage(({ session }) => {
         <SegmentedControl
           value={provider}
           onChange={setProvider}
-          data={[
-            { label: 'All', value: 'ALL' },
-            { label: 'AWS LZA', value: Provider.AWS_LZA },
-            { label: 'Azure', value: Provider.AZURE },
-            { label: 'AWS', value: Provider.AWS },
-          ]}
+          data={[{ label: 'All', value: 'ALL' }, ...providerFilterOptions]}
           aria-label="Provider filter"
         />
         <NumberInput

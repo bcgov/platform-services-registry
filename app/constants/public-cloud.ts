@@ -8,16 +8,27 @@ export const awsLzaGroupsUrl = 'https://myaccount.microsoft.com/groups/groups-i-
 export const publicCloudTechnicalDocsUrl =
   'https://developer.gov.bc.ca/docs/default/component/public-cloud-techdocs/aws/LZA/design-build-deploy/user-management/';
 
-const providerLabels = {
+export const providerLabels: Record<Provider, string> = {
   [Provider.AWS]: 'AWS',
   [Provider.AWS_LZA]: 'AWS LZA',
   [Provider.AZURE]: 'MS Azure',
 };
 
+export function getProviderLabel(provider: string) {
+  return providerLabels[provider as Provider] ?? provider;
+}
+
 export const providerOptions = providers.map((value) => ({
   label: providerLabels[value] ?? value,
   value,
 }));
+
+/** Filter chips used on finance and forecast pages. Order matches those UIs (LZA, MS Azure, classic AWS). */
+export const providerFilterOptions = [
+  { label: providerLabels[Provider.AWS_LZA], value: Provider.AWS_LZA },
+  { label: providerLabels[Provider.AZURE], value: Provider.AZURE },
+  { label: providerLabels[Provider.AWS], value: Provider.AWS },
+];
 
 export function getAllowedOptions(isCreate = false) {
   return providerOptions.filter((opt) => {
