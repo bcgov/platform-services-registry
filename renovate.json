@@ -9,6 +9,12 @@
       "matchPackageNames": ["prisma", "@prisma/client"],
       "groupName": "prisma",
       "groupSlug": "prisma"
+    },
+    {
+      "description": "Keep ches-mock dependency updates scoped to its package",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["sandbox/ches-mock/package.json"],
+      "rangeStrategy": "update-lockfile"
     }
   ],
   "customManagers": [
