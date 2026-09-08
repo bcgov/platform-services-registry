@@ -2921,7 +2921,7 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>private-key.pem<span class="w"> </span><span class="m">2048</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Generate self-signed certificate (valid for &lt;days&gt; days)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-x509<span class="w"> </span>-key<span class="w"> </span>private-key.pem<span class="w"> </span>-out<span class="w"> </span>certificate.pem<span class="w"> </span>-days<span class="w"> </span>&lt;days&gt;<span class="w"> </span>-subj<span class="w"> </span><span class="s2">&quot;/CN=pltsvc&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-x509<span class="w"> </span>-key<span class="w"> </span>private-key.pem<span class="w"> </span>-out<span class="w"> </span>certificate.pem<span class="w"> </span>-days<span class="w"> </span>&lt;days&gt;<span class="w"> </span>-subj<span class="w"> </span><span class="s2">"/CN=pltsvc"</span>
 </span></code></pre></div></td></tr></table></div>
 <blockquote>
 <p>💡 Replace <code>&lt;days&gt;</code> with the number of days the certificate should be valid (e.g., <code>365</code> for one year).</p>
@@ -2938,15 +2938,15 @@
 <h2 id="3-configure-envlocal">3. Configure <code>.env.local</code><a class="headerlink" href="#3-configure-envlocal" title="Permanent link">&para;</a></h2>
 <p>Store the <strong>raw PEM content</strong> of both the private key and certificate in your <code>.env.local</code> file:</p>
 <div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY=&quot;-----BEGIN PRIVATE KEY-----\n...actual key contents...\n-----END PRIVATE KEY-----&quot; # pragma: allowlist secret
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>MS_GRAPH_API_CLIENT_CERTIFICATE=&quot;-----BEGIN CERTIFICATE-----\n...actual cert contents...\n-----END CERTIFICATE-----&quot; # pragma: allowlist secret
+<span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...actual key contents...\n-----END PRIVATE KEY-----" # pragma: allowlist secret
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>MS_GRAPH_API_CLIENT_CERTIFICATE="-----BEGIN CERTIFICATE-----\n...actual cert contents...\n-----END CERTIFICATE-----" # pragma: allowlist secret
 </span></code></pre></div></td></tr></table></div>
 <blockquote>
 <p>To convert the multi-line PEM files into single-line strings for <code>.env.local</code>, replace actual line breaks with <code>\n</code>.</p>
 </blockquote>
 <p>You can do this manually or run a small helper command:</p>
 <h3 id="helper-convert-pem-to-n-escaped-string">Helper: Convert PEM to <code>\n</code>-escaped string<a class="headerlink" href="#helper-convert-pem-to-n-escaped-string" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>awk<span class="w"> </span><span class="s1">&#39;BEGIN {printf &quot;\&quot;&quot;} {gsub(/\r/, &quot;&quot;); gsub(/&quot;/, &quot;\\\&quot;&quot;); printf &quot;%s\\n&quot;, $0} END {printf &quot;\&quot;\n&quot;}&#39;</span><span class="w"> </span>private-key.pem
+<div class="language-bash highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1"></a>awk<span class="w"> </span><span class="s1">'BEGIN {printf "\""} {gsub(/\r/, ""); gsub(/"/, "\\\""); printf "%s\\n", $0} END {printf "\"\n"}'</span><span class="w"> </span>private-key.pem
 </span></code></pre></div></td></tr></table></div>
 <p>Then paste the output in:</p>
 <div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY=&lt;output&gt;
@@ -2959,8 +2959,8 @@
 <span class="normal"><a href="#__codelineno-4-3">3</a></span>
 <span class="normal"><a href="#__codelineno-4-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1"></a>MS_GRAPH_API_CLIENT_ID=your-app-client-id
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2"></a>MS_GRAPH_API_TENANT_ID=your-tenant-id
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY=&quot;-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANB...\n-----END PRIVATE KEY-----&quot; # pragma: allowlist secret
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>MS_GRAPH_API_CLIENT_CERTIFICATE=&quot;-----BEGIN CERTIFICATE-----\nMIIDZTCCAk2gAwIBAgI...\n-----END CERTIFICATE-----&quot; # pragma: allowlist secret
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3"></a>MS_GRAPH_API_CLIENT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANB...\n-----END PRIVATE KEY-----" # pragma: allowlist secret
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4"></a>MS_GRAPH_API_CLIENT_CERTIFICATE="-----BEGIN CERTIFICATE-----\nMIIDZTCCAk2gAwIBAgI...\n-----END CERTIFICATE-----" # pragma: allowlist secret
 </span></code></pre></div></td></tr></table></div>
 <hr />
 <h2 id="tip-validate-certificate-expiration">Tip: Validate Certificate Expiration<a class="headerlink" href="#tip-validate-certificate-expiration" title="Permanent link">&para;</a></h2>

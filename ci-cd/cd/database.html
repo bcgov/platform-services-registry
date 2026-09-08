@@ -3017,7 +3017,7 @@
 <p>To restore the database, follow these steps:</p>
 <div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
 <span class="normal"><a href="#__codelineno-1-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>oc<span class="w"> </span>rsh<span class="w"> </span>&lt;backup-pod-name&gt;
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>mongo-unarchive<span class="w"> </span>--uri<span class="o">=</span><span class="s2">&quot;mongodb://&lt;primary-pod-name&gt;.pltsvc-mongodb-headless/?authSource=admin&quot;</span><span class="w"> </span>--db<span class="o">=</span>pltsvc
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a>mongo-unarchive<span class="w"> </span>--uri<span class="o">=</span><span class="s2">"mongodb://&lt;primary-pod-name&gt;.pltsvc-mongodb-headless/?authSource=admin"</span><span class="w"> </span>--db<span class="o">=</span>pltsvc
 </span></code></pre></div></td></tr></table></div>
 <p>Execute the provided shell commands to access the backup pod and initiate the restoration process. The mongo-unarchive command uses the specified MongoDB URI, which includes the <code>primary pod name</code> and authentication details from the admin source. The restoration is targeted for the <code>pltsvc</code> database.</p>
 
