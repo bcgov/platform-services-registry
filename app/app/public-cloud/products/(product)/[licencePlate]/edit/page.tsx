@@ -40,7 +40,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(({ session }) => {
+export default publicCloudProductEdit(() => {
   const [state, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -144,19 +144,15 @@ export default publicCloudProductEdit(({ session }) => {
       Component: Budget,
       componentArgs: { disabled: isDisabled },
     },
-    ...(session?.previews.publicCloudForecast
-      ? [
-          {
-            LeftIcon: IconChartBar,
-            label: 'Spend forecast',
-            description: '',
-            Component: PublicCloudForecastSection,
-            componentArgs: {
-              licencePlate: currentProduct.licencePlate,
-            },
-          },
-        ]
-      : []),
+    {
+      LeftIcon: IconChartBar,
+      label: 'Spend forecast',
+      description: '',
+      Component: PublicCloudForecastSection,
+      componentArgs: {
+        licencePlate: currentProduct.licencePlate,
+      },
+    },
   ];
 
   return (

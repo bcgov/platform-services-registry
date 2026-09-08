@@ -15,10 +15,6 @@ export const GET = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 })(async ({ pathParams, session }) => {
-  if (!session.previews.publicCloudForecast) {
-    return UnauthorizedResponse();
-  }
-
   const { licencePlate } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
   if (!product) {
@@ -36,10 +32,6 @@ export const POST = createApiHandler({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema, body: cloudCostForecastBodySchema.partial().optional() },
 })(async ({ pathParams, body, session }) => {
-  if (!session.previews.publicCloudForecast) {
-    return UnauthorizedResponse();
-  }
-
   const { licencePlate } = pathParams;
   const { data: product } = await models.publicCloudProduct.get({ where: { licencePlate } }, session);
   if (!product) {

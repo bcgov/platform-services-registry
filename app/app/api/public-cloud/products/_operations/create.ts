@@ -52,13 +52,12 @@ export default async function createOp({ session, body }: { session: Session; bo
     expenseAuthority: { connect: { id: expenseAuthorityId } },
   };
 
-  const pendingForecast =
-    session.previews.publicCloudForecast && forecastMonthlyValues?.length
-      ? {
-          monthlyValues: forecastMonthlyValues,
-          horizonMonths: FISCAL_FORECAST_HORIZON_MONTHS,
-        }
-      : undefined;
+  const pendingForecast = forecastMonthlyValues?.length
+    ? {
+        monthlyValues: forecastMonthlyValues,
+        horizonMonths: FISCAL_FORECAST_HORIZON_MONTHS,
+      }
+    : undefined;
 
   const newRequest = (
     await models.publicCloudRequest.create(

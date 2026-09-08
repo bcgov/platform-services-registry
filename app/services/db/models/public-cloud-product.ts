@@ -138,8 +138,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
   const decoratedDoc = doc as T & PublicCloudProductDecorate;
 
   const canViewForecast =
-    session.previews.publicCloudForecast &&
-    (canView || session.permissions.viewPublicCloudBilling || session.permissions.viewPublicCloudForecast);
+    canView || session.permissions.viewPublicCloudBilling || session.permissions.viewPublicCloudForecast;
 
   const isProductTeamMember =
     isMaintainer ||
@@ -158,7 +157,7 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
     session.previews.publicCloudFinance && (session.permissions.viewPublicCloudForecast || isProductTeamMember),
   );
 
-  const canEditForecast = session.previews.publicCloudForecast && canEdit;
+  const canEditForecast = canEdit;
 
   decoratedDoc._permissions = {
     view: canView || canSignMou || canApproveMou,

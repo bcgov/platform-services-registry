@@ -228,7 +228,6 @@ export async function generateSession({
     security: !IS_PROD,
     apiAccount: !IS_PROD,
     costRecovery: !IS_PROD,
-    publicCloudForecast: true,
     publicCloudFinance: !IS_PROD,
   };
 
@@ -317,7 +316,7 @@ export async function generateSession({
       session.isBillingManager ||
       session.isBillingReader,
 
-    viewPublicCloudForecast: session.previews.publicCloudForecast && (session.isAdmin || session.isPublicAdmin),
+    viewPublicCloudForecast: session.isAdmin || session.isPublicAdmin,
 
     viewPrivateCloudBilling:
       session.isAdmin || session.isBillingManager || session.isBillingReader || session.isFinanceManager,

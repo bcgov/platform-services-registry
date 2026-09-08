@@ -65,7 +65,7 @@ const decisionResolver: Resolver<PublicCloudRequestDecisionBody> = async (values
   return zodDecisionResolver(values, context, options);
 };
 
-export default publicCloudProductRequest(({ session, router }) => {
+export default publicCloudProductRequest(({ router }) => {
   const [, publicProductSnap] = usePublicProductState();
 
   useEffect(() => {
@@ -160,7 +160,7 @@ export default publicCloudProductRequest(({ session, router }) => {
       componentArgs: { disabled: isDisabled },
       initialOpen: true,
     },
-    ...(session?.previews.publicCloudForecast && publicProductSnap.currentRequest.type === RequestType.CREATE
+    ...(publicProductSnap.currentRequest.type === RequestType.CREATE
       ? [
           {
             LeftIcon: IconChartBar,
