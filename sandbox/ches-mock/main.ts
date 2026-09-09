@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { type SentMessageInfo } from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import express, { Request, Response, NextFunction } from 'express';
@@ -42,7 +42,7 @@ const transportOptions: SMTPTransport.Options = {
 
 const transporter = nodemailer.createTransport(transportOptions);
 
-export const sendSmtpEmail = async (email: z.infer<typeof EmailSchema>): Promise<nodemailer.SentMessageInfo> => {
+export const sendSmtpEmail = async (email: z.infer<typeof EmailSchema>): Promise<SentMessageInfo> => {
   await transporter.verify();
 
   const info = await transporter.sendMail({
