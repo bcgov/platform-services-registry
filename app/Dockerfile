@@ -34,7 +34,7 @@ RUN apk add --no-cache \
 ENV CYPRESS_INSTALL_BINARY=0
 
 # Install Node tools and dependencies
-RUN npm install -g turbo pnpm@11.26.0 && \
+RUN npm install -g turbo pnpm@12.3.4 && \
     pnpm install --frozen-lockfile
 
 COPY app ./app

@@ -4,12 +4,28 @@ description: Setup required tools in the workspace
 runs:
   using: composite
   steps:
+  - name: Temporarily exclude pnpm from asdf
+    run: |
+      cp .tool-versions .tool-versions.ci
+      grep -v '^pnpm ' .tool-versions > .tool-versions.tmp
+      mv .tool-versions.tmp .tool-versions
+    shell: bash
+
   - name: Setup Tools
     uses: egose/actions/asdf-tools@6e49f5129448cff1d901b16032c09445bd49dde1 # v0.30.0
     with:
       plugins: |
         sonarscanner=https://github.com/virtualstaticvoid/asdf-sonarscanner.git
         database-tools=https://github.com/egose/asdf-database-tools.git
+
+  - name: Restore tool versions
+    run: mv .tool-versions.ci .tool-versions
+    shell: bash
+
+  - name: Setup pnpm
+    uses: pnpm/setup@v2
+    with:
+      install: false
 
   - name: Install python tools
     run: |
