@@ -4,17 +4,17 @@ description: Setup required tools in the workspace
 runs:
   using: composite
   steps:
-  - name: Setup pnpm
-    uses: pnpm/setup@v2
-    with:
-      install: false
-
   - name: Setup Tools
     uses: egose/actions/asdf-tools@6e49f5129448cff1d901b16032c09445bd49dde1 # v0.30.0
     with:
       plugins: |
         sonarscanner=https://github.com/virtualstaticvoid/asdf-sonarscanner.git
         database-tools=https://github.com/egose/asdf-database-tools.git
+
+  - name: Setup pnpm
+    uses: pnpm/setup@v2
+    with:
+      install: false
 
   - name: Install python tools
     run: |
