@@ -197,7 +197,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     closeModal,
     userReadonly = false,
     canEditGitHubAccount = false,
-    persistGitHubAccount = false,
+    persistGitHubAccount = true,
   }) {
     const initialUser = initialValue?.id ? initialValue : null;
     const [user, setUser] = useState<SearchedUser | null>(initialUser);
@@ -246,7 +246,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         (githubAccount?.username !== github.originalUsername || githubAccount?.accountId !== github.originalAccountId);
       let selectedUser = user;
 
-      if (persistGitHubAccount && (githubWasRemoved || githubWasChanged)) {
+      if (githubWasRemoved || githubWasChanged) {
         if (!user.id) {
           github.setError('The Registry user must be saved before updating a GitHub account.');
           return;
