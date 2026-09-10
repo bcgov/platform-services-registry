@@ -40,7 +40,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(() => {
+export default publicCloudProductEdit(({ session }) => {
   const [state, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -92,6 +92,13 @@ export default publicCloudProductEdit(() => {
     return null;
   }
 
+  const existingProductTeamUserIds = [
+    currentProduct.projectOwnerId,
+    currentProduct.primaryTechnicalLeadId,
+    currentProduct.secondaryTechnicalLeadId,
+    ...(currentProduct.members ?? []).map((member) => member.userId),
+  ].filter((id): id is string => Boolean(id));
+
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -127,6 +134,8 @@ export default publicCloudProductEdit(() => {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
         canEditGitHubAccount: currentProduct._permissions.manageGitHubAccounts,
+        existingProductTeamUserIds,
+        isAdmin: session?.isAdmin,
       },
     },
     {
