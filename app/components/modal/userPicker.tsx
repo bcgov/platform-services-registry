@@ -18,7 +18,6 @@ interface ModalProps {
   blacklistMessage?: string;
   userReadonly?: boolean;
   canEditGitHubAccount?: boolean;
-  persistGitHubAccount?: boolean;
 }
 
 interface ModalState {
@@ -197,7 +196,6 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     closeModal,
     userReadonly = false,
     canEditGitHubAccount = false,
-    persistGitHubAccount = true,
   }) {
     const initialUser = initialValue?.id ? initialValue : null;
     const [user, setUser] = useState<SearchedUser | null>(initialUser);
