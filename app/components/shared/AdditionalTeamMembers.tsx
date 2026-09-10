@@ -47,6 +47,7 @@ export default function AdditionalTeamMembers<
         <Table.Td>
           <UserProfile
             data={member}
+            canEditGitHubAccount={canEditGitHubAccount}
             {...(disabled
               ? {}
               : {
