@@ -49,14 +49,14 @@ export default function AdditionalTeamMembers<
     members.map((member, index) => {
       const canEditMemberGitHubAccount =
         isAdmin || (canEditGitHubAccount && !!member.id && existingProductTeamUserIds?.includes(member.id));
-
+      const canOpenMember = !disabled || canEditMemberGitHubAccount;
       return (
         <Table.Tr key={member.id ?? index}>
           <Table.Td>
             <UserProfile
               data={member}
               canEditGitHubAccount={canEditMemberGitHubAccount}
-              {...(disabled
+              {...(!canOpenMember
                 ? {}
                 : {
                     onClick: async () => {

@@ -25,6 +25,7 @@ import PublicCloudForecastSection from '@/components/public-cloud/sections/Publi
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { getProductTeamUserIds } from '@/helpers/product';
 import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
 import { normalizeStoredAzureSubscriptions } from '@/services/azure/subscriptions';
@@ -92,12 +93,7 @@ export default publicCloudProductEdit(({ session }) => {
     return null;
   }
 
-  const existingProductTeamUserIds = [
-    currentProduct.projectOwnerId,
-    currentProduct.primaryTechnicalLeadId,
-    currentProduct.secondaryTechnicalLeadId,
-    ...(currentProduct.members ?? []).map((member) => member.userId),
-  ].filter((id): id is string => Boolean(id));
+  const existingProductTeamUserIds = getProductTeamUserIds(currentProduct);
 
   const accordionItems = [
     {

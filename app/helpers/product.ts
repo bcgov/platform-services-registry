@@ -2,7 +2,7 @@ import _forEach from 'lodash-es/forEach';
 import _pick from 'lodash-es/pick';
 import { Session } from 'next-auth';
 import { PrivateCloudProductMemberRole, PrivateCloudProduct } from '@/prisma/client';
-import { extractNumbers } from '@/utils/js';
+import { extractNumbers, getUniqueNonFalsyItems } from '@/utils/js';
 
 interface Member {
   email: string;
@@ -133,4 +133,18 @@ export function getPrivateCloudProductContext(
     isMinistryReader,
     isMinistryEditor,
   };
+}
+
+export function getProductTeamUserIds(product: {
+  projectOwnerId: string;
+  primaryTechnicalLeadId: string;
+  secondaryTechnicalLeadId?: string | null;
+  members?: { userId: string }[];
+}) {
+  return getUniqueNonFalsyItems([
+    product.projectOwnerId,
+    product.primaryTechnicalLeadId,
+    product.secondaryTechnicalLeadId,
+    ...(product.members ?? []).map((member) => member.userId),
+  ]);
 }
