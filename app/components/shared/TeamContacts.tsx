@@ -22,9 +22,17 @@ interface Props {
   disabled?: boolean;
   canEditGitHubAccount?: boolean;
   userAttributes: UserAttribute[];
+  existingProductTeamUserIds?: string[];
+  isAdmin?: boolean;
 }
 
-export default function TeamContacts({ disabled, canEditGitHubAccount, userAttributes }: Readonly<Props>) {
+export default function TeamContacts({
+  disabled,
+  canEditGitHubAccount,
+  userAttributes,
+  existingProductTeamUserIds,
+  isAdmin,
+}: Readonly<Props>) {
   const {
     setValue,
     watch,
@@ -53,6 +61,8 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
           blacklistIds: resolvedBlacklistIds,
           blacklistMessage,
           canEditGitHubAccount,
+          existingProductTeamUserIds,
+          isAdmin,
         },
         { initialState: { user } },
       );
@@ -75,7 +85,11 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
         setValue(key, {}, { shouldDirty: true });
       }
     };
-
+    const canEditUserGitHubAccount =
+      isAdmin ||
+      (canEditGitHubAccount &&
+        !!user.id &&
+        (existingProductTeamUserIds === undefined || existingProductTeamUserIds?.includes(user.id)));
     return (
       <Table.Tr key={key}>
         <Table.Td>
@@ -86,7 +100,7 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
           <UserProfile
             data={user}
             onClick={disabled ? undefined : handleUserChange}
-            canEditGitHubAccount={canEditGitHubAccount}
+            canEditGitHubAccount={canEditUserGitHubAccount}
           />
           <FormError field={`${key}Id`} className="mt-1" />
         </Table.Td>

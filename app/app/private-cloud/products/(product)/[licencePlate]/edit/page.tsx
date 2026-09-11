@@ -17,6 +17,7 @@ import TeamContacts from '@/components/private-cloud/sections/TeamContacts';
 import SiloAccordion from '@/components/private-cloud/SiloAccordion';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { getProductTeamUserIds } from '@/helpers/product';
 import { canManageGpuQuota } from '@/helpers/quota-change';
 import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { ResourceRequestsEnv } from '@/prisma/client';
@@ -134,6 +135,8 @@ export default privateCloudProductEdit(({ session }) => {
     return null;
   }
 
+  const existingProductTeamUserIds = getProductTeamUserIds(currentProduct);
+
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -156,6 +159,8 @@ export default privateCloudProductEdit(({ session }) => {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
         canEditGitHubAccount: currentProduct._permissions.manageGitHubAccounts,
+        existingProductTeamUserIds,
+        isAdmin: session?.isAdmin,
       },
     },
     {

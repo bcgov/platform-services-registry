@@ -18,6 +18,8 @@ interface ModalProps {
   blacklistMessage?: string;
   userReadonly?: boolean;
   canEditGitHubAccount?: boolean;
+  existingProductTeamUserIds?: string[];
+  isAdmin?: boolean;
 }
 
 interface ModalState {
@@ -196,12 +198,16 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     closeModal,
     userReadonly = false,
     canEditGitHubAccount = false,
+    existingProductTeamUserIds,
+    isAdmin = false,
   }) {
     const initialUser = initialValue?.id ? initialValue : null;
     const [user, setUser] = useState<SearchedUser | null>(initialUser);
     const [autocompId, setAutocompId] = useState(randomId());
     const github = useGitHubUser(initialUser, setUser);
 
+    const canEditSelectedUserGitHubAccount =
+      isAdmin || (canEditGitHubAccount && !!user?.id && existingProductTeamUserIds?.includes(user.id));
     const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
 
     const profileWarnings = getProfileWarnings(user);
@@ -223,7 +229,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
         isBlacklisted ||
         github.isSearching ||
         github.isSaving ||
-        (canEditGitHubAccount && hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
+        (canEditSelectedUserGitHubAccount && hasEnteredGitHubUsername && !hasValidatedGitHubUsername),
     );
 
     const selectUser = async () => {
@@ -236,10 +242,10 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       const githubAccount = user.githubAccount;
 
       const githubWasRemoved =
-        canEditGitHubAccount && github.hadInitialGitHubData && github.isEditing && !githubAccount;
+        canEditSelectedUserGitHubAccount && github.hadInitialGitHubData && github.isEditing && !githubAccount;
 
       const githubWasChanged =
-        canEditGitHubAccount &&
+        canEditSelectedUserGitHubAccount &&
         Boolean(githubAccount?.username && githubAccount?.accountId) &&
         (githubAccount?.username !== github.originalUsername || githubAccount?.accountId !== github.originalAccountId);
       let selectedUser = user;
@@ -269,6 +275,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
       state.user = selectedUser;
       closeModal();
     };
+
     return (
       <>
         {userReadonly && user ? (
@@ -284,7 +291,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
           />
         )}
 
-        {canEditGitHubAccount &&
+        {canEditSelectedUserGitHubAccount &&
           user &&
           (github.isEditing || !user.githubAccount?.username || !user.githubAccount?.accountId) && (
             <div className="mt-4">
@@ -351,7 +358,7 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
                 <div>GitHub account ID: {user.githubAccount?.accountId}</div>
               </div>
 
-              {canEditGitHubAccount && !github.isEditing && (
+              {canEditSelectedUserGitHubAccount && !github.isEditing && (
                 <Tooltip label="Edit">
                   <IconEdit
                     className="ml-2 cursor-pointer edit-user-icon"

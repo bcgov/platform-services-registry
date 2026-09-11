@@ -165,14 +165,18 @@ async function decorate<T extends PublicCloudProductSimple & Partial<PublicCloud
 
   const canEditForecast = canEdit;
 
+  const isEditorMember = members.some(
+    (member) => member.userId === session.user.id && member.roles.includes(PublicCloudProductMemberRole.EDITOR),
+  );
+
   decoratedDoc._permissions = {
     view: canView || canSignMou || canApproveMou,
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
     downloadMou: canDownloadMou,
-    manageMembers: isActive && isMaintainer,
-    manageGitHubAccounts: session.isAdmin || (isActive && isMaintainer),
+    manageMembers: isActive && (isMaintainer || session.isAdmin || isEditorMember),
+    manageGitHubAccounts: isActive && (session.isAdmin || isMaintainer || isEditorMember),
     editAccountCoding:
       session.permissions.reviewPublicCloudBilling ||
       session.isBillingManager ||
