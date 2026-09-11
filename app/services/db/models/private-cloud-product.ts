@@ -117,8 +117,8 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
-    manageMembers: isActive && isMyProduct,
-    manageGitHubAccounts: session.isAdmin || (isActive && isMyProduct) || isEditorMember,
+    manageMembers: isActive && (isMyProduct || session.isAdmin || isEditorMember),
+    manageGitHubAccounts: isActive && (session.isAdmin || isMyProduct || isEditorMember),
     toggleTemporary: canToggleTemporary,
   };
 

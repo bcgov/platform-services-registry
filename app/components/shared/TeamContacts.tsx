@@ -86,7 +86,10 @@ export default function TeamContacts({
       }
     };
     const canEditUserGitHubAccount =
-      isAdmin || (canEditGitHubAccount && !!user.id && existingProductTeamUserIds?.includes(user.id));
+      isAdmin ||
+      (canEditGitHubAccount &&
+        !!user.id &&
+        (existingProductTeamUserIds === undefined || existingProductTeamUserIds?.includes(user.id)));
     return (
       <Table.Tr key={key}>
         <Table.Td>

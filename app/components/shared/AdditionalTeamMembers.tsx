@@ -48,7 +48,10 @@ export default function AdditionalTeamMembers<
   const rows = members.length ? (
     members.map((member, index) => {
       const canEditMemberGitHubAccount =
-        isAdmin || (canEditGitHubAccount && !!member.id && existingProductTeamUserIds?.includes(member.id));
+        isAdmin ||
+        (canEditGitHubAccount &&
+          !!member.id &&
+          (existingProductTeamUserIds === undefined || existingProductTeamUserIds?.includes(member.id)));
       const canOpenMember = !disabled || canEditMemberGitHubAccount;
       return (
         <Table.Tr key={member.id ?? index}>
