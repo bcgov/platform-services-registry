@@ -48,7 +48,6 @@ export default function TeamContacts({
   existingProductTeamUserIds = [],
   isAdmin = false,
 }: Props) {
-  console.log('isAdditionalMembersDisabled', isAdditionalMembersDisabled);
   return (
     <div className="m-5">
       <h3 className="text-base lg:text-lg font-semibold leading-7 mt-7">Primary Contacts</h3>
