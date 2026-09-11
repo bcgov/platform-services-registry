@@ -35,7 +35,7 @@ export default privateCloudProductNew(({ session }) => {
       },
     },
   });
-  const canManageGpu = canManageGpuQuota(session);
+  const canManageGpu = !!session?.previews?.gpu && canManageGpuQuota(session);
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,

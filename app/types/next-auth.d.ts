@@ -129,6 +129,7 @@ declare module 'next-auth' {
       apiAccount: boolean;
       costRecovery: boolean;
       publicCloudFinance: boolean;
+      gpu: boolean;
     };
     permissionList: string[];
     requiresRelogin: boolean;

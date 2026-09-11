@@ -229,6 +229,7 @@ export async function generateSession({
     apiAccount: !IS_PROD,
     costRecovery: !IS_PROD,
     publicCloudFinance: !IS_PROD,
+    gpu: !IS_PROD,
   };
 
   session.permissions = {

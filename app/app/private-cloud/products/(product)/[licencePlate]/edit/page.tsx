@@ -40,7 +40,7 @@ export default privateCloudProductEdit(({ session }) => {
   type PrivateCloudEditRequestInput = z.input<typeof privateCloudEditRequestBodySchema>;
   type PrivateCloudEditRequestOutput = z.output<typeof privateCloudEditRequestBodySchema>;
 
-  const canManageGpu = canManageGpuQuota(session);
+  const canManageGpu = !!session?.previews?.gpu && canManageGpuQuota(session);
   const methods = useForm<PrivateCloudEditRequestInput, unknown, PrivateCloudEditRequestOutput>({
     resolver: async (values, context, options) => {
       const { resourceRequests } = values;
