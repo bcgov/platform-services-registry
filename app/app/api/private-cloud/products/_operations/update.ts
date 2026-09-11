@@ -53,7 +53,7 @@ export default async function updateOp({
   if (!product._permissions.manageMembers) {
     rest.members = product.members.map(({ userId, roles }) => ({ userId, roles }));
   }
-  const canManageGpu = canManageGpuQuota(session);
+  const canManageGpu = !!session?.previews?.gpu && canManageGpuQuota(session);
   rest.resourceRequests = sanitizeGpuResourceRequests(
     rest.resourceRequests,
     product.cluster,

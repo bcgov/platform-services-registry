@@ -57,7 +57,7 @@ export default privateCloudRequestDecision(({ getPathParams, session, router }) 
   type PrivateCloudRequestDecisionOutput = z.output<typeof privateCloudRequestDecisionBodySchema>;
 
   const baseResolver = zodResolver(privateCloudRequestDecisionBodySchema);
-  const canManageGpu = canManageGpuQuota(session);
+  const canManageGpu = !!session?.previews?.gpu && canManageGpuQuota(session);
 
   const methods = useForm<PrivateCloudRequestDecisionInput, unknown, PrivateCloudRequestDecisionOutput>({
     resolver: async (values, context, options) => {
