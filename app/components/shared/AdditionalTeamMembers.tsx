@@ -66,6 +66,7 @@ export default function AdditionalTeamMembers<
                       const { state } = await openUserPickerModal(
                         {
                           initialValue: member,
+                          userReadonly: disabled,
                           canEditGitHubAccount,
                           existingProductTeamUserIds,
                           isAdmin,

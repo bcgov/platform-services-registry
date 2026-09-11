@@ -45,8 +45,8 @@ export default function TeamContacts({
   isAdditionalMembersDisabled,
   showAdditionalTeamMembers = true,
   canEditGitHubAccount = false,
-  existingProductTeamUserIds = [],
-  isAdmin = false,
+  existingProductTeamUserIds,
+  isAdmin,
 }: Props) {
   return (
     <div className="m-5">
