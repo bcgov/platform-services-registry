@@ -21,11 +21,15 @@ export default function AdditionalTeamMembers<
   memberRoles,
   children,
   canEditGitHubAccount,
+  existingProductTeamUserIds,
+  isAdmin,
 }: Readonly<{
   disabled?: boolean;
   memberRoles: string[];
   children?: React.ReactNode;
   canEditGitHubAccount?: boolean;
+  existingProductTeamUserIds?: string[];
+  isAdmin?: boolean;
 }>) {
   const {
     control,
@@ -42,110 +46,125 @@ export default function AdditionalTeamMembers<
   const members = values as (SearchedUser & T)[];
 
   const rows = members.length ? (
-    members.map((member, index) => (
-      <Table.Tr key={member.id ?? index}>
-        <Table.Td>
-          <UserProfile
-            data={member}
-            canEditGitHubAccount={canEditGitHubAccount}
-            {...(disabled
-              ? {}
-              : {
-                  onClick: async () => {
-                    const { state } = await openUserPickerModal(
-                      {
-                        initialValue: member,
-                        canEditGitHubAccount,
-                        /*
-                         * Exclude the current member. They should be
-                         * allowed to update their GitHub information.
-                         * All other members remain blacklisted.
-                         */
-                        blacklistIds: members
-                          .filter((_, memberIndex) => memberIndex !== index)
-                          .map((member) => member.id),
-                        blacklistMessage: 'This user is already on the list.',
-                      },
-                      {
-                        initialState: {
-                          user: member,
+    members.map((member, index) => {
+      const canEditMemberGitHubAccount =
+        isAdmin ||
+        (canEditGitHubAccount &&
+          !!member.id &&
+          (existingProductTeamUserIds === undefined || existingProductTeamUserIds?.includes(member.id)));
+      const canOpenMember = !disabled || canEditMemberGitHubAccount;
+      return (
+        <Table.Tr key={member.id ?? index}>
+          <Table.Td>
+            <UserProfile
+              data={member}
+              canEditGitHubAccount={canEditMemberGitHubAccount}
+              {...(!canOpenMember
+                ? {}
+                : {
+                    onClick: async () => {
+                      const { state } = await openUserPickerModal(
+                        {
+                          initialValue: member,
+                          userReadonly: disabled,
+                          canEditGitHubAccount,
+                          existingProductTeamUserIds,
+                          isAdmin,
+                          /*
+                           * Exclude the current member. They should be
+                           * allowed to update their GitHub information.
+                           * All other members remain blacklisted.
+                           */
+                          blacklistIds: members
+                            .filter((_, memberIndex) => memberIndex !== index)
+                            .map((member) => member.id),
+                          blacklistMessage: 'This user is already on the list.',
                         },
-                      },
-                    );
-
-                    if (state.user) {
-                      setValue(
-                        `members.${index}`,
-                        { ...member, ...state.user, userId: state.user.id },
-                        { shouldDirty: true },
+                        {
+                          initialState: {
+                            user: member,
+                          },
+                        },
                       );
-                    }
-                  },
-                })}
-          />
-        </Table.Td>
 
-        <Table.Td>
-          {member.jobTitle && (
-            <div>
-              <Badge color="info" variant="filled">
-                {member.jobTitle}
-              </Badge>
-            </div>
-          )}
-          {member.officeLocation && (
-            <div>
-              <Badge color="primary" variant="filled">
-                {member.officeLocation}
-              </Badge>
-            </div>
-          )}
-        </Table.Td>
-
-        <Table.Td>
-          {member.id && (
-            <FormMultiSelect
-              name="roles"
-              data={memberRoles}
-              value={member.roles}
-              error={errors.members?.[index]?.roles?.message}
-              onChange={(roles) => {
-                setValue(`members.${index}`, { ...member, roles }, { shouldDirty: true });
-              }}
-              disabled={disabled}
+                      if (state.user) {
+                        setValue(
+                          `members.${index}`,
+                          { ...member, ...state.user, userId: state.user.id },
+                          { shouldDirty: true },
+                        );
+                      }
+                    },
+                  })}
             />
-          )}
-        </Table.Td>
-        <Table.Td className="italic">{formatDate(member.lastSeen) || <span>has not yet logged in</span>}</Table.Td>
-        <Table.Td>
-          {!disabled && (
-            <Button
-              color="danger"
-              size="sm"
-              onClick={async () => {
-                if (member.id) {
-                  const res = await openConfirmModal({
-                    content: (
-                      <div>
-                        Are you sure you want to remove <span className="font-semibold">{formatFullName(member)}</span>?
-                      </div>
-                    ),
-                  });
+          </Table.Td>
 
-                  if (res.state.confirmed) {
+          <Table.Td>
+            {member.jobTitle && (
+              <div>
+                <Badge color="info" variant="filled">
+                  {member.jobTitle}
+                </Badge>
+              </div>
+            )}
+
+            {member.officeLocation && (
+              <div>
+                <Badge color="primary" variant="filled">
+                  {member.officeLocation}
+                </Badge>
+              </div>
+            )}
+          </Table.Td>
+
+          <Table.Td>
+            {member.id && (
+              <FormMultiSelect
+                name="roles"
+                data={memberRoles}
+                value={member.roles}
+                error={errors.members?.[index]?.roles?.message}
+                onChange={(roles) => {
+                  setValue(`members.${index}`, { ...member, roles }, { shouldDirty: true });
+                }}
+                disabled={disabled}
+              />
+            )}
+          </Table.Td>
+
+          <Table.Td className="italic">{formatDate(member.lastSeen) || <span>has not yet logged in</span>}</Table.Td>
+
+          <Table.Td>
+            {!disabled && (
+              <Button
+                color="danger"
+                size="sm"
+                onClick={async () => {
+                  if (member.id) {
+                    const res = await openConfirmModal({
+                      content: (
+                        <div>
+                          Are you sure you want to remove{' '}
+                          <span className="font-semibold">{formatFullName(member)}</span>?
+                        </div>
+                      ),
+                    });
+
+                    if (res.state.confirmed) {
+                      remove(index);
+                    }
+                  } else {
                     remove(index);
                   }
-                } else {
-                  remove(index);
-                }
-              }}
-            >
-              Delete
-            </Button>
-          )}
-        </Table.Td>
-      </Table.Tr>
-    ))
+                }}
+              >
+                Delete
+              </Button>
+            )}
+          </Table.Td>
+        </Table.Tr>
+      );
+    })
   ) : (
     <Table.Tr>
       <Table.Td colSpan={5} className="italic">

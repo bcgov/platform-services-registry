@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
-import { cn, formatDate } from '@/utils/js';
+import { formatDate } from '@/utils/js';
 import FormError from '../generic/FormError';
 import TooltipTableHeader from './TooltipTableHeader';
 
@@ -22,14 +22,21 @@ interface Props {
   disabled?: boolean;
   canEditGitHubAccount?: boolean;
   userAttributes: UserAttribute[];
+  existingProductTeamUserIds?: string[];
+  isAdmin?: boolean;
 }
 
-export default function TeamContacts({ disabled, canEditGitHubAccount, userAttributes }: Readonly<Props>) {
+export default function TeamContacts({
+  disabled,
+  canEditGitHubAccount,
+  userAttributes,
+  existingProductTeamUserIds,
+  isAdmin,
+}: Readonly<Props>) {
   const {
     setValue,
     watch,
     formState: { errors },
-    register,
   } = useFormContext();
 
   const users = watch(userAttributes.map(({ key }) => key));
@@ -37,8 +44,12 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
   const tableBody = userAttributes.map(({ role, key, isOptional, blacklistFields = [], blacklistMessage }, index) => {
     const user = users[index] ?? {};
     const canDelete = !disabled && isOptional;
+    const canEditUserGitHubAccount =
+      canEditGitHubAccount &&
+      !!user.id &&
+      (isAdmin || existingProductTeamUserIds === undefined || existingProductTeamUserIds.includes(user.id));
     const handleUserChange = async () => {
-      if (disabled) return;
+      if (disabled && !canEditUserGitHubAccount) return;
 
       const resolvedBlacklistIds = blacklistFields
         .map((field) => {
@@ -50,9 +61,12 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
       const { state } = await openUserPickerModal(
         {
           initialValue: user,
+          userReadonly: disabled,
           blacklistIds: resolvedBlacklistIds,
           blacklistMessage,
           canEditGitHubAccount,
+          existingProductTeamUserIds,
+          isAdmin,
         },
         { initialState: { user } },
       );
@@ -75,7 +89,6 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
         setValue(key, {}, { shouldDirty: true });
       }
     };
-
     return (
       <Table.Tr key={key}>
         <Table.Td>
@@ -85,8 +98,8 @@ export default function TeamContacts({ disabled, canEditGitHubAccount, userAttri
         <Table.Td className="user-button">
           <UserProfile
             data={user}
-            onClick={disabled ? undefined : handleUserChange}
-            canEditGitHubAccount={canEditGitHubAccount}
+            onClick={!disabled || canEditUserGitHubAccount ? handleUserChange : undefined}
+            canEditGitHubAccount={canEditUserGitHubAccount}
           />
           <FormError field={`${key}Id`} className="mt-1" />
         </Table.Td>

@@ -8,6 +8,8 @@ interface Props {
   isAdditionalMembersDisabled?: boolean;
   showAdditionalTeamMembers?: boolean;
   canEditGitHubAccount?: boolean;
+  existingProductTeamUserIds?: string[];
+  isAdmin?: boolean;
 }
 
 const userAttributes = [
@@ -43,6 +45,8 @@ export default function TeamContacts({
   isAdditionalMembersDisabled,
   showAdditionalTeamMembers = true,
   canEditGitHubAccount = false,
+  existingProductTeamUserIds,
+  isAdmin,
 }: Props) {
   return (
     <div className="m-5">
@@ -51,12 +55,19 @@ export default function TeamContacts({
         disabled={isTeamContactsDisabled}
         userAttributes={userAttributes}
         canEditGitHubAccount={canEditGitHubAccount}
+        existingProductTeamUserIds={existingProductTeamUserIds}
+        isAdmin={isAdmin}
       />
 
       {showAdditionalTeamMembers && (
         <>
           <h3 className="text-base lg:text-lg font-semibold leading-7 mt-7">Additional team members (optional)</h3>
-          <AdditionalTeamMembers disabled={isAdditionalMembersDisabled} canEditGitHubAccount={canEditGitHubAccount} />
+          <AdditionalTeamMembers
+            disabled={isAdditionalMembersDisabled}
+            canEditGitHubAccount={canEditGitHubAccount}
+            existingProductTeamUserIds={existingProductTeamUserIds}
+            isAdmin={isAdmin}
+          />
         </>
       )}
       <SupportContact disabled={isTeamContactsDisabled} />

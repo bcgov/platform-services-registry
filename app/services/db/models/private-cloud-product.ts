@@ -74,16 +74,17 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
         arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR, PrivateCloudProductMemberRole.VIEWER]),
     );
 
+  const isEditorMember = members.some(
+    (member) => member.userId === session.user.id && member.roles.includes(PrivateCloudProductMemberRole.EDITOR),
+  );
+
   const canEdit =
     isActive &&
     !hasActiveRequest &&
     (session.permissions.editAllPrivateCloudProducts ||
       isMyProduct ||
       session.organizationIds.editor.includes(doc.organizationId) ||
-      members.some(
-        (member) =>
-          member.userId === session.user.id && arraysIntersect(member.roles, [PrivateCloudProductMemberRole.EDITOR]),
-      ));
+      isEditorMember);
 
   const canReprovision = isActive && (session.isAdmin || session.isPrivateAdmin);
   const canToggleTemporary = isActive && (session.isAdmin || session.isPrivateAdmin);
@@ -116,8 +117,8 @@ async function decorate<T extends PrivateCloudProductSimple | PrivateCloudProduc
     edit: canEdit,
     delete: canEdit,
     reprovision: canReprovision,
-    manageMembers: isActive && isMyProduct,
-    manageGitHubAccounts: session.isAdmin || (isActive && isMyProduct),
+    manageMembers: isActive && (isMyProduct || session.isAdmin || isEditorMember),
+    manageGitHubAccounts: isActive && (session.isAdmin || isMyProduct || isEditorMember),
     toggleTemporary: canToggleTemporary,
   };
 

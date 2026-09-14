@@ -25,6 +25,7 @@ import PublicCloudForecastSection from '@/components/public-cloud/sections/Publi
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import { getProductTeamUserIds } from '@/helpers/product';
 import { areOnlyRepositoryFieldsDirty, getRepositoryFormValues } from '@/helpers/repository';
 import { normalizeStoredAwsLzaAccounts } from '@/services/aws-lza/accounts';
 import { normalizeStoredAzureSubscriptions } from '@/services/azure/subscriptions';
@@ -40,7 +41,7 @@ const publicCloudProductEdit = createClientPage({
   roles: [GlobalRole.User],
   validations: { pathParams: pathParamSchema },
 });
-export default publicCloudProductEdit(() => {
+export default publicCloudProductEdit(({ session }) => {
   const [state, snap] = usePublicProductState();
   const [isDisabled, setDisabled] = useState(false);
 
@@ -92,6 +93,8 @@ export default publicCloudProductEdit(() => {
     return null;
   }
 
+  const existingProductTeamUserIds = getProductTeamUserIds(currentProduct);
+
   const accordionItems = [
     {
       LeftIcon: IconInfoCircle,
@@ -127,6 +130,8 @@ export default publicCloudProductEdit(() => {
         isTeamContactsDisabled: isDisabled,
         isAdditionalMembersDisabled: isDisabled || !currentProduct._permissions.manageMembers,
         canEditGitHubAccount: currentProduct._permissions.manageGitHubAccounts,
+        existingProductTeamUserIds,
+        isAdmin: session?.isAdmin,
       },
     },
     {
