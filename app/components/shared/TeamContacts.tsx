@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { openConfirmModal } from '@/components/modal/confirm';
 import { openUserPickerModal } from '@/components/modal/userPicker';
 import UserProfile from '@/components/users/UserProfile';
-import { cn, formatDate } from '@/utils/js';
+import { formatDate } from '@/utils/js';
 import FormError from '../generic/FormError';
 import TooltipTableHeader from './TooltipTableHeader';
 
@@ -37,7 +37,6 @@ export default function TeamContacts({
     setValue,
     watch,
     formState: { errors },
-    register,
   } = useFormContext();
 
   const users = watch(userAttributes.map(({ key }) => key));
@@ -45,8 +44,12 @@ export default function TeamContacts({
   const tableBody = userAttributes.map(({ role, key, isOptional, blacklistFields = [], blacklistMessage }, index) => {
     const user = users[index] ?? {};
     const canDelete = !disabled && isOptional;
+    const canEditUserGitHubAccount =
+      canEditGitHubAccount &&
+      !!user.id &&
+      (isAdmin || existingProductTeamUserIds === undefined || existingProductTeamUserIds.includes(user.id));
     const handleUserChange = async () => {
-      if (disabled) return;
+      if (disabled && !canEditUserGitHubAccount) return;
 
       const resolvedBlacklistIds = blacklistFields
         .map((field) => {
@@ -58,6 +61,7 @@ export default function TeamContacts({
       const { state } = await openUserPickerModal(
         {
           initialValue: user,
+          userReadonly: disabled,
           blacklistIds: resolvedBlacklistIds,
           blacklistMessage,
           canEditGitHubAccount,
@@ -85,11 +89,6 @@ export default function TeamContacts({
         setValue(key, {}, { shouldDirty: true });
       }
     };
-    const canEditUserGitHubAccount =
-      isAdmin ||
-      (canEditGitHubAccount &&
-        !!user.id &&
-        (existingProductTeamUserIds === undefined || existingProductTeamUserIds?.includes(user.id)));
     return (
       <Table.Tr key={key}>
         <Table.Td>
@@ -99,7 +98,7 @@ export default function TeamContacts({
         <Table.Td className="user-button">
           <UserProfile
             data={user}
-            onClick={disabled ? undefined : handleUserChange}
+            onClick={!disabled || canEditUserGitHubAccount ? handleUserChange : undefined}
             canEditGitHubAccount={canEditUserGitHubAccount}
           />
           <FormError field={`${key}Id`} className="mt-1" />

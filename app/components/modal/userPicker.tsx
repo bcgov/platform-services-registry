@@ -207,7 +207,10 @@ export const openUserPickerModal = createModal<ModalProps, ModalState>({
     const github = useGitHubUser(initialUser, setUser);
 
     const canEditSelectedUserGitHubAccount =
-      isAdmin || (canEditGitHubAccount && !!user?.id && existingProductTeamUserIds?.includes(user.id));
+      isAdmin ||
+      (canEditGitHubAccount &&
+        !!user?.id &&
+        (existingProductTeamUserIds === undefined || existingProductTeamUserIds?.includes(user.id)));
     const isBlacklisted = !!(user?.id && blacklistIds.includes(user.id));
 
     const profileWarnings = getProfileWarnings(user);
