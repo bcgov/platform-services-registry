@@ -171,7 +171,7 @@ importers:
         version: 5.0.6
       '@types/node':
         specifier: ^24.0.0
-        version: 24.12.4
+        version: 24.13.4
       '@types/sanitize-html':
         specifier: ^2.13.0
         version: 2.16.1
@@ -378,11 +378,8 @@ packages:
   '@types/http-errors@2.0.5':
     resolution: {integrity: sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg==}
 
-  '@types/node@24.12.3':
-    resolution: {integrity: sha512-8oljBDGun9cIsZRJR6fkihn0TSXJI0UDOOhncYaERq6M0JMDoPLxyscwruJcb4GKS6dvK/d8xebYBg27h/duaQ==}
-
-  '@types/node@24.12.4':
-    resolution: {integrity: sha512-GUUEShf+PBCGW2KaXwcIt3Yk+e3pkKwWKb9GSyM9WQVE+ep2jzmHdGsHzu4wgcZy5fN9FBdVzjpBQsYlpfpgLA==}
+  '@types/node@24.13.4':
+    resolution: {integrity: sha512-YJ7EqCstVTzIr0fMr7qul/977en+pQHrfmuKIo6Zr9i75Be21dr3MovcfvGtyvi2HAUrRerWps5sMO9I7WaxDw==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -801,8 +798,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  undici-types@7.16.0:
-    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+  undici-types@7.18.2:
+    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
@@ -907,15 +904,15 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.12.3
+      '@types/node': 24.13.4
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.13.4
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.13.4
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -928,13 +925,9 @@ snapshots:
 
   '@types/http-errors@2.0.5': {}
 
-  '@types/node@24.12.3':
+  '@types/node@24.13.4':
     dependencies:
-      undici-types: 7.16.0
-
-  '@types/node@24.12.4':
-    dependencies:
-      undici-types: 7.16.0
+      undici-types: 7.18.2
 
   '@types/qs@6.14.0': {}
 
@@ -946,12 +939,12 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.12.3
+      '@types/node': 24.13.4
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.12.3
+      '@types/node': 24.13.4
 
   accepts@2.0.0:
     dependencies:
@@ -1418,7 +1411,7 @@ snapshots:
 
   typescript@6.0.3: {}
 
-  undici-types@7.16.0: {}
+  undici-types@7.18.2: {}
 
   unpipe@1.0.0: {}
 
