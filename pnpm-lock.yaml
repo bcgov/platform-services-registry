@@ -190,7 +190,7 @@ importers:
         version: 9.39.5
       '@release-it/bumper':
         specifier: ^8.0.0
-        version: 8.0.0(release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1))
+        version: 8.0.1(release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1))
       '@types/eslint-config-prettier':
         specifier: ^6.11.3
         version: 6.11.3
@@ -1285,9 +1285,9 @@ packages:
   '@dabh/diagnostics@2.0.8':
     resolution: {integrity: sha512-R4MSXTVnuMzGD7bzHdW2ZhhdPC/igELENcq5IjEverBvq5hn1SXCWcsi6eSsdWP0/Ur+SItRRjAktmdoX/8R/Q==}
 
-  '@decimalturn/toml-patch@2.1.0':
-    resolution: {integrity: sha512-IICXlX7hcD9lGN7k+vDXcVnOfcbOEqMpeQHRnrhnmm7tZ8HluFrSgBKLNC72fQpNXynbJTC7pjtfNCaKrKlGyA==}
-    engines: {node: '>=14'}
+  '@decimalturn/toml-patch@3.1.0':
+    resolution: {integrity: sha512-evgFLNmp5TUs+5R0VvPIMkj4ZLXfDsmSSzaBBR3KScrZ6uQ+/YAwg7UFNrrmILnjxW2qFjN6Dow8y1Zks56iMQ==}
+    engines: {node: '>=16'}
 
   '@dependents/detective-less@5.0.3':
     resolution: {integrity: sha512-v6oD9Ukp+N7V4n6p5I/+mM5fIohSfkrDSGlFm5w/pYmchvbk+sMIHsLxrFJ5Lnujewj1BzWL0K84d88lwZAMQA==}
@@ -3588,9 +3588,9 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@release-it/bumper@8.0.0':
-    resolution: {integrity: sha512-qTDTcSJzwvycZx9oMFdiiV1a7rR0Qdw0j/USSDA+ly6JyiTPSaJ+wpZ+cS8x8jTDeQuObZKf7TN9eYOxDn+JwA==}
-    engines: {node: ^22.21.0 || >=24.0.0}
+  '@release-it/bumper@8.0.1':
+    resolution: {integrity: sha512-C1yKYtdgY/NrLUm034kxHSwcwkK+TRg+EUDGaoIZmaWJlyGyIZm5IBA6Mq3CkAZ2Z5wYGy/NBQ2qJEhm3/yr1Q==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     peerDependencies:
       release-it: ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
 
@@ -6754,6 +6754,10 @@ packages:
     resolution: {integrity: sha512-IBTdIkzZNOpqm7q3dRqJvMaldXjDHWkEDfrwGEQTs5eaQMWV+djAhR+wahyNNMAa+qpbDUhBMVt4ZKNwpPm7xQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
+  ini@7.0.0:
+    resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
   internal-slot@1.1.0:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
@@ -7236,6 +7240,10 @@ packages:
 
   js-yaml@5.2.2:
     resolution: {integrity: sha512-dayzUzKkJ1MkuUtZglSebU43utNXH0OWQByK9rKOOuYIO8M5TV1y+n8ALMdG0rdzBnfNkOmZEqrURepb0ejqBw==}
+    hasBin: true
+
+  js-yaml@5.4.2:
+    resolution: {integrity: sha512-m+aqu+LwO1O6sIopafj8HUVl5aawITwZQe/yHpMCKjaWBaA/d07B/QdMb3529REftiU+RMMHL3Vlsw3hON7vWg==}
     hasBin: true
 
   jsbn@0.1.1:
@@ -9779,6 +9787,10 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
+  verkit@0.4.0:
+    resolution: {integrity: sha512-sXMwN6DMHeouPfCxkxWkKAmxphWKEenHYY5H1nIBzU3PmDsmJp6kBXJdshjVdpMZuWCmL9SH7KFRx29AylpP6g==}
+    engines: {node: '>=18.12.0'}
+
   verror@1.10.0:
     resolution: {integrity: sha512-ZZKSmDAEFOijERBLkmYfJ+vmk3w+7hOLYDNkRCuRuMJGEmqYNCNLyBBFwWKVMhfwaEF3WOd0Zlw86U/WC/+nYw==}
     engines: {'0': node >=0.6.0}
@@ -10950,7 +10962,7 @@ snapshots:
       enabled: 2.0.0
       kuler: 2.0.0
 
-  '@decimalturn/toml-patch@2.1.0': {}
+  '@decimalturn/toml-patch@3.1.0': {}
 
   '@dependents/detective-less@5.0.3':
     dependencies:
@@ -12839,18 +12851,18 @@ snapshots:
     dependencies:
       react: 19.3.0
 
-  '@release-it/bumper@8.0.0(release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1))':
+  '@release-it/bumper@8.0.1(release-it@21.0.2(@types/node@26.1.1)(supports-color@8.1.1))':
     dependencies:
-      '@decimalturn/toml-patch': 2.1.0
+      '@decimalturn/toml-patch': 3.1.0
       '@iarna/toml': 3.0.0
       cheerio: 1.2.0
       detect-indent: 7.0.2
       fast-glob: 3.3.3
-      ini: 6.0.0
-      js-yaml: 5.2.2
+      ini: 7.0.0
+      js-yaml: 5.4.2
       lodash-es: 4.18.1
       release-it: 21.0.2(@types/node@26.1.1)(supports-color@8.1.1)
-      semver: 7.8.5
+      verkit: 0.4.0
 
   '@rtsao/scc@1.1.0': {}
 
@@ -16696,6 +16708,8 @@ snapshots:
 
   ini@6.0.0: {}
 
+  ini@7.0.0: {}
+
   internal-slot@1.1.0:
     dependencies:
       es-errors: 1.3.0
@@ -17375,6 +17389,10 @@ snapshots:
       argparse: 2.0.1
 
   js-yaml@5.2.2:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@5.4.2:
     dependencies:
       argparse: 2.0.1
 
@@ -20248,6 +20266,8 @@ snapshots:
       react: 19.3.0
 
   vary@1.1.2: {}
+
+  verkit@0.4.0: {}
 
   verror@1.10.0:
     dependencies:
