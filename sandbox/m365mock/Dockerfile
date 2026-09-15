@@ -7,7 +7,7 @@ COPY sandbox/types.ts ./sandbox/types.ts
 COPY sandbox/m365mock ./sandbox/m365mock
 
 
-RUN npm install -g turbo pnpm@12.4.1
+RUN npm install -g turbo pnpm@12.4.2
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm --dir sandbox/m365mock build
 
