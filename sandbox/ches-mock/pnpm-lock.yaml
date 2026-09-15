@@ -196,7 +196,7 @@ importers:
         version: 5.2.1
       nodemailer:
         specifier: ^10.0.0
-        version: 10.0.1
+        version: 10.0.10
       sanitize-html:
         specifier: ^2.17.7
         version: 2.17.7
@@ -668,8 +668,8 @@ packages:
     resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
     engines: {node: '>= 0.6'}
 
-  nodemailer@10.0.1:
-    resolution: {integrity: sha512-c+gU9cL9HLDax3vjxL88kW+6NOgdtEUWaZ+AUtxdJR6LLhf0kGdCLExof7yiKW7zdO9EfXCSIgmhGyFmUM0mYQ==}
+  nodemailer@10.0.10:
+    resolution: {integrity: sha512-He9XskOFms62SyAKkLu8CcGcYHAo+BSHSsORI8s4PJH8qZgZY4L4lDfvyN0twvmbpyG+eGrxpyBlskj9d9rJ8A==}
     engines: {node: '>=20.0.0'}
 
   object-inspect@1.13.4:
@@ -1245,7 +1245,7 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  nodemailer@10.0.1: {}
+  nodemailer@10.0.10: {}
 
   object-inspect@1.13.4: {}
 
