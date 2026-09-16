@@ -46,6 +46,7 @@ export function createSamplePrivateCloudRequest(args?: {
     ...baseData,
     id: generateShortId(),
     temporaryProductNotificationDate: new Date(),
+    gitOpsRepositories: [],
   };
 
   const productData = {

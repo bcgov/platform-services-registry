@@ -46,7 +46,16 @@ export default async function deleteOp({
     );
   }
 
-  const { id, requests, updatedAt, _permissions, temporaryProductNotificationDate, archivedAt, ...rest } = product;
+  const {
+    id,
+    requests,
+    updatedAt,
+    _permissions,
+    temporaryProductNotificationDate,
+    archivedAt,
+    gitOpsRepositories: _gitOpsRepositories,
+    ...rest
+  } = product;
 
   // Retrieve the latest request data to acquire the decision data ID that can be assigned to the incoming request's original data.
   const previousRequest = await getLastEffectivePrivateCloudRequest(rest.licencePlate);
