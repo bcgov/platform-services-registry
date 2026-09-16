@@ -169,6 +169,7 @@ export default privateCloudProductEdit(({ session }) => {
       description: '',
       Component: Repositories,
       componentArgs: {
+        gitOpsRepositories: currentProduct.gitOpsRepositories,
         disabled: isDisabled,
       },
     },

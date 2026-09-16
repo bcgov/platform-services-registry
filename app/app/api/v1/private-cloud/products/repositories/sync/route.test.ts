@@ -12,14 +12,22 @@ import { POST } from './route';
 
 const routeUrl = 'http://localhost/api/v1/private-cloud/products/repositories/sync';
 
-const createSyncRequest = (repositories: unknown) =>
+const createSyncRequest = (repositories: unknown, token?: string) =>
   new NextRequest(routeUrl, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify(repositories),
   });
+
+const createGitOpsToken = () => {
+  const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({ azp: 'registry-gitops-ci' })).toString('base64url');
+
+  return `${header}.${payload}.`;
+};
 
 const createProvisionedProduct = async () => {
   await mockSessionByRole(GlobalRole.Admin);
@@ -58,11 +66,9 @@ const createProvisionedProduct = async () => {
 };
 
 const syncRepositories = async (repositories: string[]) => {
-  // Keep a valid application session during route tests.
-  // keycloakOauth2 itself is handled by the shared API handler.
-  await mockSessionByRole(GlobalRole.Admin);
+  await mockSessionByRole();
 
-  return POST(createSyncRequest(repositories), {});
+  return POST(createSyncRequest(repositories, createGitOpsToken()), {});
 };
 
 describe('API: Sync Private Cloud GitOps Repositories', () => {
@@ -86,14 +92,12 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
       },
     });
 
-    expect(updatedProduct?.repositories).toContainEqual({
-      url: repoUrl,
-    });
-
+    expect(updatedProduct?.gitOpsRepositories).toEqual([{ url: repoUrl }]);
+    expect(updatedProduct?.repositories).toEqual([]);
     expect(updatedProduct?.hasRepositories).toBe(true);
   });
 
-  it('should preserve existing repository links when adding a GitOps repository', async () => {
+  it('should preserve manual repository links when adding a GitOps repository', async () => {
     const product = await createProvisionedProduct();
 
     const manualRepositoryUrl = 'https://github.com/bcgov/example-repository';
@@ -121,11 +125,8 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
       },
     });
 
-    expect(updatedProduct?.repositories).toEqual(
-      expect.arrayContaining([{ url: manualRepositoryUrl }, { url: repoUrl }]),
-    );
-
-    expect(updatedProduct?.repositories).toHaveLength(2);
+    expect(updatedProduct?.repositories).toEqual([{ url: manualRepositoryUrl }]);
+    expect(updatedProduct?.gitOpsRepositories).toEqual([{ url: repoUrl }]);
     expect(updatedProduct?.hasRepositories).toBe(true);
   });
 
@@ -140,7 +141,7 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
         id: product.id,
       },
       data: {
-        repositories: [{ url: repoUrl }],
+        gitOpsRepositories: [{ url: repoUrl }],
         hasRepositories: true,
       },
     });
@@ -155,11 +156,8 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
       },
     });
 
-    const matchingRepositories = updatedProduct?.repositories.filter(
-      (repository) => repository.url.toLowerCase() === repoUrl.toLowerCase(),
-    );
-
-    expect(matchingRepositories).toHaveLength(1);
+    expect(updatedProduct?.gitOpsRepositories).toEqual([{ url: repoUrl }]);
+    expect(updatedProduct?.repositories).toEqual([]);
   });
 
   it('should remove a stale GitOps repository and preserve manual repository links', async () => {
@@ -174,7 +172,8 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
         id: staleProduct.id,
       },
       data: {
-        repositories: [{ url: staleRepoUrl }, { url: manualRepositoryUrl }],
+        repositories: [{ url: manualRepositoryUrl }],
+        gitOpsRepositories: [{ url: staleRepoUrl }],
         hasRepositories: true,
       },
     });
@@ -192,6 +191,7 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
     });
 
     expect(updatedProduct?.repositories).toEqual([{ url: manualRepositoryUrl }]);
+    expect(updatedProduct?.gitOpsRepositories).toEqual([]);
     expect(updatedProduct?.hasRepositories).toBe(true);
   });
 
@@ -206,7 +206,8 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
         id: staleProduct.id,
       },
       data: {
-        repositories: [{ url: staleRepoUrl }],
+        repositories: [],
+        gitOpsRepositories: [{ url: staleRepoUrl }],
         hasRepositories: true,
       },
     });
@@ -224,6 +225,7 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
     });
 
     expect(updatedProduct?.repositories).toEqual([]);
+    expect(updatedProduct?.gitOpsRepositories).toEqual([]);
     expect(updatedProduct?.hasRepositories).toBe(false);
   });
 
@@ -245,9 +247,8 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
       },
     });
 
-    expect(
-      updatedProduct?.repositories.filter((repository) => repository.url.toLowerCase() === repoUrl.toLowerCase()),
-    ).toHaveLength(1);
+    expect(updatedProduct?.gitOpsRepositories).toEqual([{ url: repoUrl }]);
+    expect(updatedProduct?.repositories).toEqual([]);
   });
 
   it('should return unknown licence plates as skipped', async () => {
@@ -276,5 +277,21 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
     const response = await POST(createSyncRequest(['tenant-gitops-NOT-VALID']), {});
 
     expect(response.status).toBe(400);
+  });
+
+  it('should reject authenticated browser users', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const response = await POST(createSyncRequest(['tenant-gitops-b6d387']), {});
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should reject requests without GitOps authentication', async () => {
+    await mockSessionByRole();
+
+    const response = await POST(createSyncRequest(['tenant-gitops-b6d387']), {});
+
+    expect(response.status).toBe(401);
   });
 });

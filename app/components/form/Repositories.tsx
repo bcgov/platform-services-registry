@@ -1,4 +1,4 @@
-import { Button, Group, Radio, Stack, Text } from '@mantine/core';
+import { Button, Group, Radio, Stack, Text, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import HookFormTextInput from '@/components/generic/input/HookFormTextInput';
@@ -17,8 +17,10 @@ function getHasRepositoriesRadioValue(value: boolean | null | undefined): 'yes' 
 
 export default function Repositories({
   disabled,
+  gitOpsRepositories = [],
 }: Readonly<{
   disabled?: boolean;
+  gitOpsRepositories?: { url: string }[];
 }>) {
   const {
     control,
@@ -31,6 +33,8 @@ export default function Repositories({
     name: 'repositories',
   });
   const hasRepositories = watch('hasRepositories');
+  const hasGitOpsRepositories = gitOpsRepositories.length > 0;
+  const hasAnyRepositories = fields.length > 0 || hasGitOpsRepositories;
 
   return (
     <div>
@@ -59,7 +63,7 @@ export default function Repositories({
             >
               <Group mt="xs">
                 <Radio value="yes" label="Yes" disabled={disabled} />
-                <Radio value="no" label="No" disabled={disabled} />
+                <Radio value="no" label="No" disabled={disabled || hasGitOpsRepositories} />
               </Group>
             </Radio.Group>
           )}
@@ -71,14 +75,14 @@ export default function Repositories({
         )}
       </Stack>
 
-      {hasRepositories === true && fields.length > 0 && (
+      {hasAnyRepositories && (
         <div className="mb-3 grid grid-cols-[1fr_auto] gap-4 border-b pb-2 font-semibold">
           <Text fw={600}>Git repository URL</Text>
           {!disabled && <Text fw={600}>Action</Text>}
         </div>
       )}
 
-      {hasRepositories === true && (
+      {(hasRepositories === true || hasGitOpsRepositories) && (
         <div className="space-y-3">
           {fields.map((field, index) => (
             <div key={field.id} className="grid grid-cols-[1fr_auto] items-start gap-4 border-b pb-3">
@@ -91,6 +95,17 @@ export default function Repositories({
                 <Button type="button" color="red" onClick={() => remove(index)}>
                   Delete
                 </Button>
+              )}
+            </div>
+          ))}
+          {gitOpsRepositories.map((repository) => (
+            <div key={repository.url} className="grid grid-cols-[1fr_auto] items-start gap-4 border-b pb-3">
+              <TextInput value={repository.url} disabled />
+
+              {!disabled && (
+                <Text c="dimmed" size="sm" pt="xs">
+                  Managed automatically
+                </Text>
               )}
             </div>
           ))}
@@ -109,7 +124,7 @@ export default function Repositories({
         </Button>
       )}
 
-      {disabled && fields.length === 0 && (
+      {disabled && !hasAnyRepositories && (
         <Text c="dimmed" fs="italic">
           No repositories have been added.
         </Text>

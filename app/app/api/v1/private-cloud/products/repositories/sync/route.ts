@@ -2,7 +2,7 @@ import { z } from 'zod';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { OkResponse } from '@/core/responses';
+import { OkResponse, UnauthorizedResponse } from '@/core/responses';
 
 const gitOpsRepoNameSchema = z.string().regex(/^tenant-gitops-[a-f0-9]{6}$/);
 
@@ -18,16 +18,15 @@ const apiHandler = createApiHandler({
 const gitOpsRepoPrefix = 'tenant-gitops-';
 const gitOpsRepoUrlPrefix = 'https://github.com/bcgov-c/tenant-gitops-';
 
-const normalizeRepositoryUrl = (url: string) => url.trim().replace(/\/+$/, '').toLowerCase();
-
 const getLicencePlateFromRepoName = (repoName: string) => repoName.slice(gitOpsRepoPrefix.length);
 
 const getGitOpsRepositoryUrl = (licencePlate: string) => `${gitOpsRepoUrlPrefix}${licencePlate}`;
 
-const isProductGitOpsRepository = (url: string, licencePlate: string) =>
-  normalizeRepositoryUrl(url) === normalizeRepositoryUrl(getGitOpsRepositoryUrl(licencePlate));
+export const POST = apiHandler(async ({ body, jwtData }) => {
+  if (!jwtData) {
+    return UnauthorizedResponse('GitOps service account authentication required');
+  }
 
-export const POST = apiHandler(async ({ body }) => {
   const incomingLicencePlates = new Set(body.map((repoName) => getLicencePlateFromRepoName(repoName).toLowerCase()));
 
   const products = await prisma.privateCloudProduct.findMany({
@@ -35,7 +34,7 @@ export const POST = apiHandler(async ({ body }) => {
       id: true,
       licencePlate: true,
       repositories: true,
-      hasRepositories: true,
+      gitOpsRepositories: true,
     },
   });
 
@@ -44,48 +43,23 @@ export const POST = apiHandler(async ({ body }) => {
   let unchanged = 0;
 
   for (const product of products) {
-    const shouldHaveGitOpsRepository = incomingLicencePlates.has(product.licencePlate.toLowerCase());
+    const licencePlate = product.licencePlate.toLowerCase();
+    const shouldHaveGitOpsRepository = incomingLicencePlates.has(licencePlate);
 
-    const expectedGitOpsUrl = getGitOpsRepositoryUrl(product.licencePlate.toLowerCase());
-    const normalizedExpectedUrl = normalizeRepositoryUrl(expectedGitOpsUrl);
+    const gitOpsRepositories = shouldHaveGitOpsRepository ? [{ url: getGitOpsRepositoryUrl(licencePlate) }] : [];
 
-    const existingManagedRepositories = product.repositories.filter((repository) =>
-      isProductGitOpsRepository(repository.url, product.licencePlate),
-    );
+    const existingGitOpsUrl = product.gitOpsRepositories[0]?.url;
+    const newGitOpsUrl = gitOpsRepositories[0]?.url;
 
-    const manualRepositories = product.repositories.filter(
-      (repository) => !isProductGitOpsRepository(repository.url, product.licencePlate),
-    );
-
-    const expectedRepositoryAlreadyExists = existingManagedRepositories.some(
-      (repository) => normalizeRepositoryUrl(repository.url) === normalizedExpectedUrl,
-    );
-
-    let repositories = product.repositories;
-
-    if (shouldHaveGitOpsRepository) {
-      repositories = [...manualRepositories, { url: expectedGitOpsUrl }];
-
-      if (!expectedRepositoryAlreadyExists) {
-        added += 1;
-      }
-    } else {
-      repositories = manualRepositories;
-
-      if (existingManagedRepositories.length > 0) {
-        removed += existingManagedRepositories.length;
-      }
-    }
-
-    const oldUrls = product.repositories.map((repository) => normalizeRepositoryUrl(repository.url)).sort();
-
-    const newUrls = repositories.map((repository) => normalizeRepositoryUrl(repository.url)).sort();
-
-    const changed = oldUrls.length !== newUrls.length || oldUrls.some((url, index) => url !== newUrls[index]);
-
-    if (!changed) {
+    if (existingGitOpsUrl === newGitOpsUrl && product.gitOpsRepositories.length === gitOpsRepositories.length) {
       unchanged += 1;
       continue;
+    }
+
+    if (shouldHaveGitOpsRepository) {
+      added += 1;
+    } else {
+      removed += product.gitOpsRepositories.length;
     }
 
     await prisma.privateCloudProduct.update({
@@ -93,8 +67,8 @@ export const POST = apiHandler(async ({ body }) => {
         id: product.id,
       },
       data: {
-        repositories,
-        hasRepositories: repositories.length > 0,
+        gitOpsRepositories,
+        hasRepositories: product.repositories.length > 0 || gitOpsRepositories.length > 0,
       },
     });
 
