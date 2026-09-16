@@ -4,9 +4,10 @@ import { NumberInput, Select, SegmentedControl } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { formatCadAmount, formatPercent } from '@/components/public-cloud/finance/finance-measure-utils';
-import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePageHeader from '@/components/public-cloud/finance/FinancePageHeader';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
+import FinanceTable, { financeTableRowClassName } from '@/components/public-cloud/finance/FinanceTable';
 import { GlobalPermissions, financeProviderFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceRankings } from '@/services/backend/public-cloud/finance';
@@ -30,15 +31,16 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
 
   return (
     <div className="pt-5">
-      <h1 className="text-xl lg:text-2xl font-semibold mb-2">Cost transparency rankings</h1>
-      <p className="text-sm text-gray-600 mb-4">Where is the money actually going.</p>
-      <FinanceNav />
+      <FinancePageHeader
+        title="Cost transparency rankings"
+        description="Products and service lines ranked by spend for the selected period."
+      />
 
-      <div className="flex flex-wrap gap-4 mb-4 items-end">
+      <div className="mb-2 flex flex-wrap gap-4 items-end">
         <SegmentedControl
           value={provider}
           onChange={setProvider}
-          data={[{ label: 'All', value: 'ALL' }, ...financeProviderFilterOptions]}
+          data={[{ label: 'All providers', value: 'ALL' }, ...financeProviderFilterOptions]}
           aria-label="Provider filter"
         />
         <Select
@@ -57,6 +59,11 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
           max={100}
           onChange={(v) => setLimit(typeof v === 'number' ? v : 10)}
         />
+        {data ? (
+          <p className="text-sm text-gray-600 pb-1">
+            Filtered total: {formatCadAmount(data.filteredTotalCad)} · {data.fiscalYearLabel}
+          </p>
+        ) : null}
       </div>
 
       <FinanceQueryState
@@ -68,12 +75,9 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
       >
         {data && (
           <div className="space-y-8">
-            <p className="text-sm text-gray-600">
-              Filtered total: {formatCadAmount(data.filteredTotalCad)} · {data.fiscalYearLabel}
-            </p>
             <section>
               <h2 className="text-lg font-semibold mb-2">Products by spend</h2>
-              <table className="min-w-full text-sm border bg-white">
+              <FinanceTable caption="Products ranked by spend">
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-3 py-2 text-left">
@@ -114,7 +118,7 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
                       shareOfTotal: number;
                       yoyChangePercent: number | null;
                     }) => (
-                      <tr key={row.licencePlate}>
+                      <tr key={row.licencePlate} className={financeTableRowClassName}>
                         <td className="px-3 py-2">{row.rank}</td>
                         <td className="px-3 py-2 font-mono text-xs">{row.licencePlate}</td>
                         <td className="px-3 py-2">
@@ -130,12 +134,12 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
                     ),
                   )}
                 </tbody>
-              </table>
+              </FinanceTable>
             </section>
 
             <section>
               <h2 className="text-lg font-semibold mb-2">Service lines by spend</h2>
-              <table className="min-w-full text-sm border bg-white">
+              <FinanceTable caption="Service lines ranked by spend">
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-3 py-2 text-left">
@@ -171,7 +175,7 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
                       shareOfTotal: number;
                       yoyChangePercent: number | null;
                     }) => (
-                      <tr key={row.serviceLine}>
+                      <tr key={row.serviceLine} className={financeTableRowClassName}>
                         <td className="px-3 py-2">{row.rank}</td>
                         <td className="px-3 py-2">{row.serviceLine}</td>
                         <td className="px-3 py-2 text-right">{formatCadAmount(row.amountCad)}</td>
@@ -181,7 +185,7 @@ export default publicCloudFinanceRankingsPage(({ session }) => {
                     ),
                   )}
                 </tbody>
-              </table>
+              </FinanceTable>
             </section>
           </div>
         )}

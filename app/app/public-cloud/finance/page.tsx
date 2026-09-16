@@ -16,9 +16,10 @@ import {
   varianceToneClass,
   ytdActualHint,
 } from '@/components/public-cloud/finance/finance-measure-utils';
-import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePageHeader from '@/components/public-cloud/finance/FinancePageHeader';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
+import FinanceTable, { financeTableRowClassName } from '@/components/public-cloud/finance/FinanceTable';
 import { formatForecastProviderLabel } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { GlobalPermissions, financeProviderFilterOptions, type FinanceProviderFilter } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -153,13 +154,10 @@ export default publicCloudFinancePage(({ session }) => {
 
   return (
     <div className="pt-5">
-      <h1 className="text-xl lg:text-2xl 2xl:text-3xl font-semibold leading-7 text-gray-900 mb-2">
-        Public Cloud financial snapshot
-      </h1>
-      <p className="text-sm text-gray-600 mb-4">
-        What are we spending, on what, and is it on plan. Internal finance view.
-      </p>
-      <FinanceNav />
+      <FinancePageHeader
+        title="Public Cloud financial snapshot"
+        description="Actual spend compared with forecast for AWS LZA and Azure this fiscal year."
+      />
 
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <SegmentedControl
@@ -260,57 +258,54 @@ function FinanceSnapshotBody({
         <p className="text-xs text-gray-500 mb-2">
           Current month actuals are partial until the month closes. Chart equivalent table below.
         </p>
-        <div className="overflow-x-auto rounded border border-gray-200 bg-white">
-          <table className="min-w-full text-sm">
-            <caption className="sr-only">Monthly actual, forecast, and variance for the fiscal year</caption>
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-3 py-2 text-left">
-                  Month
-                </th>
-                <th scope="col" className="px-3 py-2 text-right">
-                  Actual
-                </th>
-                <th scope="col" className="px-3 py-2 text-right">
-                  Forecast
-                </th>
-                <th scope="col" className="px-3 py-2 text-right">
-                  Variance
-                </th>
-                <th scope="col" className="px-3 py-2 text-left">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.monthlyChart.map(
-                (row: {
-                  year: number;
-                  month: number;
-                  label: string;
-                  actual: number | null;
-                  forecast: number;
-                  hasCompleteActual: boolean;
-                  isElapsed: boolean;
-                  isCurrentPartial: boolean;
-                }) => {
-                  const monthVariance = closedMonthVariance(row, data.lowCoverage);
-                  return (
-                    <tr key={`${row.year}-${row.month}`} className={row.isElapsed ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="px-3 py-2">{row.label}</td>
-                      <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
-                      <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
-                      <td className={`px-3 py-2 text-right ${varianceToneClass(monthVariance) || 'text-gray-700'}`}>
-                        {monthVariance == null ? '—' : formatVarianceCell(row.actual, row.forecast)}
-                      </td>
-                      <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
-                    </tr>
-                  );
-                },
-              )}
-            </tbody>
-          </table>
-        </div>
+        <FinanceTable caption="Monthly actual, forecast, and variance for the fiscal year">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-3 py-2 text-left">
+                Month
+              </th>
+              <th scope="col" className="px-3 py-2 text-right">
+                Actual
+              </th>
+              <th scope="col" className="px-3 py-2 text-right">
+                Forecast
+              </th>
+              <th scope="col" className="px-3 py-2 text-right">
+                Variance
+              </th>
+              <th scope="col" className="px-3 py-2 text-left">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.monthlyChart.map(
+              (row: {
+                year: number;
+                month: number;
+                label: string;
+                actual: number | null;
+                forecast: number;
+                hasCompleteActual: boolean;
+                isElapsed: boolean;
+                isCurrentPartial: boolean;
+              }) => {
+                const monthVariance = closedMonthVariance(row, data.lowCoverage);
+                return (
+                  <tr key={`${row.year}-${row.month}`} className={financeTableRowClassName}>
+                    <td className="px-3 py-2">{row.label}</td>
+                    <td className="px-3 py-2 text-right font-medium">{formatCadAmount(row.actual)}</td>
+                    <td className="px-3 py-2 text-right text-gray-600">{formatCadAmount(row.forecast)}</td>
+                    <td className={`px-3 py-2 text-right ${varianceToneClass(monthVariance) || 'text-gray-700'}`}>
+                      {monthVariance == null ? '—' : formatVarianceCell(row.actual, row.forecast)}
+                    </td>
+                    <td className="px-3 py-2 text-xs text-gray-600">{monthStatusLabel(row)}</td>
+                  </tr>
+                );
+              },
+            )}
+          </tbody>
+        </FinanceTable>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -318,7 +313,7 @@ function FinanceSnapshotBody({
           <h2 id="top-products-heading" className="text-lg font-semibold mb-2">
             Top 5 products by spend
           </h2>
-          <table className="min-w-full text-sm border border-gray-200 bg-white rounded">
+          <FinanceTable caption="Top 5 products by spend">
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-3 py-2 text-left">
@@ -342,7 +337,7 @@ function FinanceSnapshotBody({
               ) : null}
               {data.topProducts.map(
                 (row: { licencePlate: string; name: string; amountCad: number; provider: string; status?: string }) => (
-                  <tr key={row.licencePlate}>
+                  <tr key={row.licencePlate} className={financeTableRowClassName}>
                     <td className="px-3 py-2 font-mono text-xs">{row.licencePlate}</td>
                     <td className="px-3 py-2">
                       {row.name}
@@ -356,14 +351,14 @@ function FinanceSnapshotBody({
                 ),
               )}
             </tbody>
-          </table>
+          </FinanceTable>
         </section>
 
         <section aria-labelledby="top-services-heading">
           <h2 id="top-services-heading" className="text-lg font-semibold mb-2">
             Top 5 service lines by spend
           </h2>
-          <table className="min-w-full text-sm border border-gray-200 bg-white rounded">
+          <FinanceTable caption="Top 5 service lines by spend">
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-3 py-2 text-left">
@@ -383,13 +378,13 @@ function FinanceSnapshotBody({
                 </tr>
               ) : null}
               {data.topServiceLines.map((row: { serviceLine: string; amountCad: number }) => (
-                <tr key={row.serviceLine}>
+                <tr key={row.serviceLine} className={financeTableRowClassName}>
                   <td className="px-3 py-2">{row.serviceLine}</td>
                   <td className="px-3 py-2 text-right">{formatCadAmount(row.amountCad)}</td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </FinanceTable>
         </section>
       </div>
 

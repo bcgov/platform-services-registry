@@ -15,7 +15,7 @@ const LINKS = [
 export default function FinanceNav() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Finance views" className="flex flex-wrap gap-2 mb-6">
+    <nav aria-label="Finance views" className="flex flex-wrap gap-2">
       {LINKS.map((link) => {
         const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
         return (
