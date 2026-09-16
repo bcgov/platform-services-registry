@@ -3,10 +3,11 @@ import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { Repository } from '@/prisma/client';
 
 const gitOpsRepoNameSchema = z.string().regex(/^tenant-gitops-[a-f0-9]{6}$/);
 
-const bodySchema = z.array(gitOpsRepoNameSchema).min(1);
+const bodySchema = z.array(gitOpsRepoNameSchema);
 
 const apiHandler = createApiHandler({
   keycloakOauth2: {
@@ -35,6 +36,7 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
       licencePlate: true,
       repositories: true,
       gitOpsRepositories: true,
+      hasRepositories: true,
     },
   });
 
@@ -46,12 +48,20 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
     const licencePlate = product.licencePlate.toLowerCase();
     const shouldHaveGitOpsRepository = incomingLicencePlates.has(licencePlate);
 
-    const gitOpsRepositories = shouldHaveGitOpsRepository ? [{ url: getGitOpsRepositoryUrl(licencePlate) }] : [];
+    const gitOpsRepositories: Repository[] = shouldHaveGitOpsRepository
+      ? [{ url: getGitOpsRepositoryUrl(licencePlate) }]
+      : [];
+
+    const expectedHasRepositories = product.repositories.length > 0 || gitOpsRepositories.length > 0;
 
     const existingGitOpsUrl = product.gitOpsRepositories[0]?.url;
     const newGitOpsUrl = gitOpsRepositories[0]?.url;
 
-    if (existingGitOpsUrl === newGitOpsUrl && product.gitOpsRepositories.length === gitOpsRepositories.length) {
+    if (
+      existingGitOpsUrl === newGitOpsUrl &&
+      product.gitOpsRepositories.length === gitOpsRepositories.length &&
+      product.hasRepositories === expectedHasRepositories
+    ) {
       unchanged += 1;
       continue;
     }
@@ -68,7 +78,7 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
       },
       data: {
         gitOpsRepositories,
-        hasRepositories: product.repositories.length > 0 || gitOpsRepositories.length > 0,
+        hasRepositories: expectedHasRepositories,
       },
     });
 

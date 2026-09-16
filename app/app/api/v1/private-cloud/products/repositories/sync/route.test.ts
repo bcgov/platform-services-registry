@@ -263,12 +263,36 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
     expect(data.skipped).toContain('ffffff');
   });
 
-  it('should reject an empty repository list', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
+  it('should remove all GitOps repositories when the repository list is empty', async () => {
+    const product = await createProvisionedProduct();
 
-    const response = await POST(createSyncRequest([]), {});
+    const repoUrl = `https://github.com/bcgov-c/tenant-gitops-${product.licencePlate.toLowerCase()}`;
+    const manualRepositoryUrl = 'https://github.com/bcgov/manual-repository';
 
-    expect(response.status).toBe(400);
+    await prisma.privateCloudProduct.update({
+      where: {
+        id: product.id,
+      },
+      data: {
+        repositories: [{ url: manualRepositoryUrl }],
+        gitOpsRepositories: [{ url: repoUrl }],
+        hasRepositories: true,
+      },
+    });
+
+    const response = await syncRepositories([]);
+
+    expect(response.status).toBe(200);
+
+    const updatedProduct = await prisma.privateCloudProduct.findUnique({
+      where: {
+        id: product.id,
+      },
+    });
+
+    expect(updatedProduct?.repositories).toEqual([{ url: manualRepositoryUrl }]);
+    expect(updatedProduct?.gitOpsRepositories).toEqual([]);
+    expect(updatedProduct?.hasRepositories).toBe(true);
   });
 
   it('should reject an invalid GitOps repository name', async () => {
@@ -293,5 +317,35 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
     const response = await POST(createSyncRequest(['tenant-gitops-b6d387']), {});
 
     expect(response.status).toBe(401);
+  });
+
+  it('should repair hasRepositories when the GitOps repository is already synchronized', async () => {
+    const product = await createProvisionedProduct();
+
+    const repoName = `tenant-gitops-${product.licencePlate.toLowerCase()}`;
+    const repoUrl = `https://github.com/bcgov-c/${repoName}`;
+
+    await prisma.privateCloudProduct.update({
+      where: {
+        id: product.id,
+      },
+      data: {
+        gitOpsRepositories: [{ url: repoUrl }],
+        hasRepositories: false,
+      },
+    });
+
+    const response = await syncRepositories([repoName]);
+
+    expect(response.status).toBe(200);
+
+    const updatedProduct = await prisma.privateCloudProduct.findUnique({
+      where: {
+        id: product.id,
+      },
+    });
+
+    expect(updatedProduct?.gitOpsRepositories).toEqual([{ url: repoUrl }]);
+    expect(updatedProduct?.hasRepositories).toBe(true);
   });
 });
