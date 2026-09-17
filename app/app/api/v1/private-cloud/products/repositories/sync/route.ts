@@ -3,7 +3,7 @@ import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { OkResponse, UnauthorizedResponse } from '@/core/responses';
-import { Repository } from '@/prisma/client';
+import { ProjectStatus, Repository } from '@/prisma/client';
 
 const gitOpsRepoNameSchema = z.string().regex(/^tenant-gitops-[a-f0-9]{6}$/);
 
@@ -34,6 +34,7 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
     select: {
       id: true,
       licencePlate: true,
+      status: true,
       repositories: true,
       gitOpsRepositories: true,
       hasRepositories: true,
@@ -46,7 +47,8 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
 
   for (const product of products) {
     const licencePlate = product.licencePlate.toLowerCase();
-    const shouldHaveGitOpsRepository = incomingLicencePlates.has(licencePlate);
+    const shouldHaveGitOpsRepository =
+      product.status === ProjectStatus.ACTIVE && incomingLicencePlates.has(licencePlate);
 
     const gitOpsRepositories: Repository[] = shouldHaveGitOpsRepository
       ? [{ url: getGitOpsRepositoryUrl(licencePlate) }]
@@ -66,11 +68,11 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
       continue;
     }
 
-    if (shouldHaveGitOpsRepository) {
-      added += 1;
-    } else {
-      removed += product.gitOpsRepositories.length;
-    }
+    const existingGitOpsUrls = new Set(product.gitOpsRepositories.map((repository) => repository.url));
+    const newGitOpsUrls = new Set(gitOpsRepositories.map((repository) => repository.url));
+
+    added += [...newGitOpsUrls].filter((url) => !existingGitOpsUrls.has(url)).length;
+    removed += [...existingGitOpsUrls].filter((url) => !newGitOpsUrls.has(url)).length;
 
     await prisma.privateCloudProduct.update({
       where: {
@@ -85,12 +87,16 @@ export const POST = apiHandler(async ({ body, jwtData }) => {
     logger.info(`Synchronized GitOps repository for private cloud product '${product.licencePlate}'.`);
   }
 
-  const existingLicencePlates = new Set(products.map((product) => product.licencePlate.toLowerCase()));
+  const activeLicencePlates = new Set(
+    products
+      .filter((product) => product.status === ProjectStatus.ACTIVE)
+      .map((product) => product.licencePlate.toLowerCase()),
+  );
 
-  const skipped = [...incomingLicencePlates].filter((licencePlate) => !existingLicencePlates.has(licencePlate));
+  const skipped = [...incomingLicencePlates].filter((licencePlate) => !activeLicencePlates.has(licencePlate));
 
   if (skipped.length > 0) {
-    logger.warn(`GitOps repositories received for unknown licence plates: ${skipped.join(', ')}`);
+    logger.warn(`GitOps repositories skipped for unknown or inactive licence plates: ${skipped.join(', ')}`);
   }
 
   return OkResponse({

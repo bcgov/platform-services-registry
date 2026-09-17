@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { createSamplePrivateCloudProductData } from '@/helpers/mock-resources';
-import { DecisionStatus, RequestType } from '@/prisma/client';
+import { DecisionStatus, ProjectStatus, RequestType } from '@/prisma/client';
 import { mockSessionByRole, mockTeamServiceAccount } from '@/services/api-test/core';
 import { createPrivateCloudProduct } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
@@ -347,5 +347,36 @@ describe('API: Sync Private Cloud GitOps Repositories', () => {
 
     expect(updatedProduct?.gitOpsRepositories).toEqual([{ url: repoUrl }]);
     expect(updatedProduct?.hasRepositories).toBe(true);
+  });
+
+  it('should not add a GitOps repository to an inactive product', async () => {
+    const product = await createProvisionedProduct();
+
+    await prisma.privateCloudProduct.update({
+      where: {
+        id: product.id,
+      },
+      data: {
+        status: ProjectStatus.INACTIVE,
+      },
+    });
+
+    const repoName = `tenant-gitops-${product.licencePlate.toLowerCase()}`;
+
+    const response = await syncRepositories([repoName]);
+
+    expect(response.status).toBe(200);
+
+    const data = await response.json();
+
+    const updatedProduct = await prisma.privateCloudProduct.findUnique({
+      where: {
+        id: product.id,
+      },
+    });
+
+    expect(updatedProduct?.gitOpsRepositories).toEqual([]);
+    expect(updatedProduct?.hasRepositories).toBe(false);
+    expect(data.skipped).toContain(product.licencePlate.toLowerCase());
   });
 });
