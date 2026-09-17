@@ -180,6 +180,7 @@ model PrivateCloudProduct {
   requests                         PrivateCloudRequest[]       @relation("project")
   comments                         PrivateCloudComment[]       @relation("project")
   repositories                     Repository[]
+  gitOpsRepositories               Repository[]
   hasRepositories                  Boolean?
 }
 
