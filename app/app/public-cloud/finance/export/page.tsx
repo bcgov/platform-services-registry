@@ -3,7 +3,7 @@
 import { Button, Checkbox, Select, SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
 import { failure, success } from '@/components/notification';
-import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePageHeader from '@/components/public-cloud/finance/FinancePageHeader';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import { GlobalPermissions, financeProviderFilterOptions } from '@/constants';
 import createClientPage from '@/core/client-page';
@@ -32,17 +32,16 @@ export default publicCloudFinanceExportPage(({ session }) => {
 
   return (
     <div className="pt-5 max-w-3xl">
-      <h1 className="text-xl lg:text-2xl font-semibold mb-2">Finance export</h1>
-      <p className="text-sm text-gray-600 mb-4">
-        Excel workbook or CSV. Variance notes and anomaly flags are never included.
-      </p>
-      <FinanceNav />
+      <FinancePageHeader
+        title="Finance export"
+        description="Download forecast, actuals, variance, or ranking data as Excel or CSV. Variance notes and anomaly flags are not included."
+      />
 
       <div className="space-y-4 bg-white border rounded-lg p-4">
         <SegmentedControl
           value={provider}
           onChange={setProvider}
-          data={[{ label: 'All', value: 'ALL' }, ...financeProviderFilterOptions]}
+          data={[{ label: 'All providers', value: 'ALL' }, ...financeProviderFilterOptions]}
           aria-label="Provider filter"
         />
         <Select

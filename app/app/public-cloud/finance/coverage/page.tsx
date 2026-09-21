@@ -3,9 +3,10 @@
 import { Select } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import FinanceNav from '@/components/public-cloud/finance/FinanceNav';
+import FinancePageHeader from '@/components/public-cloud/finance/FinancePageHeader';
 import FinancePreviewDisabled from '@/components/public-cloud/finance/FinancePreviewDisabled';
 import FinanceQueryState from '@/components/public-cloud/finance/FinanceQueryState';
+import FinanceTable, { financeTableRowClassName } from '@/components/public-cloud/finance/FinanceTable';
 import { GlobalPermissions } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { getFinanceCoverage } from '@/services/backend/public-cloud/finance';
@@ -32,15 +33,13 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
 
   return (
     <div className="pt-5">
-      <h1 className="text-xl lg:text-2xl font-semibold mb-2">Forecast coverage and chase list</h1>
-      <p className="text-sm text-gray-600 mb-4">
-        Internal. Who is missing a forecast, and has anyone asked them. Reminder send is out of scope; the last-reminder
-        column is reserved.
-      </p>
-      <FinanceNav />
+      <FinancePageHeader
+        title="Forecast coverage"
+        description="Which products still need a complete forecast, and who to contact. Sending reminders is not available yet."
+      />
 
       <Select
-        className="mb-4 max-w-xs"
+        className="mb-2 max-w-xs"
         label="Coverage state"
         value={stateFilter}
         onChange={(v) => setStateFilter(v || 'all')}
@@ -60,7 +59,7 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
         isReady={Boolean(data) && !isLoading}
       >
         {data && (
-          <table className="min-w-full text-sm border bg-white">
+          <FinanceTable caption="Forecast coverage by product">
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-3 py-2 text-left">
@@ -90,7 +89,7 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
               {rows.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-3 py-4 text-sm text-gray-500">
-                    No active products to chase.
+                    No active products match this filter.
                   </td>
                 </tr>
               ) : null}
@@ -104,7 +103,7 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
                   projectOwnerEmail: string;
                   lastReminderSentAt: string | null;
                 }) => (
-                  <tr key={row.licencePlate}>
+                  <tr key={row.licencePlate} className={financeTableRowClassName}>
                     <td className="px-3 py-2 font-mono text-xs">{row.licencePlate}</td>
                     <td className="px-3 py-2">{row.name}</td>
                     <td className="px-3 py-2">{row.coverageState}</td>
@@ -119,7 +118,7 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
                         type="button"
                         className="text-xs text-gray-400 cursor-not-allowed"
                         disabled
-                        title="Reminder send is out of scope for the prototype"
+                        title="Reminder send is not available yet"
                       >
                         Send reminder
                       </button>
@@ -128,7 +127,7 @@ export default publicCloudFinanceCoveragePage(({ session }) => {
                 ),
               )}
             </tbody>
-          </table>
+          </FinanceTable>
         )}
       </FinanceQueryState>
     </div>
