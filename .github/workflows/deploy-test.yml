@@ -142,6 +142,11 @@ jobs:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
 
+    - name: Setup Helm
+      uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+      with:
+        version: v3.21.4
+
     - name: Setup OpenShift
       uses: ./.github/actions/setup-openshift
       with:
