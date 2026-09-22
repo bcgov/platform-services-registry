@@ -1,0 +1,32 @@
+name: Setup OpenShift
+
+description: Install OpenShift CLI and authenticate to the cluster
+
+inputs:
+  openshift_server_url:
+    description: OpenShift server URL
+    required: true
+
+  openshift_token:
+    description: OpenShift token
+    required: true
+
+  namespace:
+    description: OpenShift namespace
+    required: true
+
+runs:
+  using: composite
+  steps:
+  - name: Install OpenShift CLI
+    uses: redhat-actions/openshift-tools-installer@37eb3cfb20ac2df6f0511ffa71cd917e4d49cabf   # v3.1
+    with:
+      oc: latest
+
+  - name: Authenticate and set context
+    uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
+    with:
+      openshift_server_url: ${{ inputs.openshift_server_url }}
+      openshift_token: ${{ inputs.openshift_token }}
+      namespace: ${{ inputs.namespace }}
+      insecure_skip_tls_verify: true

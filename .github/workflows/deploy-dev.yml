@@ -159,13 +159,12 @@ jobs:
     - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
     - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
 
-    - name: Authenticate and set context
-      uses: redhat-actions/oc-login@dfbd9912672664f9df2023c1c16e07bcf306043c
+    - name: Setup OpenShift
+      uses: ./.github/actions/setup-openshift
       with:
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
         namespace: ${{ vars.OPENSHIFT_NAMESPACE }}
-        insecure_skip_tls_verify: true
 
     - name: Deploy apps with Helm chart
       run: |
