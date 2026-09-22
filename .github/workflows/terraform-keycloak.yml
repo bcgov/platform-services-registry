@@ -14,7 +14,7 @@ on:
 
 jobs:
   terraform:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     environment:
       name: tf-keycloak
