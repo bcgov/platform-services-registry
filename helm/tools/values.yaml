@@ -318,6 +318,10 @@ minio:
   enabled: false
   replicas: 2
 
+  mcImage:
+    repository: ghcr.io/bcgov/pltsvc-tools-minio-mc
+    tag: b18777be5b13c0f272a3ab67b3e3370c16a6b2b9 # pragma: allowlist secret
+
   route:
     host:
 
