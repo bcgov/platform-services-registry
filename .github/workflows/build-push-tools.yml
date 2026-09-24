@@ -17,6 +17,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-push-minio-mc:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: hmarr/debug-action@f7318c783045ac39ed9bb497e22ce835fdafbfe6
+    - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+    - name: Build and Push
+      uses: egose/actions/docker-build-push@9a09f2377dc8c8b8f8cfacc5f695448999670434
+      with:
+        registry-url: ${{ env.GITHUB_REGISTRY }}
+        registry-username: ${{ github.actor }}
+        registry-password: ${{ secrets.GITHUB_TOKEN }}
+        image-name: bcgov/pltsvc-tools-minio-mc
+        docker-context: tools/minio-mc
+        docker-file: tools/minio-mc/Dockerfile
+        metadata-tags: |
+          type=sha,format=long,prefix=,suffix=
+
   build-push-airflow:
     runs-on: ubuntu-26.04
     timeout-minutes: 10
