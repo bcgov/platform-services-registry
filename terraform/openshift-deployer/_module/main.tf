@@ -172,6 +172,12 @@ resource "kubernetes_role" "this" {
       "update",
     ]
   }
+
+  rule {
+    api_groups = ["networking.k8s.io"]
+    resources  = ["networkpolicies"]
+    verbs      = ["watch"]
+  }
   rule {
     api_groups = ["autoscaling"]
     resources  = ["horizontalpodautoscalers"]
