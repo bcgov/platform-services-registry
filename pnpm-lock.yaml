@@ -364,7 +364,7 @@ importers:
         version: 7.0.2
       csv-stringify:
         specifier: ^6.6.0
-        version: 6.8.3
+        version: 6.9.0
       date-fns:
         specifier: ^4.1.0
         version: 4.4.0
@@ -5458,8 +5458,8 @@ packages:
   csv-parse@7.0.2:
     resolution: {integrity: sha512-uKZghv9UmPkMVLYy//KZ9HFAIJsl7wkhoEdIL0+rhuSY9pZQlhaeGEDPIe+/w7eh81MOql8Q/9+inAGWG6ZHYA==}
 
-  csv-stringify@6.8.3:
-    resolution: {integrity: sha512-gIeSCvq5F4VtXV3naV3VAewLhBkiZBz+PPhTOA8H3Y8h/ELa+R1ml0GZck/4/Nzo9ep2lvOluilJ6MJlbZsKMA==}
+  csv-stringify@6.9.0:
+    resolution: {integrity: sha512-6b3e29CILFfSQ2nDRuZMRROzQOpPuJ+s8zPB5H7eK5ncXBbFOyVuRLU5Sx/zAUmVri3Ly49GyC8NEme4SVSAbA==}
 
   cypress-keycloak@2.0.2:
     resolution: {integrity: sha512-pHCjn68pai6y3MPuaM7c6UEidIfaXfl2+4WKhQ/8wgprQb7YlPcuBI1txBC477O2OFLx9ii1XlSXXq7fUP8ZAg==}
@@ -15048,7 +15048,7 @@ snapshots:
 
   csv-parse@7.0.2: {}
 
-  csv-stringify@6.8.3: {}
+  csv-stringify@6.9.0: {}
 
   cypress-keycloak@2.0.2(cypress@16.1.0):
     dependencies:
