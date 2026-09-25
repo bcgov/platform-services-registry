@@ -92,6 +92,7 @@ resource "kubernetes_role" "this" {
       "list",
       "patch",
       "update",
+      "watch",
     ]
   }
   rule {
@@ -140,6 +141,12 @@ resource "kubernetes_role" "this" {
       "patch",
       "update",
     ]
+  }
+
+  rule {
+    api_groups = ["rbac.authorization.k8s.io"]
+    resources  = ["rolebindings"]
+    verbs      = ["watch"]
   }
   rule {
     api_groups = [
@@ -249,6 +256,12 @@ resource "kubernetes_role" "this" {
     api_groups = ["postgres-operator.crunchydata.com"]
     resources  = ["postgresclusters"]
     verbs      = ["get", "patch"]
+  }
+
+  rule {
+    api_groups = ["rbac.authorization.k8s.io"]
+    resources  = ["roles"]
+    verbs      = ["watch"]
   }
 }
 
