@@ -62,6 +62,7 @@ export default function SearchFilterExport({
                 name="sortby"
                 value={sortKey}
                 data={sortOptions}
+                searchable={false}
                 onChange={(value) => {
                   if (!value) return;
                   onSort(value);

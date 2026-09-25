@@ -100,7 +100,7 @@ export default function Repositories({
           ))}
           {gitOpsRepositories.map((repository) => (
             <div key={repository.url} className="grid grid-cols-[1fr_auto] items-start gap-4 border-b pb-3">
-              <TextInput value={repository.url} disabled />
+              <TextInput value={repository.url} readOnly />
 
               {!disabled && (
                 <Text c="dimmed" size="sm" pt="xs">
