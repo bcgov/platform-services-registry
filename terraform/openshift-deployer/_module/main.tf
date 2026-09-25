@@ -58,6 +58,7 @@ resource "kubernetes_role" "this" {
       "list",
       "patch",
       "update",
+      "watch",
     ]
   }
   rule {
