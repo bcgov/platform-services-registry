@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
       -ldflags "$(go run buildscripts/gen-ldflags.go)" \
       -o /out/mc .
 
-FROM alpine:3.21.2
+FROM alpine:3.24.2
 
 RUN apk add --no-cache ca-certificates
 
