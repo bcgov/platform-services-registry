@@ -116,8 +116,10 @@ resource "kubernetes_role" "this" {
       "create",
       "delete",
       "get",
+      "list",
       "patch",
       "update",
+      "watch",
     ]
   }
   rule {
@@ -220,8 +222,10 @@ resource "kubernetes_role" "this" {
       "create",
       "delete",
       "get",
+      "list",
       "patch",
       "update",
+      "watch",
     ]
   }
   rule {
