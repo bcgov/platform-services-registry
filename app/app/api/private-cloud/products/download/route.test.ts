@@ -78,7 +78,14 @@ describe('Download Private Cloud Products - Permissions', () => {
 
   it('should successfully download 1 project by PO', async () => {
     await mockSessionByIdirGuid(PO.idirGuid);
+    const gitOpsRepositoryUrl = `https://github.com/bcgov-c/tenant-gitops-${requests.one.licencePlate}`;
 
+    await prisma.privateCloudProduct.update({
+      where: { licencePlate: requests.one.licencePlate },
+      data: {
+        gitOpsRepositories: [{ url: gitOpsRepositoryUrl }, { url: repositories[0].url }],
+      },
+    });
     const res1 = await downloadPrivateCloudProducts({});
     expect(res1.status).toBe(200);
     expect(res1.headers.get('Content-Type')).toBe('text/csv');
@@ -105,7 +112,7 @@ describe('Download Private Cloud Products - Permissions', () => {
     expect(record1['Create date']).toBe(formatDateSimple(project?.createdAt ?? ''));
     expect(record1['Update date']).toBe(formatDateSimple(project?.updatedAt ?? ''));
     expect(record1['Licence plate']).toBe(project?.licencePlate);
-    expect(record1.Repositories).toBe(project?.repositories.map(({ url }) => url).join('; '));
+    expect(record1.Repositories).toBe(`${repositories[0].url}; ${repositories[1].url}; ${gitOpsRepositoryUrl}`);
     expect(record1.Status).toBe(project?.status);
   });
 
