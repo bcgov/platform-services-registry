@@ -320,7 +320,7 @@ minio:
 
   image:
     repository: ghcr.io/bcgov/pltsvc-tools-minio
-    tag: 2a27867014dcf68bc35fb37a7807766bb3dc6d9b # pragma: allowlist secret
+    tag: 9191776e48bc2553a8d8bdde64e0c6051e421108 # pragma: allowlist secret
     pullPolicy: IfNotPresent
 
   mcImage:
