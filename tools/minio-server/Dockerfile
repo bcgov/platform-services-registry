@@ -21,7 +21,7 @@ RUN curl --proto '=https' --proto-redir '=https' -fsSL \
       -x /minio.minisig \
       -P RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav
 
-ADD --checksum=sha256:<ENTRYPOINT_SHA256> \
+ADD --checksum=sha256:c6a01decb5d104ef7327d0d642ce34bcc2396e600a1b7ba03568ac65b3d473be \
     https://raw.githubusercontent.com/minio/minio/16f8cf1c52f0a77eeb8f7565aaf7f7df12454583/dockerscripts/docker-entrypoint.sh \
     /docker-entrypoint.sh
 
