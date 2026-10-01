@@ -12,8 +12,9 @@ export const POST = createApiHandler({
 })(async ({ body }) => {
   const searchProps = {
     ...body,
-    page: 1,
-    pageSize: 10000,
+    page: undefined,
+    pageSize: undefined,
+    exportOnlyAssociated: true,
   };
 
   const { data } = await searchUsersWithRoles(searchProps);

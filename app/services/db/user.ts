@@ -3,6 +3,8 @@ import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _isNumber from 'lodash-es/isNumber';
 import _uniq from 'lodash-es/uniq';
+import { AUTH_RESOURCE } from '@/config';
+import { GlobalRole } from '@/constants/user';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
@@ -14,7 +16,7 @@ import {
   PublicCloudProductMember,
   PublicCloudRequestData,
 } from '@/prisma/client';
-import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
+import { listUsersByRoles, findUserByEmail, getKcAdminClient, listClientRoles } from '@/services/keycloak/app-realm';
 import { getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
 import { MsGraphAppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
@@ -196,6 +198,46 @@ export async function searchUsers({
   return { data, totalCount, allUsersHaveIdirGuid };
 }
 
+async function getProductAssociatedUserIds() {
+  const [privateProducts, publicProducts] = await Promise.all([
+    prisma.privateCloudProduct.findMany({
+      select: {
+        projectOwnerId: true,
+        primaryTechnicalLeadId: true,
+        secondaryTechnicalLeadId: true,
+        members: true,
+      },
+    }),
+    prisma.publicCloudProduct.findMany({
+      select: {
+        projectOwnerId: true,
+        primaryTechnicalLeadId: true,
+        secondaryTechnicalLeadId: true,
+        expenseAuthorityId: true,
+        members: true,
+      },
+    }),
+  ]);
+
+  return _uniq(
+    [
+      ...privateProducts.flatMap((product) => [
+        product.projectOwnerId,
+        product.primaryTechnicalLeadId,
+        product.secondaryTechnicalLeadId,
+        ...product.members.map((member) => member.userId),
+      ]),
+      ...publicProducts.flatMap((product) => [
+        product.projectOwnerId,
+        product.primaryTechnicalLeadId,
+        product.secondaryTechnicalLeadId,
+        product.expenseAuthorityId,
+        ...product.members.map((member) => member.userId),
+      ]),
+    ].filter((id): id is string => Boolean(id)),
+  );
+}
+
 export async function searchUsersWithRoles({
   roles = [],
   page,
@@ -203,7 +245,10 @@ export async function searchUsersWithRoles({
   search = '',
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
-}: UserSearchBody) {
+  exportOnlyAssociated = false,
+}: UserSearchBody & {
+  exportOnlyAssociated?: boolean;
+}) {
   const isRoleSearch = roles.length > 0;
   const kcAdminClient = await getKcAdminClient();
 
@@ -216,6 +261,59 @@ export async function searchUsersWithRoles({
     roleEmails = _compact(ret.users.map((user) => user.email?.toLocaleLowerCase()));
     if (roleEmails.length === 0) return { data: [], totalCount: 0 };
   }
+  const filters: Prisma.UserWhereInput[] = [];
+
+  if (roleEmails.length) {
+    filters.push({
+      email: {
+        in: roleEmails,
+      },
+    });
+  }
+
+  if (exportOnlyAssociated) {
+    const associatedUserIds = await getProductAssociatedUserIds();
+
+    const clientRoles = await listClientRoles(AUTH_RESOURCE, kcAdminClient);
+
+    const knownGlobalRoles = new Set<string>(Object.values(GlobalRole));
+
+    const globalRoles = clientRoles
+      .map((role) => role.name)
+      .filter(
+        (role): role is string =>
+          typeof role === 'string' &&
+          knownGlobalRoles.has(role) &&
+          role !== GlobalRole.User &&
+          role !== GlobalRole.ServiceAccount,
+      );
+
+    const globalRolesResult = await listUsersByRoles(globalRoles, kcAdminClient);
+
+    const globalRoleEmails = _compact(globalRolesResult.users.map((user) => user.email?.toLowerCase()));
+
+    filters.push({
+      OR: [
+        {
+          id: {
+            in: associatedUserIds,
+          },
+        },
+        {
+          email: {
+            in: globalRoleEmails,
+          },
+        },
+      ],
+    });
+  }
+
+  const extraFilter: Prisma.UserWhereInput =
+    filters.length > 0
+      ? {
+          AND: filters,
+        }
+      : {};
 
   const result = await searchUsers({
     page,
@@ -223,7 +321,7 @@ export async function searchUsersWithRoles({
     search,
     sortKey,
     sortOrder,
-    extraFilter: roleEmails.length ? { email: { in: roleEmails } } : {},
+    extraFilter,
   });
 
   const findUserRoles = await (async () => {
