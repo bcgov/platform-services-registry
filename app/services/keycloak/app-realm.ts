@@ -147,14 +147,7 @@ export async function listUsersByRoles(roleNames: string[], kcAdminClient?: KcAd
 
   const uniqueRoleNames = _uniq(roleNames);
 
-  const userGroupsPromises = uniqueRoleNames.map((roleName) =>
-    adminClient.clients.findUsersWithRole({
-      realm: AUTH_RELM,
-      id: client.id!,
-      roleName,
-      briefRepresentation: false,
-    }),
-  );
+  const userGroupsPromises = uniqueRoleNames.map((roleName) => listAllUsersWithRole(roleName, client.id!, adminClient));
 
   const userGroups = await Promise.all(userGroupsPromises);
 
@@ -347,4 +340,32 @@ export async function reassignUsersToRole(
   );
 
   return true;
+}
+
+const KEYCLOAK_PAGE_SIZE = 100;
+
+async function listAllUsersWithRole(roleName: string, clientId: string, kcAdminClient: KcAdminClient) {
+  const users: UserRepresentation[] = [];
+  let first = 0;
+
+  while (true) {
+    const page = await kcAdminClient.clients.findUsersWithRole({
+      realm: AUTH_RELM,
+      id: clientId,
+      roleName,
+      briefRepresentation: false,
+      first,
+      max: KEYCLOAK_PAGE_SIZE,
+    });
+
+    users.push(...page);
+
+    if (page.length < KEYCLOAK_PAGE_SIZE) {
+      break;
+    }
+
+    first += KEYCLOAK_PAGE_SIZE;
+  }
+
+  return users;
 }

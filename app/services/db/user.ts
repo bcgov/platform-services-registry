@@ -3,6 +3,8 @@ import _castArray from 'lodash-es/castArray';
 import _compact from 'lodash-es/compact';
 import _isNumber from 'lodash-es/isNumber';
 import _uniq from 'lodash-es/uniq';
+import { AUTH_RESOURCE } from '@/config';
+import { GlobalRole } from '@/constants/user';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
@@ -14,7 +16,7 @@ import {
   PublicCloudProductMember,
   PublicCloudRequestData,
 } from '@/prisma/client';
-import { listUsersByRoles, findUserByEmail, getKcAdminClient } from '@/services/keycloak/app-realm';
+import { listUsersByRoles, findUserByEmail, getKcAdminClient, listClientRoles } from '@/services/keycloak/app-realm';
 import { getUserByIdirGuid, getUserPhoto } from '@/services/msgraph';
 import { MsGraphAppUser, Outcome } from '@/types/user';
 import { arrayBufferToBase64 } from '@/utils/js';
@@ -116,6 +118,38 @@ type SearchUser = Prisma.UserGetPayload<{
   };
 }>;
 
+function getUniqueStrings(ids: Array<string | null | undefined>): string[] {
+  return [...new Set(ids.filter((id): id is string => typeof id === 'string' && id.length > 0))];
+}
+
+function buildRolesByEmail(usersByRole: Record<string, UserRepresentation[]>) {
+  const rolesByEmail = new Map<string, Set<string>>();
+
+  for (const [role, users] of Object.entries(usersByRole)) {
+    for (const user of users) {
+      if (!user.email) continue;
+
+      const email = user.email.toLowerCase();
+      const userRoles = rolesByEmail.get(email) ?? new Set<string>();
+
+      userRoles.add(role);
+      rolesByEmail.set(email, userRoles);
+    }
+  }
+
+  return rolesByEmail;
+}
+
+async function getUserRolesLookup(users: SearchUser[], kcAdminClient: Awaited<ReturnType<typeof getKcAdminClient>>) {
+  const kcProfiles = await Promise.all(users.map((user) => findUserByEmail(user.email, kcAdminClient)));
+
+  return (email: string) => {
+    const normalizedEmail = email.toLowerCase();
+
+    return kcProfiles.find((profile) => profile?.email?.toLowerCase() === normalizedEmail)?.authRoleNames ?? [];
+  };
+}
+
 export async function searchUsers({
   skip,
   take,
@@ -196,6 +230,107 @@ export async function searchUsers({
   return { data, totalCount, allUsersHaveIdirGuid };
 }
 
+type PrivateProductSummary = Prisma.PrivateCloudProductGetPayload<{
+  select: {
+    licencePlate: true;
+    name: true;
+  };
+}>;
+
+type PublicProductSummary = Prisma.PublicCloudProductGetPayload<{
+  select: {
+    licencePlate: true;
+    name: true;
+  };
+}>;
+
+type ProductAssociationData = {
+  associatedUserIds: string[];
+  privateProductsByUserId: Map<string, PrivateProductSummary[]>;
+  publicProductsByUserId: Map<string, PublicProductSummary[]>;
+};
+
+async function getProductAssociationData(): Promise<ProductAssociationData> {
+  const [privateProducts, publicProducts] = await Promise.all([
+    prisma.privateCloudProduct.findMany({
+      select: {
+        licencePlate: true,
+        name: true,
+        projectOwnerId: true,
+        primaryTechnicalLeadId: true,
+        secondaryTechnicalLeadId: true,
+        members: true,
+      },
+    }),
+    prisma.publicCloudProduct.findMany({
+      select: {
+        licencePlate: true,
+        name: true,
+        projectOwnerId: true,
+        primaryTechnicalLeadId: true,
+        secondaryTechnicalLeadId: true,
+        expenseAuthorityId: true,
+        members: true,
+      },
+    }),
+  ]);
+
+  const associatedUserIds = new Set<string>();
+  const privateProductsByUserId = new Map<string, PrivateProductSummary[]>();
+  const publicProductsByUserId = new Map<string, PublicProductSummary[]>();
+
+  for (const product of privateProducts) {
+    const userIds = getUniqueStrings([
+      product.projectOwnerId,
+      product.primaryTechnicalLeadId,
+      product.secondaryTechnicalLeadId,
+      ...product.members.map((member) => member.userId),
+    ]);
+
+    const productSummary: PrivateProductSummary = {
+      licencePlate: product.licencePlate,
+      name: product.name,
+    };
+
+    for (const userId of userIds) {
+      associatedUserIds.add(userId);
+
+      const products = privateProductsByUserId.get(userId) ?? [];
+      products.push(productSummary);
+      privateProductsByUserId.set(userId, products);
+    }
+  }
+
+  for (const product of publicProducts) {
+    const userIds = getUniqueStrings([
+      product.projectOwnerId,
+      product.primaryTechnicalLeadId,
+      product.secondaryTechnicalLeadId,
+      product.expenseAuthorityId,
+      ...product.members.map((member) => member.userId),
+    ]);
+
+    const productSummary: PublicProductSummary = {
+      licencePlate: product.licencePlate,
+      name: product.name,
+    };
+
+    for (const userId of userIds) {
+      associatedUserIds.add(userId);
+
+      const products = publicProductsByUserId.get(userId) ?? [];
+      products.push(productSummary);
+      publicProductsByUserId.set(userId, products);
+    }
+  }
+
+  return {
+    associatedUserIds: [...associatedUserIds],
+    privateProductsByUserId,
+    publicProductsByUserId,
+  };
+}
+
 export async function searchUsersWithRoles({
   roles = [],
   page,
@@ -203,19 +338,80 @@ export async function searchUsersWithRoles({
   search = '',
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
-}: UserSearchBody) {
+  exportOnlyAssociated = false,
+}: UserSearchBody & {
+  exportOnlyAssociated?: boolean;
+}) {
   const isRoleSearch = roles.length > 0;
   const kcAdminClient = await getKcAdminClient();
 
-  let usersByRole: { [key: string]: UserRepresentation[] };
   let roleEmails: string[] = [];
 
   if (isRoleSearch) {
     const ret = await listUsersByRoles(roles, kcAdminClient);
-    usersByRole = ret.usersByRole;
     roleEmails = _compact(ret.users.map((user) => user.email?.toLocaleLowerCase()));
     if (roleEmails.length === 0) return { data: [], totalCount: 0 };
   }
+  const filters: Prisma.UserWhereInput[] = [];
+
+  if (roleEmails.length) {
+    filters.push({
+      email: {
+        in: roleEmails,
+      },
+    });
+  }
+  let productAssociationData: ProductAssociationData | null = null;
+  let exportUsersByRole: Record<string, UserRepresentation[]> = {};
+
+  if (exportOnlyAssociated) {
+    const [associationData, clientRoles] = await Promise.all([
+      getProductAssociationData(),
+      listClientRoles(AUTH_RESOURCE, kcAdminClient),
+    ]);
+
+    productAssociationData = associationData;
+
+    const existingRoleNames = clientRoles
+      .map((role) => role.name)
+      .filter((role): role is string => typeof role === 'string');
+
+    const knownGlobalRoles = new Set<string>(Object.values(GlobalRole));
+
+    const existingGlobalRoles = existingRoleNames.filter((role) => knownGlobalRoles.has(role));
+
+    const eligibleGlobalRoles = existingGlobalRoles.filter(
+      (role) => role !== GlobalRole.User && role !== GlobalRole.ServiceAccount,
+    );
+
+    const exportRolesResult = await listUsersByRoles(existingRoleNames, kcAdminClient);
+    exportUsersByRole = exportRolesResult.usersByRole;
+
+    const globalRoleEmails = getUniqueStrings(
+      eligibleGlobalRoles.flatMap((role) => (exportUsersByRole[role] ?? []).map((user) => user.email?.toLowerCase())),
+    );
+    filters.push({
+      OR: [
+        {
+          id: {
+            in: productAssociationData.associatedUserIds,
+          },
+        },
+        {
+          email: {
+            in: globalRoleEmails,
+          },
+        },
+      ],
+    });
+  }
+
+  const extraFilter: Prisma.UserWhereInput =
+    filters.length > 0
+      ? {
+          AND: filters,
+        }
+      : {};
 
   const result = await searchUsers({
     page,
@@ -223,68 +419,86 @@ export async function searchUsersWithRoles({
     search,
     sortKey,
     sortOrder,
-    extraFilter: roleEmails.length ? { email: { in: roleEmails } } : {},
+    extraFilter,
   });
+  let findUserRoles: (email: string) => string[];
 
-  const findUserRoles = await (async () => {
-    const kcProfiles = await Promise.all(result.data.map((v) => findUserByEmail(v.email, kcAdminClient)));
-    return (email: string) => {
-      email = email.toLowerCase();
-      return kcProfiles.find((prof) => prof?.email && prof.email.toLowerCase() === email)?.authRoleNames ?? [];
-    };
-  })();
+  if (exportOnlyAssociated) {
+    const rolesByEmail = buildRolesByEmail(exportUsersByRole);
 
-  result.data = await Promise.all(
-    result.data.map(async (user, index) => {
-      const [privateProducts, publicProducts] = await Promise.all([
-        prisma.privateCloudProduct.findMany({
-          where: {
-            OR: [
-              { projectOwnerId: user.id },
-              { primaryTechnicalLeadId: user.id },
-              { secondaryTechnicalLeadId: user.id },
-              { members: { some: { userId: user.id } } },
-            ],
-          },
-          select: { licencePlate: true, name: true },
-        }),
-        prisma.publicCloudProduct.findMany({
-          where: {
-            OR: [
-              { projectOwnerId: user.id },
-              { primaryTechnicalLeadId: user.id },
-              { secondaryTechnicalLeadId: user.id },
-              { expenseAuthorityId: user.id },
-              { members: { some: { userId: user.id } } },
-            ],
-          },
-          select: { licencePlate: true, name: true },
-        }),
-      ]);
+    findUserRoles = (email: string) => [...(rolesByEmail.get(email.toLowerCase()) ?? [])];
+  } else {
+    findUserRoles = await getUserRolesLookup(result.data, kcAdminClient);
+  }
 
-      return {
-        ...user,
-        privateProducts,
-        publicProducts,
-        roles: findUserRoles(user.email),
-      };
-    }),
-  );
+  if (exportOnlyAssociated && productAssociationData) {
+    result.data = result.data.map((user) => ({
+      ...user,
+      privateProducts: productAssociationData.privateProductsByUserId.get(user.id) ?? [],
+      publicProducts: productAssociationData.publicProductsByUserId.get(user.id) ?? [],
+      roles: findUserRoles(user.email),
+    }));
+  } else {
+    result.data = await Promise.all(
+      result.data.map(async (user) => {
+        const [privateProducts, publicProducts] = await Promise.all([
+          prisma.privateCloudProduct.findMany({
+            where: {
+              OR: [
+                { projectOwnerId: user.id },
+                { primaryTechnicalLeadId: user.id },
+                { secondaryTechnicalLeadId: user.id },
+                {
+                  members: {
+                    some: {
+                      userId: user.id,
+                    },
+                  },
+                },
+              ],
+            },
+            select: {
+              licencePlate: true,
+              name: true,
+            },
+          }),
+          prisma.publicCloudProduct.findMany({
+            where: {
+              OR: [
+                { projectOwnerId: user.id },
+                { primaryTechnicalLeadId: user.id },
+                { secondaryTechnicalLeadId: user.id },
+                { expenseAuthorityId: user.id },
+                {
+                  members: {
+                    some: {
+                      userId: user.id,
+                    },
+                  },
+                },
+              ],
+            },
+            select: {
+              licencePlate: true,
+              name: true,
+            },
+          }),
+        ]);
+
+        return {
+          ...user,
+          privateProducts,
+          publicProducts,
+          roles: findUserRoles(user.email),
+        };
+      }),
+    );
+  }
 
   return result as {
     data: (SearchUser & {
-      privateProducts: Prisma.PrivateCloudProductGetPayload<{
-        select: {
-          licencePlate: true;
-          name: true;
-        };
-      }>[];
-      publicProducts: Prisma.PublicCloudProductGetPayload<{
-        select: {
-          licencePlate: true;
-          name: true;
-        };
-      }>[];
+      privateProducts: PrivateProductSummary[];
+      publicProducts: PublicProductSummary[];
       roles: string[];
     })[];
     totalCount: number;
