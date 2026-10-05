@@ -118,6 +118,38 @@ type SearchUser = Prisma.UserGetPayload<{
   };
 }>;
 
+function getUniqueStrings(ids: Array<string | null | undefined>): string[] {
+  return [...new Set(ids.filter((id): id is string => typeof id === 'string' && id.length > 0))];
+}
+
+function buildRolesByEmail(usersByRole: Record<string, UserRepresentation[]>) {
+  const rolesByEmail = new Map<string, Set<string>>();
+
+  for (const [role, users] of Object.entries(usersByRole)) {
+    for (const user of users) {
+      if (!user.email) continue;
+
+      const email = user.email.toLowerCase();
+      const userRoles = rolesByEmail.get(email) ?? new Set<string>();
+
+      userRoles.add(role);
+      rolesByEmail.set(email, userRoles);
+    }
+  }
+
+  return rolesByEmail;
+}
+
+async function getUserRolesLookup(users: SearchUser[], kcAdminClient: Awaited<ReturnType<typeof getKcAdminClient>>) {
+  const kcProfiles = await Promise.all(users.map((user) => findUserByEmail(user.email, kcAdminClient)));
+
+  return (email: string) => {
+    const normalizedEmail = email.toLowerCase();
+
+    return kcProfiles.find((profile) => profile?.email?.toLowerCase() === normalizedEmail)?.authRoleNames ?? [];
+  };
+}
+
 export async function searchUsers({
   skip,
   take,
@@ -248,14 +280,12 @@ async function getProductAssociationData(): Promise<ProductAssociationData> {
   const publicProductsByUserId = new Map<string, PublicProductSummary[]>();
 
   for (const product of privateProducts) {
-    const userIds = _uniq(
-      [
-        product.projectOwnerId,
-        product.primaryTechnicalLeadId,
-        product.secondaryTechnicalLeadId,
-        ...product.members.map((member) => member.userId),
-      ].filter((id): id is string => Boolean(id)),
-    );
+    const userIds = getUniqueStrings([
+      product.projectOwnerId,
+      product.primaryTechnicalLeadId,
+      product.secondaryTechnicalLeadId,
+      ...product.members.map((member) => member.userId),
+    ]);
 
     const productSummary: PrivateProductSummary = {
       licencePlate: product.licencePlate,
@@ -272,15 +302,13 @@ async function getProductAssociationData(): Promise<ProductAssociationData> {
   }
 
   for (const product of publicProducts) {
-    const userIds = _uniq(
-      [
-        product.projectOwnerId,
-        product.primaryTechnicalLeadId,
-        product.secondaryTechnicalLeadId,
-        product.expenseAuthorityId,
-        ...product.members.map((member) => member.userId),
-      ].filter((id): id is string => Boolean(id)),
-    );
+    const userIds = getUniqueStrings([
+      product.projectOwnerId,
+      product.primaryTechnicalLeadId,
+      product.secondaryTechnicalLeadId,
+      product.expenseAuthorityId,
+      ...product.members.map((member) => member.userId),
+    ]);
 
     const productSummary: PublicProductSummary = {
       licencePlate: product.licencePlate,
@@ -350,16 +378,18 @@ export async function searchUsersWithRoles({
 
     const knownGlobalRoles = new Set<string>(Object.values(GlobalRole));
 
-    const eligibleGlobalRoles = existingRoleNames.filter(
-      (role) => knownGlobalRoles.has(role) && role !== GlobalRole.User && role !== GlobalRole.ServiceAccount,
+    const existingGlobalRoles = existingRoleNames.filter((role) => knownGlobalRoles.has(role));
+
+    const eligibleGlobalRoles = existingGlobalRoles.filter(
+      (role) => role !== GlobalRole.User && role !== GlobalRole.ServiceAccount,
     );
 
-    const exportRolesResult = await listUsersByRoles(eligibleGlobalRoles, kcAdminClient);
-
+    const exportRolesResult = await listUsersByRoles(existingRoleNames, kcAdminClient);
     exportUsersByRole = exportRolesResult.usersByRole;
 
-    const globalRoleEmails = _uniq(_compact(exportRolesResult.users.map((user) => user.email?.toLowerCase())));
-
+    const globalRoleEmails = getUniqueStrings(
+      eligibleGlobalRoles.flatMap((role) => (exportUsersByRole[role] ?? []).map((user) => user.email?.toLowerCase())),
+    );
     filters.push({
       OR: [
         {
@@ -392,34 +422,13 @@ export async function searchUsersWithRoles({
     extraFilter,
   });
   let findUserRoles: (email: string) => string[];
+
   if (exportOnlyAssociated) {
-    const rolesByEmail = new Map<string, Set<string>>();
-
-    for (const [role, users] of Object.entries(exportUsersByRole)) {
-      for (const user of users) {
-        if (!user.email) continue;
-
-        const email = user.email.toLowerCase();
-
-        const userRoles = rolesByEmail.get(email) ?? new Set<string>();
-
-        userRoles.add(role);
-        rolesByEmail.set(email, userRoles);
-      }
-    }
+    const rolesByEmail = buildRolesByEmail(exportUsersByRole);
 
     findUserRoles = (email: string) => [...(rolesByEmail.get(email.toLowerCase()) ?? [])];
   } else {
-    const kcProfiles = await Promise.all(result.data.map((user) => findUserByEmail(user.email, kcAdminClient)));
-
-    findUserRoles = (email: string) => {
-      const normalizedEmail = email.toLowerCase();
-
-      return (
-        kcProfiles.find((profile) => profile?.email && profile.email.toLowerCase() === normalizedEmail)
-          ?.authRoleNames ?? []
-      );
-    };
+    findUserRoles = await getUserRolesLookup(result.data, kcAdminClient);
   }
 
   if (exportOnlyAssociated && productAssociationData) {
