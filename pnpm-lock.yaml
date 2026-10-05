@@ -542,7 +542,7 @@ importers:
         version: 4.18.1
       node-gyp:
         specifier: ^13.0.0
-        version: 13.0.2
+        version: 13.1.0
       prettier:
         specifier: ^3.6.2
         version: 3.9.9
@@ -2672,10 +2672,6 @@ packages:
     engines: {node: '>= 10.16.0'}
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
-
-  '@keycloak/keycloak-admin-client@26.7.4':
-    resolution: {integrity: sha512-Zrjt3SqMXk/aUCLWYhxDbNl/WSzns3Hr+IrJN2Tw4rEsRXpLC1ABUhB1n7mjw+OsxDvxVhF8QtwHuAUA8tQmkw==}
-    engines: {node: '>=18'}
 
   '@keycloak/keycloak-admin-client@26.8.0':
     resolution: {integrity: sha512-eMMe+r57sILel1XZAn0W7lbghrkw0oExqR4Rn0fkzQsslMOK8MGwk+buufchTOqMvjIfVXIFnPEL/Kty15SOTw==}
@@ -7985,8 +7981,8 @@ packages:
       encoding:
         optional: true
 
-  node-gyp@13.0.2:
-    resolution: {integrity: sha512-SXTvw3PxznpowYhJSOD9mVQBgDaCTWXffX+wQZsQ7PbcTV86TsXCUcSZhHnskFQvrvn/OdSzJPMsptT2pIj9ww==}
+  node-gyp@13.1.0:
+    resolution: {integrity: sha512-FpNzOLFACKG0oRBYbZ5WOeWD1EqRTIWX90MaRIWTO18lVYPx8fqIjrdS3pihjnCkSmgop6zVGkSqg1vXZLksuw==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     hasBin: true
 
@@ -12129,17 +12125,6 @@ snapshots:
   '@jsep-plugin/regex@1.0.4(jsep@1.4.0)':
     dependencies:
       jsep: 1.4.0
-
-  '@keycloak/keycloak-admin-client@26.7.4':
-    dependencies:
-      '@microsoft/kiota-abstractions': 1.0.0-preview.103
-      '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-form': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-json': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-multipart': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-text': 1.0.0-preview.103
-      camelize-ts: 3.0.0
-      url-template: 3.1.1
 
   '@keycloak/keycloak-admin-client@26.8.0':
     dependencies:
@@ -18072,7 +18057,7 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  node-gyp@13.0.2:
+  node-gyp@13.1.0:
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.3
