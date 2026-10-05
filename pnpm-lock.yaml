@@ -295,7 +295,7 @@ importers:
         version: 4.3.3
       '@tanstack/react-query':
         specifier: ^5.84.1
-        version: 5.104.0(react@19.3.0)
+        version: 5.104.1(react@19.3.0)
       '@tanstack/react-table':
         specifier: 9.2.4
         version: 9.2.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -2673,10 +2673,6 @@ packages:
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
 
-  '@keycloak/keycloak-admin-client@26.7.4':
-    resolution: {integrity: sha512-Zrjt3SqMXk/aUCLWYhxDbNl/WSzns3Hr+IrJN2Tw4rEsRXpLC1ABUhB1n7mjw+OsxDvxVhF8QtwHuAUA8tQmkw==}
-    engines: {node: '>=18'}
-
   '@keycloak/keycloak-admin-client@26.8.0':
     resolution: {integrity: sha512-eMMe+r57sILel1XZAn0W7lbghrkw0oExqR4Rn0fkzQsslMOK8MGwk+buufchTOqMvjIfVXIFnPEL/Kty15SOTw==}
     engines: {node: '>=18'}
@@ -3788,11 +3784,11 @@ packages:
   '@tailwindcss/postcss@4.3.3':
     resolution: {integrity: sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg==}
 
-  '@tanstack/query-core@5.104.0':
-    resolution: {integrity: sha512-JrC2r/JQlXt7khBSdUpsgxNvybzOg+aITa+ARRMlP2AFo93Y8vIqz077rp+e61mJetSZ0T6AJbwW1JHer1vrPQ==}
+  '@tanstack/query-core@5.104.1':
+    resolution: {integrity: sha512-TiRghcrGkUTE+M4JBxvpPSpBhxvIzQairw+cksrHYGr+2uwC77yW1SY9nYxnYRYOppvucf8rEg6b5byoz4rTpw==}
 
-  '@tanstack/react-query@5.104.0':
-    resolution: {integrity: sha512-e1TZmDCQnWIfiDVryIHeA6Idj+Lfx1hORLOhXS/l5wcgvtVD4yYqbTDl378sGQKIi2cSgb0TEMC9cKK8GGoJEw==}
+  '@tanstack/react-query@5.104.1':
+    resolution: {integrity: sha512-Zz70EgjahNI7aCz8BZxM3vUGU44ycxEAzMuCUjLeA7SVhhOkg3ZgPjPJPvHjs6Rmky/dtmnu1WzjGHNHmhCoZQ==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -12130,17 +12126,6 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@keycloak/keycloak-admin-client@26.7.4':
-    dependencies:
-      '@microsoft/kiota-abstractions': 1.0.0-preview.103
-      '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-form': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-json': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-multipart': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-text': 1.0.0-preview.103
-      camelize-ts: 3.0.0
-      url-template: 3.1.1
-
   '@keycloak/keycloak-admin-client@26.8.0':
     dependencies:
       '@microsoft/kiota-abstractions': 1.0.0-preview.103
@@ -13057,11 +13042,11 @@ snapshots:
       postcss: 8.5.28
       tailwindcss: 4.3.3
 
-  '@tanstack/query-core@5.104.0': {}
+  '@tanstack/query-core@5.104.1': {}
 
-  '@tanstack/react-query@5.104.0(react@19.3.0)':
+  '@tanstack/react-query@5.104.1(react@19.3.0)':
     dependencies:
-      '@tanstack/query-core': 5.104.0
+      '@tanstack/query-core': 5.104.1
       react: 19.3.0
 
   '@tanstack/react-store@0.11.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
