@@ -405,8 +405,8 @@ importers:
         specifier: ^4.24.12
         version: 4.24.15(next@16.3.8(@babel/core@7.29.7(supports-color@10.2.2))(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       postcss:
-        specifier: 8.5.28
-        version: 8.5.28
+        specifier: 8.5.29
+        version: 8.5.29
       react:
         specifier: ^19.2.1
         version: 19.3.0
@@ -2672,10 +2672,6 @@ packages:
     engines: {node: '>= 10.16.0'}
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
-
-  '@keycloak/keycloak-admin-client@26.7.4':
-    resolution: {integrity: sha512-Zrjt3SqMXk/aUCLWYhxDbNl/WSzns3Hr+IrJN2Tw4rEsRXpLC1ABUhB1n7mjw+OsxDvxVhF8QtwHuAUA8tQmkw==}
-    engines: {node: '>=18'}
 
   '@keycloak/keycloak-admin-client@26.8.0':
     resolution: {integrity: sha512-eMMe+r57sILel1XZAn0W7lbghrkw0oExqR4Rn0fkzQsslMOK8MGwk+buufchTOqMvjIfVXIFnPEL/Kty15SOTw==}
@@ -7846,6 +7842,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.19:
+    resolution: {integrity: sha512-Y2tUNy4ouw6tq5oDSKeQYGOyhkUBhNOcGV/02KC+6kd9eDGqdZd++mjMiIDilrBYvjEnCYvVtsuHCuP+okSfug==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   napi-build-utils@2.0.0:
     resolution: {integrity: sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA==}
 
@@ -8387,6 +8388,10 @@ packages:
 
   postcss@8.5.28:
     resolution: {integrity: sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.29:
+    resolution: {integrity: sha512-49cGhUbXj8Qenv0iTMxA1cFBzxXoctpC9Ujd77t1WcbJIr6nF/eI7g/8MgxrYldFRuAXvja7xQRwavoW7kgrxQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   powershell-utils@0.1.0:
@@ -9098,6 +9103,10 @@ packages:
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
+    engines: {node: '>=0.10.0'}
+
+  source-map-js@1.2.2:
+    resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
 
   source-map-support@0.5.21:
@@ -12130,17 +12139,6 @@ snapshots:
     dependencies:
       jsep: 1.4.0
 
-  '@keycloak/keycloak-admin-client@26.7.4':
-    dependencies:
-      '@microsoft/kiota-abstractions': 1.0.0-preview.103
-      '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-form': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-json': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-multipart': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-text': 1.0.0-preview.103
-      camelize-ts: 3.0.0
-      url-template: 3.1.1
-
   '@keycloak/keycloak-admin-client@26.8.0':
     dependencies:
       '@microsoft/kiota-abstractions': 1.0.0-preview.103
@@ -13054,7 +13052,7 @@ snapshots:
       '@alloc/quick-lru': 5.2.0
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
-      postcss: 8.5.28
+      postcss: 8.5.29
       tailwindcss: 4.3.3
 
   '@tanstack/query-core@5.104.0': {}
@@ -17935,6 +17933,8 @@ snapshots:
 
   nanoid@3.3.18: {}
 
+  nanoid@3.3.19: {}
+
   napi-build-utils@2.0.0: {}
 
   napi-postinstall@0.3.4: {}
@@ -18491,29 +18491,29 @@ snapshots:
       extend: 3.0.2
       postcss: 8.4.31
 
-  postcss-import@15.1.0(postcss@8.5.28):
+  postcss-import@15.1.0(postcss@8.5.29):
     dependencies:
-      postcss: 8.5.28
+      postcss: 8.5.29
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.12
 
-  postcss-js@4.1.0(postcss@8.5.28):
+  postcss-js@4.1.0(postcss@8.5.29):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.5.28
+      postcss: 8.5.29
 
-  postcss-load-config@4.0.2(postcss@8.5.28)(ts-node@10.9.2(@types/node@24.19.1)(typescript@6.0.3)):
+  postcss-load-config@4.0.2(postcss@8.5.29)(ts-node@10.9.2(@types/node@24.19.1)(typescript@6.0.3)):
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.9.0
     optionalDependencies:
-      postcss: 8.5.28
+      postcss: 8.5.29
       ts-node: 10.9.2(@types/node@24.19.1)(typescript@6.0.3)
 
-  postcss-nested@6.2.0(postcss@8.5.28):
+  postcss-nested@6.2.0(postcss@8.5.29):
     dependencies:
-      postcss: 8.5.28
+      postcss: 8.5.29
       postcss-selector-parser: 6.1.2
 
   postcss-selector-parser@6.1.2:
@@ -18547,6 +18547,12 @@ snapshots:
       nanoid: 3.3.18
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postcss@8.5.29:
+    dependencies:
+      nanoid: 3.3.19
+      picocolors: 1.1.1
+      source-map-js: 1.2.2
 
   powershell-utils@0.1.0: {}
 
@@ -19215,7 +19221,7 @@ snapshots:
       is-plain-object: 5.1.0
       launder: 1.7.2
       parse-srcset: 1.0.2
-      postcss: 8.5.28
+      postcss: 8.5.29
 
   sass-lookup@6.1.2:
     dependencies:
@@ -19495,6 +19501,8 @@ snapshots:
       smart-buffer: 4.2.0
 
   source-map-js@1.2.1: {}
+
+  source-map-js@1.2.2: {}
 
   source-map-support@0.5.21:
     dependencies:
@@ -19798,11 +19806,11 @@ snapshots:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.5.28
-      postcss-import: 15.1.0(postcss@8.5.28)
-      postcss-js: 4.1.0(postcss@8.5.28)
-      postcss-load-config: 4.0.2(postcss@8.5.28)(ts-node@10.9.2(@types/node@24.19.1)(typescript@6.0.3))
-      postcss-nested: 6.2.0(postcss@8.5.28)
+      postcss: 8.5.29
+      postcss-import: 15.1.0(postcss@8.5.29)
+      postcss-js: 4.1.0(postcss@8.5.29)
+      postcss-load-config: 4.0.2(postcss@8.5.29)(ts-node@10.9.2(@types/node@24.19.1)(typescript@6.0.3))
+      postcss-nested: 6.2.0(postcss@8.5.29)
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
       resolve: 1.22.12
