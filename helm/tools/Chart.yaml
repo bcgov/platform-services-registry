@@ -16,7 +16,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: sonarqube
-    version: "2026.5.1001"
+    version: "2026.5.1002"
     repository: https://SonarSource.github.io/helm-chart-sonarqube
     condition: sonarqube.enabled
   - name: minio
