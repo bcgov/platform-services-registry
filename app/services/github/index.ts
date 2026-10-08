@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IS_DEV, IS_PROD, IS_TEST } from '@/config';
+import { IS_LOCAL } from '@/config';
 import { logger } from '@/core/logging';
 import { GitHubApiUser, GitHubUser } from '@/types/user';
 import { getGitHubInstallationToken } from './auth';
@@ -41,7 +41,15 @@ export async function getGitHubUser(username: string): Promise<GitHubUser | null
   const normalizedUsername = username.trim().replace(/^@/, '');
 
   try {
-    const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`);
+    const token = IS_LOCAL ? undefined : await getGitHubInstallationToken('bcgov');
+
+    const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`, {
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : undefined,
+    });
 
     if (response.data.type !== 'User') {
       return null;
@@ -62,7 +70,6 @@ export async function getGitHubUser(username: string): Promise<GitHubUser | null
 }
 
 const githubUsernameRegex = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
-const isLocal = !(IS_DEV || IS_TEST || IS_PROD);
 
 export async function validateGitHubUsername(username: string) {
   const normalizedUsername = username.trim().toLowerCase().replace(/^@/, '');
@@ -90,7 +97,7 @@ export async function validateGitHubUsername(username: string) {
     };
   }
 
-  if (isLocal) {
+  if (IS_LOCAL) {
     return {
       valid: true as const,
       user,

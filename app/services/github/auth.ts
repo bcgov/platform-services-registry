@@ -39,7 +39,7 @@ function getInstallationId(organization: string): number {
   const parsedInstallationId = Number(installationId);
 
   if (!Number.isInteger(parsedInstallationId)) {
-    throw new Error(`GitHub App installation ID is invalid for organization "${organization}".`);
+    throw new TypeError(`GitHub App installation ID is invalid for organization "${organization}".`);
   }
 
   return parsedInstallationId;
