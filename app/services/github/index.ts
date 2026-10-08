@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { IS_DEV, IS_PROD, IS_TEST } from '@/config';
 import { logger } from '@/core/logging';
 import { GitHubApiUser, GitHubUser } from '@/types/user';
+import { getGitHubInstallationToken } from './auth';
 import { instance } from './axios';
 
 export function processGitHubUser(user: GitHubApiUser): GitHubUser {
@@ -11,6 +13,28 @@ export function processGitHubUser(user: GitHubApiUser): GitHubUser {
     avatarUrl: user.avatar_url,
     profileUrl: user.html_url,
   };
+}
+
+export async function isGitHubOrganizationMember(organization: string, username: string): Promise<boolean> {
+  const token = await getGitHubInstallationToken(organization);
+
+  const response = await instance.get<{ state: string }>(
+    `/orgs/${encodeURIComponent(organization)}/memberships/${encodeURIComponent(username)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      validateStatus: (status: number) => status === 200 || status === 404,
+    },
+  );
+
+  logger.info(`GitHub membership check: user="${username}", org="${organization}", status=${response.status}`);
+
+  if (response.status === 404) {
+    return false;
+  }
+
+  return response.data.state === 'active';
 }
 
 export async function getGitHubUser(username: string): Promise<GitHubUser | null> {
@@ -38,6 +62,7 @@ export async function getGitHubUser(username: string): Promise<GitHubUser | null
 }
 
 const githubUsernameRegex = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+const isLocal = !(IS_DEV || IS_TEST || IS_PROD);
 
 export async function validateGitHubUsername(username: string) {
   const normalizedUsername = username.trim().toLowerCase().replace(/^@/, '');
@@ -65,8 +90,51 @@ export async function validateGitHubUsername(username: string) {
     };
   }
 
+  if (isLocal) {
+    return {
+      valid: true as const,
+      user,
+    };
+  }
+
+  const approvedOrganizations = (process.env.GITHUB_APPROVED_ORGS || '')
+    .split(',')
+    .map((organization) => organization.trim())
+    .filter(Boolean);
+
+  if (approvedOrganizations.length === 0) {
+    logger.error('No approved GitHub organizations are configured.');
+
+    return {
+      valid: false as const,
+      message: 'GitHub validation is temporarily unavailable. Please try again.',
+    };
+  }
+
+  try {
+    for (const organization of approvedOrganizations) {
+      const isMember = await isGitHubOrganizationMember(organization, user.username);
+
+      if (isMember) {
+        return {
+          valid: true as const,
+          user,
+        };
+      }
+    }
+  } catch (error) {
+    const message = axios.isAxiosError(error) ? error.message : String(error);
+
+    logger.error(`GitHub organization membership validation failed: ${message}`);
+
+    return {
+      valid: false as const,
+      message: 'GitHub validation is temporarily unavailable. Please try again.',
+    };
+  }
+
   return {
-    valid: true as const,
-    user,
+    valid: false as const,
+    message: 'GitHub user must be a member of an approved GitHub organization.',
   };
 }
