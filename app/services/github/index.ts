@@ -44,19 +44,32 @@ function getApprovedOrganizations(): string[] {
     .filter(Boolean);
 }
 
+async function getGitHubUserByToken(normalizedUsername: string, token?: string): Promise<GitHubApiUser | null> {
+  try {
+    const response = await instance.get<GitHubApiUser>(
+      `/users/${encodeURIComponent(normalizedUsername)}`,
+      token
+        ? {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        : undefined,
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
 async function getGitHubUserResponse(normalizedUsername: string): Promise<GitHubApiUser | null> {
   if (IS_LOCAL) {
-    try {
-      const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`);
-
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return null;
-      }
-
-      throw error;
-    }
+    return getGitHubUserByToken(normalizedUsername);
   }
 
   const approvedOrganizations = getApprovedOrganizations();
@@ -65,18 +78,8 @@ async function getGitHubUserResponse(normalizedUsername: string): Promise<GitHub
     try {
       const token = await getGitHubInstallationToken(organization);
 
-      const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
+      return await getGitHubUserByToken(normalizedUsername, token);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return null;
-      }
-
       const message = error instanceof Error ? error.message : String(error);
 
       logger.warn(`GitHub user lookup failed using "${organization}" installation: ${message}`);
@@ -92,7 +95,7 @@ export async function getGitHubUser(username: string): Promise<GitHubUser | null
   try {
     const user = await getGitHubUserResponse(normalizedUsername);
 
-    if (!user || user.type !== 'User') {
+    if (user?.type !== 'User') {
       return null;
     }
 
