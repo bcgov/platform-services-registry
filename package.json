@@ -1,7 +1,7 @@
 {
   "name": "pltsvc",
   "description": "B.C. Government's Platform Product Registry",
-  "version": "0.86.2",
+  "version": "0.87.0",
   "private": true,
   "packageManager": "pnpm@12.10.1",
   "scripts": {
