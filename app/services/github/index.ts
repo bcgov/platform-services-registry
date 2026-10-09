@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IS_LOCAL } from '@/config';
+import { GITHUB_API_TOKEN, IS_LOCAL } from '@/config';
 import { logger } from '@/core/logging';
 import { GitHubApiUser, GitHubUser } from '@/types/user';
 import { getGitHubInstallationToken } from './auth';
@@ -69,7 +69,7 @@ async function getGitHubUserByToken(normalizedUsername: string, token?: string):
 
 async function getGitHubUserResponse(normalizedUsername: string): Promise<GitHubApiUser | null> {
   if (IS_LOCAL) {
-    return getGitHubUserByToken(normalizedUsername);
+    return getGitHubUserByToken(normalizedUsername, GITHUB_API_TOKEN || undefined);
   }
 
   const approvedOrganizations = getApprovedOrganizations();
@@ -77,6 +77,7 @@ async function getGitHubUserResponse(normalizedUsername: string): Promise<GitHub
   for (const organization of approvedOrganizations) {
     try {
       const token = await getGitHubInstallationToken(organization);
+      // Sequential fallback is intentional so failures can try the next installation.
 
       return await getGitHubUserByToken(normalizedUsername, token);
     } catch (error) {
