@@ -569,7 +569,7 @@ importers:
     devDependencies:
       dotenv:
         specifier: ^18.0.0
-        version: 18.0.6
+        version: 18.0.7
       migrate-mongo:
         specifier: ^14.0.0
         version: 14.0.7(mongodb@7.7.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9))
@@ -5659,8 +5659,8 @@ packages:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
 
-  dotenv@18.0.6:
-    resolution: {integrity: sha512-ZMVmohV6CvAJtj++pZNyggluUt6hbRdQAxc2+Z635RL6/AG/ruXv5lHnybUFoxMPL/yrTL/tsF4paZu2l7RA6Q==}
+  dotenv@18.0.7:
+    resolution: {integrity: sha512-QEvMEF8ca3GNZJJnAbOgxpj5ULhBvnMcURp+XKrtvqFNPgjBvYoswQ0Jl2cO7JzCjxZjJhr9ZuIEhlrRxMft/Q==}
     engines: {node: '>=12'}
     hasBin: true
 
@@ -15248,7 +15248,7 @@ snapshots:
 
   dotenv@17.4.2: {}
 
-  dotenv@18.0.6: {}
+  dotenv@18.0.7: {}
 
   dunder-proto@1.0.1:
     dependencies:
