@@ -66,6 +66,8 @@ app:
     "AWS_ROLES_REALM_NAME": ""
     "MS_GRAPH_API_URL": "https://graph.microsoft.com"
     "WEASYPRINT_URL": "http://weasyprint:8080"
+    "GITHUB_API_URL": "https://api.github.com"
+    "GITHUB_APPROVED_ORGS": "bcgov,bcgov-c"
 
   envSecretName: pltsvc # pragma: allowlist secret
 

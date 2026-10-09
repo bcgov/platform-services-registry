@@ -40,6 +40,7 @@
     "@mantine/modals": "^9.0.0",
     "@mantine/notifications": "^9.0.0",
     "@mantine/tiptap": "^9.0.0",
+    "@octokit/auth-app": "^8.3.1",
     "@prisma/client": "6.19.3",
     "@react-email/components": "^1.0.0",
     "@react-email/render": "2.1.0",
