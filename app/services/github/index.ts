@@ -37,31 +37,68 @@ export async function isGitHubOrganizationMember(organization: string, username:
   return response.data.state === 'active';
 }
 
+function getApprovedOrganizations(): string[] {
+  return (process.env.GITHUB_APPROVED_ORGS || '')
+    .split(',')
+    .map((organization) => organization.trim())
+    .filter(Boolean);
+}
+
+async function getGitHubUserResponse(normalizedUsername: string): Promise<GitHubApiUser | null> {
+  if (IS_LOCAL) {
+    try {
+      const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`);
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
+
+      throw error;
+    }
+  }
+
+  const approvedOrganizations = getApprovedOrganizations();
+
+  for (const organization of approvedOrganizations) {
+    try {
+      const token = await getGitHubInstallationToken(organization);
+
+      const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
+
+      const message = error instanceof Error ? error.message : String(error);
+
+      logger.warn(`GitHub user lookup failed using "${organization}" installation: ${message}`);
+    }
+  }
+
+  throw new Error('GitHub user lookup failed for all approved organization installations.');
+}
+
 export async function getGitHubUser(username: string): Promise<GitHubUser | null> {
   const normalizedUsername = username.trim().replace(/^@/, '');
 
   try {
-    const token = IS_LOCAL ? undefined : await getGitHubInstallationToken('bcgov');
+    const user = await getGitHubUserResponse(normalizedUsername);
 
-    const response = await instance.get<GitHubApiUser>(`/users/${encodeURIComponent(normalizedUsername)}`, {
-      headers: token
-        ? {
-            Authorization: `Bearer ${token}`,
-          }
-        : undefined,
-    });
-
-    if (response.data.type !== 'User') {
+    if (!user || user.type !== 'User') {
       return null;
     }
 
-    return processGitHubUser(response.data);
+    return processGitHubUser(user);
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      return null;
-    }
-
-    const message = axios.isAxiosError(error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
 
     logger.error(`Error fetching GitHub user "${normalizedUsername}": ${message}`);
 
@@ -104,10 +141,7 @@ export async function validateGitHubUsername(username: string) {
     };
   }
 
-  const approvedOrganizations = (process.env.GITHUB_APPROVED_ORGS || '')
-    .split(',')
-    .map((organization) => organization.trim())
-    .filter(Boolean);
+  const approvedOrganizations = getApprovedOrganizations();
 
   if (approvedOrganizations.length === 0) {
     logger.error('No approved GitHub organizations are configured.');
@@ -118,9 +152,13 @@ export async function validateGitHubUsername(username: string) {
     };
   }
 
-  try {
-    for (const organization of approvedOrganizations) {
+  let membershipCheckSucceeded = false;
+
+  for (const organization of approvedOrganizations) {
+    try {
       const isMember = await isGitHubOrganizationMember(organization, user.username);
+
+      membershipCheckSucceeded = true;
 
       if (isMember) {
         return {
@@ -128,12 +166,14 @@ export async function validateGitHubUsername(username: string) {
           user,
         };
       }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      logger.warn(`GitHub membership check failed for "${organization}": ${message}`);
     }
-  } catch (error) {
-    const message = axios.isAxiosError(error) ? error.message : String(error);
+  }
 
-    logger.error(`GitHub organization membership validation failed: ${message}`);
-
+  if (!membershipCheckSucceeded) {
     return {
       valid: false as const,
       message: 'GitHub validation is temporarily unavailable. Please try again.',
