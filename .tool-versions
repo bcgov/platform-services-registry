@@ -12,3 +12,4 @@ mongodb-database-tools 0.11.1
 database-tools 0.12.3
 kube-linter 0.7.4
 shellcheck 0.11.0
+pnpm 12.9.1

@@ -65,6 +65,11 @@ export default privateCloudProductLayout(({ getPathParams, session, children }) 
       name: 'usage',
       href: `/private-cloud/products/${licencePlate}/usage`,
     },
+    {
+      label: 'AI USAGE',
+      name: 'ai-usage',
+      href: `/private-cloud/products/${licencePlate}/ai-usage`,
+    },
   ];
 
   if (session?.permissions.viewAllPrivateProductComments) {
