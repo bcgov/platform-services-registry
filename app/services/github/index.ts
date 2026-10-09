@@ -155,13 +155,11 @@ export async function validateGitHubUsername(username: string) {
     };
   }
 
-  let membershipCheckSucceeded = false;
+  let membershipCheckFailed = false;
 
   for (const organization of approvedOrganizations) {
     try {
       const isMember = await isGitHubOrganizationMember(organization, user.username);
-
-      membershipCheckSucceeded = true;
 
       if (isMember) {
         return {
@@ -170,13 +168,15 @@ export async function validateGitHubUsername(username: string) {
         };
       }
     } catch (error) {
+      membershipCheckFailed = true;
+
       const message = error instanceof Error ? error.message : String(error);
 
       logger.warn(`GitHub membership check failed for "${organization}": ${message}`);
     }
   }
 
-  if (!membershipCheckSucceeded) {
+  if (membershipCheckFailed) {
     return {
       valid: false as const,
       message: 'GitHub validation is temporarily unavailable. Please try again.',
