@@ -244,7 +244,7 @@ importers:
         version: 2.2.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@hookform/resolvers':
         specifier: ^5.2.1
-        version: 5.9.1(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(effect@3.21.0)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
+        version: 5.9.1(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(effect@3.21.0)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
       '@keycloak/keycloak-admin-client':
         specifier: 26.8.1
         version: 26.8.1
@@ -424,7 +424,7 @@ importers:
         version: 6.11.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)
       react-hook-form:
         specifier: ^7.62.0
-        version: 7.89.0(@types/react@19.3.0)(react@19.3.1)
+        version: 7.90.0(@types/react@19.3.0)(react@19.3.1)
       react-imask:
         specifier: ^7.6.1
         version: 7.6.1(react@19.3.1)
@@ -2506,10 +2506,6 @@ packages:
     engines: {node: '>= 10.16.0'}
     peerDependencies:
       jsep: ^0.4.0||^1.0.0
-
-  '@keycloak/keycloak-admin-client@26.8.0':
-    resolution: {integrity: sha512-eMMe+r57sILel1XZAn0W7lbghrkw0oExqR4Rn0fkzQsslMOK8MGwk+buufchTOqMvjIfVXIFnPEL/Kty15SOTw==}
-    engines: {node: '>=18'}
 
   '@keycloak/keycloak-admin-client@26.8.1':
     resolution: {integrity: sha512-1l69rXFuMOw0nQ98u2sZLrVqrSugb0QSx+Pan9cqL0b1xfWBWfVt9MjXqCSpv0BEBvig/NUz7TJm6/ugiW3r4A==}
@@ -8271,8 +8267,8 @@ packages:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  react-hook-form@7.89.0:
-    resolution: {integrity: sha512-vKcoCfy8RKZDrhSdqsRFp0uEOdS1AhLjOL6hR7Wmfzg1akNxEhaPf5WORx8SgEQPVXakdDyDkqQp+KNxVnnPHg==}
+  react-hook-form@7.90.0:
+    resolution: {integrity: sha512-+NdG0FLzCPhFOp2NNxaUYLF9fyZhNjx9FTBBSYWF71/l6BBlmIc/j6xlp3DbaHWLJbIG7Zd8oznA19xJClU97w==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@types/react': '*'
@@ -10936,10 +10932,10 @@ snapshots:
       react-dom: 19.3.1(react@19.3.1)
       use-sync-external-store: 1.6.0(react@19.3.1)
 
-  '@hookform/resolvers@5.9.1(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(effect@3.21.0)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)':
+  '@hookform/resolvers@5.9.1(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(effect@3.21.0)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.89.0(@types/react@19.3.0)(react@19.3.1)
+      react-hook-form: 7.90.0(@types/react@19.3.0)(react@19.3.1)
     optionalDependencies:
       '@sinclair/typebox': 0.34.49
       '@standard-schema/spec': 1.1.0
@@ -11576,17 +11572,6 @@ snapshots:
   '@jsep-plugin/regex@1.0.4(jsep@1.4.0)':
     dependencies:
       jsep: 1.4.0
-
-  '@keycloak/keycloak-admin-client@26.8.0':
-    dependencies:
-      '@microsoft/kiota-abstractions': 1.0.0-preview.103
-      '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-form': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-json': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-multipart': 1.0.0-preview.103
-      '@microsoft/kiota-serialization-text': 1.0.0-preview.103
-      camelize-ts: 3.0.0
-      url-template: 3.1.1
 
   '@keycloak/keycloak-admin-client@26.8.1':
     dependencies:
@@ -18023,7 +18008,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-hook-form@7.89.0(@types/react@19.3.0)(react@19.3.1):
+  react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       react: 19.3.1
     optionalDependencies:
