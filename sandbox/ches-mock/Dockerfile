@@ -3,7 +3,7 @@ WORKDIR /opt
 
 COPY ches-mock ./context
 
-RUN npm install -g turbo pnpm@12.11.2
+RUN npm install -g turbo pnpm@12.14.0
 RUN cd context && pnpm install --frozen-lockfile --ignore-scripts && pnpm build
 
 FROM node:22.12.0-alpine3.19
