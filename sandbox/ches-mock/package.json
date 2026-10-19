@@ -1,7 +1,7 @@
 {
   "name": "ches-mock",
   "version": "0.1.0",
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "pnpm@12.14.0",
   "type": "module",
   "scripts": {
     "build": "rimraf ./build && tsc",

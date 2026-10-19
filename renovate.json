@@ -3,7 +3,7 @@
   "extends": ["config:recommended", ":semanticCommitType(chore)"],
   "ignoreDeps": [],
   "ignorePaths": ["**/node_modules/**"],
-  "constraints": { "pnpm": "12.11.2" },
+  "constraints": { "pnpm": "12.14.0" },
   "packageRules": [
     {
       "matchPackageNames": ["prisma", "@prisma/client"],
