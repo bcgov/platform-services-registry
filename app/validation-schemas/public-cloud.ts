@@ -163,18 +163,20 @@ function validateNetworking(data: PublicCloudBaseRequestBody, ctx: z.RefinementC
 
 export const publicCloudCreateForecastRequiredMessage = `Enter a forecast amount greater than $0 for each of the next ${FISCAL_FORECAST_HORIZON_MONTHS} months.`;
 
-function validateCreateForecast(
-  data: { forecastMonthlyValues?: Array<{ year: number; month: number; amount: number; currency: 'CAD' }> },
-  ctx: z.RefinementCtx,
-) {
-  if (!isForecastHorizonComplete(data.forecastMonthlyValues ?? [])) {
-    ctx.addIssue({
-      code: 'custom',
-      path: ['forecastMonthlyValues'],
-      message: publicCloudCreateForecastRequiredMessage,
-    });
-  }
-}
+/**
+ * Field-level so a type error on another property does not skip the check.
+ * A plain `.optional()` refinement does not run when the value is missing.
+ */
+const publicCloudCreateForecastSchema = z
+  .union([z.array(forecastMonthlyValueSchema), z.undefined()])
+  .superRefine((values, ctx) => {
+    if (!isForecastHorizonComplete(values ?? [])) {
+      ctx.addIssue({
+        code: 'custom',
+        message: publicCloudCreateForecastRequiredMessage,
+      });
+    }
+  });
 
 function validateBudget(data: PublicCloudBaseRequestBody, ctx: z.RefinementCtx) {
   const schema = getBudgetSchema(data.provider);
@@ -211,7 +213,7 @@ export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidati
   publicCloudBaseRequestBodySchema.extend({
     isAgMinistryChecked: z.boolean().optional(),
     /** Spend forecast submitted with the create request; required months are persisted after licence plate assignment. */
-    forecastMonthlyValues: z.array(forecastMonthlyValueSchema).optional(),
+    forecastMonthlyValues: publicCloudCreateForecastSchema,
   }),
 )
   .refine(validateAgMinistryChecked, {
@@ -222,8 +224,7 @@ export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidati
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
   })
-  .superRefine(validateBudget)
-  .superRefine(validateCreateForecast);
+  .superRefine(validateBudget);
 
 export const publicCloudEditRequestBodySchema = applyCommonPublicCloudValidations(
   publicCloudEditBaseRequestBodySchema.extend({

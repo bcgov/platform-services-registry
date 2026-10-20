@@ -46,8 +46,8 @@ export default publicCloudProductNew(({ session }) => {
     } as any,
   });
 
-  const forecastError = form.formState.errors.forecastMonthlyValues;
-  const forecastInvalid = Boolean(forecastError);
+  const { errors, submitCount } = form.formState;
+  const forecastInvalid = Boolean(errors.forecastMonthlyValues);
 
   const accordionItems = [
     {
@@ -117,7 +117,7 @@ export default publicCloudProductNew(({ session }) => {
             await openPublicCloudProductCreateSubmitModal({ productData: formData });
           })}
         >
-          <PageAccordion items={accordionItems} />
+          <PageAccordion items={accordionItems} submissionAttempt={submitCount} />
 
           <div className="mt-5 flex items-center justify-start gap-x-2">
             <PreviousButton />

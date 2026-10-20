@@ -194,4 +194,20 @@ describe('Public Cloud create forecast', () => {
 
     expect(result.success).toBe(true);
   });
+
+  it('rejects an incomplete forecast when another required field is missing', () => {
+    const result = publicCloudCreateRequestBodySchema.safeParse({
+      ...createPublicCloudPayload(),
+      projectOwnerId: undefined,
+      forecastMonthlyValues: undefined,
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path[0] === 'projectOwnerId')).toBe(true);
+      expect(result.error.issues.some((issue) => issue.message === publicCloudCreateForecastRequiredMessage)).toBe(
+        true,
+      );
+    }
+  });
 });
