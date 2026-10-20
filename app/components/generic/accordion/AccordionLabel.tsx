@@ -8,7 +8,7 @@ export interface AccordionLabelProps {
   invalid?: boolean;
 }
 
-export function AccordionLabel({ label, LeftIcon, description, invalid }: AccordionLabelProps) {
+export function AccordionLabel({ label, LeftIcon, description, invalid }: Readonly<AccordionLabelProps>) {
   return (
     <Group wrap="nowrap">
       <LeftIcon className="inline-block" />
