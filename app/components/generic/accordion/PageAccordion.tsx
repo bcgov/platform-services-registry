@@ -22,6 +22,16 @@ function InnerPageAccordion({
   showToggles?: boolean;
 }) {
   const [selected, setSelected] = useState(initialSelected);
+  const invalidKey = items
+    .filter((item) => item.invalid)
+    .map((item) => item.id)
+    .join('|');
+
+  useEffect(() => {
+    if (!invalidKey) return;
+    const ids = invalidKey.split('|');
+    setSelected((current) => (ids.every((id) => current.includes(id)) ? current : [...current, ...ids]));
+  }, [invalidKey]);
 
   const accordionItems = items.map((item) => (
     <Accordion.Item value={item.id ?? ''} key={item.id ?? item.label}>

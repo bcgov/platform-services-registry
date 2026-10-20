@@ -1,4 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
+import { buildRollingFiscalForecastMonths } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import {
   privateCloudQuotaJustificationMaxLength,
   privateCloudProductDescriptionMaxLength,
@@ -9,7 +10,7 @@ import {
 } from '@/constants/public-cloud';
 import { Cluster, Provider } from '@/prisma/client';
 import { _privateCloudCreateRequestBodySchema } from './private-cloud';
-import { publicCloudCreateRequestBodySchema } from './public-cloud';
+import { publicCloudCreateForecastRequiredMessage, publicCloudCreateRequestBodySchema } from './public-cloud';
 
 const resourceRequests = {
   development: { cpu: 1, memory: 1, storage: 1 },
@@ -52,6 +53,7 @@ function createPublicCloudPayload() {
     secondaryTechnicalLeadId: 'd'.repeat(24),
     expenseAuthorityId: 'e'.repeat(24),
     requestComment: '',
+    forecastMonthlyValues: buildRollingFiscalForecastMonths(1000, 'CAD'),
     environmentsEnabled: {
       development: true,
       developmentRequiresNetworking: false,
@@ -150,5 +152,46 @@ describe('Public Cloud text field max lengths', () => {
     if (!result.success) {
       expect(result.error.issues.some((issue) => issue.path[0] === 'networkingReason')).toBe(true);
     }
+  });
+});
+
+describe('Public Cloud create forecast', () => {
+  it('rejects a create request with no forecast', () => {
+    const result = publicCloudCreateRequestBodySchema.safeParse({
+      ...createPublicCloudPayload(),
+      forecastMonthlyValues: undefined,
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.message === publicCloudCreateForecastRequiredMessage)).toBe(
+        true,
+      );
+    }
+  });
+
+  it('rejects a create request when a required month is blank', () => {
+    const forecastMonthlyValues = buildRollingFiscalForecastMonths(1000, 'CAD');
+    const requiredMonth = forecastMonthlyValues.find((month) => month.amount > 0);
+    if (!requiredMonth) {
+      throw new Error('expected a required forecast month');
+    }
+    requiredMonth.amount = 0;
+
+    const result = publicCloudCreateRequestBodySchema.safeParse({
+      ...createPublicCloudPayload(),
+      forecastMonthlyValues,
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.some((issue) => issue.path[0] === 'forecastMonthlyValues')).toBe(true);
+    }
+  });
+
+  it('accepts a create request when every required month has an amount', () => {
+    const result = publicCloudCreateRequestBodySchema.safeParse(createPublicCloudPayload());
+
+    expect(result.success).toBe(true);
   });
 });

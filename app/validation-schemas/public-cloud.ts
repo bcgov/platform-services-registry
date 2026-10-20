@@ -1,5 +1,9 @@
 import { z } from 'zod';
 import {
+  FISCAL_FORECAST_HORIZON_MONTHS,
+  isForecastHorizonComplete,
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
+import {
   publicCloudNetworkingReasonMaxLength,
   publicCloudProviderSelectionReasonsNoteMaxLength,
 } from '@/constants/public-cloud';
@@ -157,6 +161,21 @@ function validateNetworking(data: PublicCloudBaseRequestBody, ctx: z.RefinementC
   });
 }
 
+export const publicCloudCreateForecastRequiredMessage = `Enter a forecast amount greater than $0 for each of the next ${FISCAL_FORECAST_HORIZON_MONTHS} months.`;
+
+function validateCreateForecast(
+  data: { forecastMonthlyValues?: Array<{ year: number; month: number; amount: number; currency: 'CAD' }> },
+  ctx: z.RefinementCtx,
+) {
+  if (!isForecastHorizonComplete(data.forecastMonthlyValues ?? [])) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['forecastMonthlyValues'],
+      message: publicCloudCreateForecastRequiredMessage,
+    });
+  }
+}
+
 function validateBudget(data: PublicCloudBaseRequestBody, ctx: z.RefinementCtx) {
   const schema = getBudgetSchema(data.provider);
   const result = schema.safeParse(data.budget);
@@ -191,8 +210,8 @@ const publicCloudEditBaseRequestBodySchema = publicCloudBaseRequestBodySchema.ex
 export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidations(
   publicCloudBaseRequestBodySchema.extend({
     isAgMinistryChecked: z.boolean().optional(),
-    /** Optional spend forecast submitted with the create request; persisted after licence plate assignment. */
-    forecastMonthlyValues: z.array(forecastMonthlyValueSchema).min(1).optional(),
+    /** Spend forecast submitted with the create request; required months are persisted after licence plate assignment. */
+    forecastMonthlyValues: z.array(forecastMonthlyValueSchema).optional(),
   }),
 )
   .refine(validateAgMinistryChecked, {
@@ -203,7 +222,8 @@ export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidati
     message: 'The Project Owner and Primary Technical Lead must be different.',
     path: ['primaryTechnicalLeadId'],
   })
-  .superRefine(validateBudget);
+  .superRefine(validateBudget)
+  .superRefine(validateCreateForecast);
 
 export const publicCloudEditRequestBodySchema = applyCommonPublicCloudValidations(
   publicCloudEditBaseRequestBodySchema.extend({

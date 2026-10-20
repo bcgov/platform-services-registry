@@ -46,6 +46,7 @@ type CellEditorProps = Readonly<{
   currency: string;
   status: ForecastCellStatus;
   editable: boolean;
+  invalid?: boolean;
   onChange: (amount: number) => void;
   onApplyToFuture?: () => void;
 }>;
@@ -72,7 +73,7 @@ function fiscalChunkKnownActuals(
   return { known, present, expected: expected.length };
 }
 
-function CellEditor({ value, currency, status, editable, onChange, onApplyToFuture }: CellEditorProps) {
+function CellEditor({ value, currency, status, editable, invalid, onChange, onApplyToFuture }: CellEditorProps) {
   // Empty string = not entered (stored as 0). Keeps the input blank instead of "$0".
   const [draftValue, setDraftValue] = useState<number | ''>(value > 0 ? Math.round(value) : '');
   const [focused, setFocused] = useState(false);
@@ -125,6 +126,7 @@ function CellEditor({ value, currency, status, editable, onChange, onApplyToFutu
             onChange(next);
             setShowApplyFuture(next !== amountAtFocus);
           }}
+          error={invalid || undefined}
           classNames={{ input: 'text-center font-medium text-sm h-9' }}
           size="sm"
         />
@@ -176,6 +178,8 @@ type ProjectBudgetForecastPanelProps = Readonly<{
   workflowActions?: ReactNode;
   /** When set, values sync into the parent form instead of calling the forecast APIs. */
   onValuesChange?: (values: MonthlyValue[]) => void;
+  /** After a failed create submit, mark required months that still have no amount. */
+  highlightIncompleteRequired?: boolean;
   onSaved?: () => void;
   /** Product × month actuals (CAD). When set with showActualVariance, adds Actual and Variance rows. */
   actualsByMonth?: Array<{ year: number; month: number; amountCad: number }>;
@@ -193,6 +197,7 @@ export default function ProjectBudgetForecastPanel({
   provider,
   workflowActions,
   onValuesChange,
+  highlightIncompleteRequired = false,
   onSaved,
   actualsByMonth,
   billingStartedAt,
@@ -341,7 +346,10 @@ export default function ProjectBudgetForecastPanel({
         {isUnsavedDraft && editable && (
           <p className="text-amber-800">
             {isFormBound ? (
-              <>Draft forecast — included when you submit this create request.</>
+              <>
+                Enter an amount for each required month. This request cannot be submitted until those months are filled
+                in.
+              </>
             ) : (
               <>
                 Draft forecast — nothing is saved until you click <span className="font-medium">Save forecast</span>.
@@ -408,6 +416,8 @@ export default function ProjectBudgetForecastPanel({
                         const globalIndex = fyChunk.startIndex + i;
                         const status = cellStatuses[globalIndex];
                         const cellClass = status === 'past' ? 'bg-gray-100' : 'bg-white';
+                        const missingRequired =
+                          highlightIncompleteRequired && status !== 'past' && status !== 'optional' && v.amount <= 0;
 
                         return (
                           <td key={monthKey(v.year, v.month)} className={`px-1 py-1 ${cellClass}`}>
@@ -416,6 +426,7 @@ export default function ProjectBudgetForecastPanel({
                               currency={currency}
                               status={status}
                               editable={editable}
+                              invalid={missingRequired}
                               onChange={(amount) => handleAmountChange(globalIndex, amount)}
                               onApplyToFuture={() =>
                                 handleApplyToFutureMonths(globalIndex, values[globalIndex]?.amount ?? 0)

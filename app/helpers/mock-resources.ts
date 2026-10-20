@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import jws from 'jws';
+import { buildRollingFiscalForecastMonths } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { SERVICE_ACCOUNT_DATA } from '@/jest.mock';
 import { Prisma, Cluster } from '@/prisma/client';
@@ -118,6 +119,7 @@ export function createSamplePublicCloudProductData(args?: {
     },
     isAgMinistry: false,
     isAgMinistryChecked: true,
+    forecastMonthlyValues: buildRollingFiscalForecastMonths(1000, 'CAD'),
     organizationId: organization.id,
     organization: organization,
     repositories: [],

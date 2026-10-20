@@ -19,7 +19,7 @@ import Repositories from '@/components/form/Repositories';
 import PageAccordion from '@/components/generic/accordion/PageAccordion';
 import FormErrorNotification from '@/components/generic/FormErrorNotification';
 import { openPublicCloudProductCreateSubmitModal } from '@/components/modal/publicCloudProductCreateSubmit';
-import { buildRollingFiscalForecastMonths } from '@/components/public-cloud/forecast/forecast-grid-utils';
+import { FISCAL_FORECAST_HORIZON_MONTHS } from '@/components/public-cloud/forecast/forecast-grid-utils';
 import PublicCloudCreateForecastSection from '@/components/public-cloud/sections/PublicCloudCreateForecastSection';
 import TeamContacts from '@/components/public-cloud/sections/TeamContacts';
 import { GlobalRole } from '@/constants';
@@ -45,6 +45,9 @@ export default publicCloudProductNew(({ session }) => {
       },
     } as any,
   });
+
+  const forecastError = form.formState.errors.forecastMonthlyValues;
+  const forecastInvalid = Boolean(forecastError);
 
   const accordionItems = [
     {
@@ -92,7 +95,8 @@ export default publicCloudProductNew(({ session }) => {
     {
       LeftIcon: IconChartBar,
       label: 'Spend forecast',
-      description: '',
+      description: `Required for the next ${FISCAL_FORECAST_HORIZON_MONTHS} months`,
+      invalid: forecastInvalid,
       Component: PublicCloudCreateForecastSection,
       componentArgs: {},
     },
@@ -110,11 +114,6 @@ export default publicCloudProductNew(({ session }) => {
         <form
           autoComplete="off"
           onSubmit={form.handleSubmit(async (formData) => {
-            // If the spend forecast accordion was never opened, seed an empty CAD template.
-            if (!formData.forecastMonthlyValues || formData.forecastMonthlyValues.length === 0) {
-              formData.forecastMonthlyValues = buildRollingFiscalForecastMonths(0, 'CAD', new Date());
-            }
-
             await openPublicCloudProductCreateSubmitModal({ productData: formData });
           })}
         >
