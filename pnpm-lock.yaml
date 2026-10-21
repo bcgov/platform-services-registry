@@ -250,7 +250,7 @@ importers:
         version: 26.8.1
       '@kubernetes/client-node':
         specifier: ^2.0.0
-        version: 2.0.0(supports-color@10.2.2)
+        version: 2.0.1(supports-color@10.2.2)
       '@mantine/colors-generator':
         specifier: ^9.0.0
         version: 9.7.2(chroma-js@3.2.0)
@@ -2511,8 +2511,8 @@ packages:
     resolution: {integrity: sha512-1l69rXFuMOw0nQ98u2sZLrVqrSugb0QSx+Pan9cqL0b1xfWBWfVt9MjXqCSpv0BEBvig/NUz7TJm6/ugiW3r4A==}
     engines: {node: '>=18'}
 
-  '@kubernetes/client-node@2.0.0':
-    resolution: {integrity: sha512-Jx2cRxEVb4XkDNiR/cg8SX9dH6ZHdMhKmZdQcfhn2vdBWHdb2ldwM0P3I0dK4msYhFmC6TCODsNHH144IpA06w==}
+  '@kubernetes/client-node@2.0.1':
+    resolution: {integrity: sha512-evJgmEtgArEYlj6DNkMGjK41IrFK/hEwb5lWVxx0VRBWybQpnvi+2TtA19mLgVfRHfqX5yjHObX6e9W7LEZBjw==}
 
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
@@ -6909,10 +6909,6 @@ packages:
 
   js-yaml@4.3.0:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
-    hasBin: true
-
-  js-yaml@5.2.2:
-    resolution: {integrity: sha512-dayzUzKkJ1MkuUtZglSebU43utNXH0OWQByK9rKOOuYIO8M5TV1y+n8ALMdG0rdzBnfNkOmZEqrURepb0ejqBw==}
     hasBin: true
 
   js-yaml@5.4.2:
@@ -11570,7 +11566,7 @@ snapshots:
       camelize-ts: 3.0.0
       url-template: 3.1.1
 
-  '@kubernetes/client-node@2.0.0(supports-color@10.2.2)':
+  '@kubernetes/client-node@2.0.1(supports-color@10.2.2)':
     dependencies:
       '@types/js-yaml': 4.0.9
       '@types/node': 26.1.1
@@ -11578,7 +11574,7 @@ snapshots:
       form-data: 4.0.6
       hpagent: 1.2.0
       isomorphic-ws: 5.0.0(ws@8.21.3)
-      js-yaml: 5.2.2
+      js-yaml: 5.4.2
       jsonpath-plus: 10.4.0
       openid-client: 6.8.4
       rfc4648: 1.5.4
@@ -16583,10 +16579,6 @@ snapshots:
       esprima: 4.0.1
 
   js-yaml@4.3.0:
-    dependencies:
-      argparse: 2.0.1
-
-  js-yaml@5.2.2:
     dependencies:
       argparse: 2.0.1
 
