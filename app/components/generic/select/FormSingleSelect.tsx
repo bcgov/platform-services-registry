@@ -50,7 +50,9 @@ export default function FormSingleSelect({
         placeholder="select..."
         data={data}
         onChange={(val, option) => {
-          if (!_isNil(val)) onChange(val, option);
+          if (!_isNil(val) && !_isNil(option)) {
+            onChange(val, option);
+          }
         }}
         onBlur={onBlur}
         value={value}
