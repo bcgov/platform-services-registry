@@ -12,6 +12,10 @@ on:
     - terraform/keycloak/**
     - .github/workflows/terraform-keycloak.yml
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   terraform:
     runs-on: ubuntu-26.04
