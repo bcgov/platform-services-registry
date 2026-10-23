@@ -9,24 +9,39 @@ import {
 import ProjectBudgetForecastPanel from '@/components/public-cloud/forecast/ProjectBudgetForecastPanel';
 
 export default function PublicCloudCreateForecastSection() {
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, getValues, formState } = useFormContext();
   const provider = watch('provider');
-  const draftMonthlyValues = useMemo(() => buildRollingFiscalForecastMonths(0, 'CAD', new Date()), []);
+  const forecastError = formState.errors.forecastMonthlyValues;
+  const forecastErrorMessage =
+    forecastError && 'message' in forecastError && typeof forecastError.message === 'string'
+      ? forecastError.message
+      : undefined;
+  const initialMonthlyValues = useMemo(() => {
+    const existing = getValues('forecastMonthlyValues') as MonthlyValue[] | undefined;
+    return existing?.length ? existing : buildRollingFiscalForecastMonths(0, 'CAD', new Date());
+  }, [getValues]);
 
   const handleValuesChange = useCallback(
     (values: MonthlyValue[]) => {
-      setValue('forecastMonthlyValues', values, { shouldDirty: true, shouldValidate: false });
+      setValue('forecastMonthlyValues', values, {
+        shouldDirty: true,
+        shouldValidate: formState.submitCount > 0,
+      });
     },
-    [setValue],
+    [formState.submitCount, setValue],
   );
 
   return (
-    <ProjectBudgetForecastPanel
-      forecast={null}
-      monthlyValues={draftMonthlyValues}
-      editable
-      provider={provider}
-      onValuesChange={handleValuesChange}
-    />
+    <div className="space-y-3">
+      {forecastErrorMessage && <p className="text-sm text-red-600">{forecastErrorMessage}</p>}
+      <ProjectBudgetForecastPanel
+        forecast={null}
+        monthlyValues={initialMonthlyValues}
+        editable
+        provider={provider}
+        highlightIncompleteRequired={Boolean(forecastErrorMessage)}
+        onValuesChange={handleValuesChange}
+      />
+    </div>
   );
 }

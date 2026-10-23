@@ -1,5 +1,9 @@
 import { z } from 'zod';
 import {
+  FISCAL_FORECAST_HORIZON_MONTHS,
+  isForecastHorizonComplete,
+} from '@/components/public-cloud/forecast/forecast-grid-utils';
+import {
   publicCloudNetworkingReasonMaxLength,
   publicCloudProviderSelectionReasonsNoteMaxLength,
 } from '@/constants/public-cloud';
@@ -157,6 +161,23 @@ function validateNetworking(data: PublicCloudBaseRequestBody, ctx: z.RefinementC
   });
 }
 
+export const publicCloudCreateForecastRequiredMessage = `Enter a forecast amount greater than $0 for each of the next ${FISCAL_FORECAST_HORIZON_MONTHS} months.`;
+
+/**
+ * Field-level so a type error on another property does not skip the check.
+ * A plain `.optional()` refinement does not run when the value is missing.
+ */
+const publicCloudCreateForecastSchema = z
+  .union([z.array(forecastMonthlyValueSchema), z.undefined()])
+  .superRefine((values, ctx) => {
+    if (!isForecastHorizonComplete(values ?? [])) {
+      ctx.addIssue({
+        code: 'custom',
+        message: publicCloudCreateForecastRequiredMessage,
+      });
+    }
+  });
+
 function validateBudget(data: PublicCloudBaseRequestBody, ctx: z.RefinementCtx) {
   const schema = getBudgetSchema(data.provider);
   const result = schema.safeParse(data.budget);
@@ -191,8 +212,8 @@ const publicCloudEditBaseRequestBodySchema = publicCloudBaseRequestBodySchema.ex
 export const publicCloudCreateRequestBodySchema = applyCommonPublicCloudValidations(
   publicCloudBaseRequestBodySchema.extend({
     isAgMinistryChecked: z.boolean().optional(),
-    /** Optional spend forecast submitted with the create request; persisted after licence plate assignment. */
-    forecastMonthlyValues: z.array(forecastMonthlyValueSchema).min(1).optional(),
+    /** Spend forecast submitted with the create request; required months are persisted after licence plate assignment. */
+    forecastMonthlyValues: publicCloudCreateForecastSchema,
   }),
 )
   .refine(validateAgMinistryChecked, {

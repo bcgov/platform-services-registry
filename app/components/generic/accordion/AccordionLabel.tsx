@@ -5,17 +5,18 @@ export interface AccordionLabelProps {
   label: string;
   LeftIcon: React.ComponentType<IconProps>;
   description: string;
+  invalid?: boolean;
 }
 
-export function AccordionLabel({ label, LeftIcon, description }: AccordionLabelProps) {
+export function AccordionLabel({ label, LeftIcon, description, invalid }: Readonly<AccordionLabelProps>) {
   return (
     <Group wrap="nowrap">
       <LeftIcon className="inline-block" />
       <div>
-        <Text size="lg" fw={600}>
+        <Text size="lg" fw={600} c={invalid ? 'red' : undefined}>
           {label}
         </Text>
-        <Text size="sm" c="dimmed" fw={400}>
+        <Text size="sm" c={invalid ? 'red' : 'dimmed'} fw={invalid ? 600 : 400}>
           {description}
         </Text>
       </div>

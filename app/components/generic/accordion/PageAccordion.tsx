@@ -16,12 +16,25 @@ function InnerPageAccordion({
   items,
   initialSelected,
   showToggles = true,
+  submissionAttempt = 0,
 }: {
   items: (PageAccordionItem & { id: string })[];
   initialSelected: string[];
   showToggles?: boolean;
+  /** Changes on each failed submit so collapsed invalid sections open again. */
+  submissionAttempt?: number;
 }) {
   const [selected, setSelected] = useState(initialSelected);
+  const invalidKey = items
+    .filter((item) => item.invalid)
+    .map((item) => item.id)
+    .join('|');
+
+  useEffect(() => {
+    if (!invalidKey) return;
+    const ids = invalidKey.split('|');
+    setSelected((current) => (ids.every((id) => current.includes(id)) ? current : [...current, ...ids]));
+  }, [invalidKey, submissionAttempt]);
 
   const accordionItems = items.map((item) => (
     <Accordion.Item value={item.id ?? ''} key={item.id ?? item.label}>
@@ -66,15 +79,24 @@ export default function PageAccordion({
   items,
   showToggles = true,
   initialSelected,
+  submissionAttempt = 0,
 }: {
   items: PageAccordionItem[];
   initialSelected?: string[];
   showToggles?: boolean;
+  submissionAttempt?: number;
 }) {
   if (items.length === 0) return null;
 
   const _items = items.map((item) => ({ ...item, id: item.id ?? _kebabCase(item.label) }));
   const _initialSelected = _items.filter((item) => item.initialOpen);
   const selected = _initialSelected.length > 0 ? _initialSelected.map((item) => item.id) : [_items[0].id];
-  return <InnerPageAccordion items={_items} initialSelected={initialSelected ?? selected} showToggles={showToggles} />;
+  return (
+    <InnerPageAccordion
+      items={_items}
+      initialSelected={initialSelected ?? selected}
+      showToggles={showToggles}
+      submissionAttempt={submissionAttempt}
+    />
+  );
 }
