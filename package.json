@@ -7,7 +7,6 @@
   "scripts": {
     "lint": "eslint --no-eslintrc --config .eslintrc.root.json .",
     "lint-fix": "eslint --no-eslintrc --config .eslintrc.root.json --fix .",
-    "cypress-headless": "cypress run --headless --browser firefox",
     "release": "release-it",
     "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -n .conventional-changelog.mjs -s -r 0 --skip-unstable"
   },
@@ -15,8 +14,6 @@
     "node": ">=22.1.0"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^28.0.0",
-    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.5",
     "@commitlint/cli": "^21.0.0",
     "@commitlint/config-conventional": "^21.0.0",
     "@commitlint/format": "^21.0.0",
@@ -24,8 +21,6 @@
     "@release-it/bumper": "^8.0.0",
     "@types/eslint-config-prettier": "^6.11.3",
     "conventional-changelog-cli": "^5.0.0",
-    "cypress": "^16.0.0",
-    "cypress-keycloak": "^2.0.2",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-n": "^18.0.0",

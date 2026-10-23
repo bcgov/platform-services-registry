@@ -35,7 +35,7 @@ repos:
     name: eslint
     entry: .bin/eslint.sh
     language: script
-    files: ^(cypress|sandbox)/.*\.(js|ts)$
+    files: ^sandbox/.*\.(js|ts)$
     verbose: true
     pass_filenames: true
   - id: eslint-app

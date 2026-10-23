@@ -22,10 +22,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@badeball/cypress-cucumber-preprocessor/*": [
-        "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "ts-node": {
