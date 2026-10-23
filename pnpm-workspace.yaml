@@ -19,5 +19,4 @@ allowBuilds:
   prisma: true
   sharp: true
   unrs-resolver: true
-  cypress: true
   esbuild: true

@@ -9,7 +9,6 @@ runs:
     with:
       # pnpm store path
       path: |
-        ~/.cache/Cypress
         ~/.local/share/pnpm/store/v3
         ${{ github.workspace }}/app/.next/cache
       key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
@@ -19,7 +18,6 @@ runs:
   - name: Install Root NPM packages
     run: |
       pnpm install --no-frozen-lockfile
-      pnpm cypress install
     shell: bash
     env:
       PNPM_CONFIG_DANGEROUSLY_ALLOW_ALL_BUILDS: 'true'

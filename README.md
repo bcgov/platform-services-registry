@@ -44,8 +44,6 @@ These technologies foster rapid iterative development, polished user interfaces,
 
 -   [Jest](https://jestjs.io/): Employed for JavaScript code testing, providing built-in mocking, assertion utilities, and code coverage analysis for efficient and intuitive testing.
 
--   [Cypress](https://www.cypress.io/): Utilized for end-to-end testing of web applications, offering automatic waiting, real-time reloading, and an interactive test runner for seamless test creation and debugging.
-
 ### Deployment Tools
 
 -   [GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions): A robust CI/CD platform automating various tasks and processes within GitHub repositories, including building, testing, and deploying applications.

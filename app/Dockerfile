@@ -31,7 +31,6 @@ RUN apk add --no-cache \
     libpng-dev \
     librsvg-dev
 
-ENV CYPRESS_INSTALL_BINARY=0
 
 # Install Node tools and dependencies
 RUN npm install -g turbo pnpm@12.15.0 && \
