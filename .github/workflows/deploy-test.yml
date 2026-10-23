@@ -15,7 +15,7 @@ concurrency:
 
 permissions:
   packages: write
-  contents: write
+  contents: read
   security-events: write
 
 jobs:
