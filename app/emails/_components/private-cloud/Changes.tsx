@@ -1,8 +1,9 @@
-import { Heading, Link, Text, Hr } from '@react-email/components';
+import { Heading, Hr } from '@react-email/components';
 import { ReactNode } from 'react';
 import ContactChanges from '@/emails/_components/ContactChanges';
 import DescriptionChanges from '@/emails/_components/DescriptionChanges';
 import MemberChanges from '@/emails/_components/MemberChanges';
+import NotificationEmailChanges from '@/emails/_components/NotificationEmailChanges';
 import QuotaChanges from '@/emails/_components/QuotaChanges';
 import { comparePrivateProductData } from '@/helpers/product-change';
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
@@ -110,6 +111,11 @@ export default function Changes({ request }: { request: PrivateCloudRequestDetai
       {profileChange}
       {contactChange}
       {quotaChange}
+      {membersChange}
+      <NotificationEmailChanges
+        currentEmails={request.originalData.notificationEmails ?? []}
+        requestedEmails={request.decisionData.notificationEmails ?? []}
+      />
     </>
   );
 }

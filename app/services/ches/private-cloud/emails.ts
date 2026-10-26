@@ -36,6 +36,8 @@ async function getTeamEmails(request: PrivateCloudRequestDetailDecorated) {
     request.originalData?.primaryTechnicalLead.email,
     request.originalData?.secondaryTechnicalLead?.email,
     ...memberEmails,
+    ...(request.originalData?.notificationEmails ?? []),
+    ...(request.decisionData.notificationEmails ?? []),
   ];
 }
 

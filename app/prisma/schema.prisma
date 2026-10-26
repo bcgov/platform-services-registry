@@ -182,6 +182,7 @@ model PrivateCloudProduct {
   repositories                     Repository[]
   gitOpsRepositories               Repository[]
   hasRepositories                  Boolean?
+  notificationEmails               String[]                    @default([])
 }
 
 model PrivateCloudRequestData {
@@ -210,6 +211,7 @@ model PrivateCloudRequestData {
   originalRequests         PrivateCloudRequest[]       @relation("originalData")
   repositories             Repository[]
   hasRepositories          Boolean?
+  notificationEmails       String[]                    @default([])
 }
 
 model PrivateCloudProductWebhook {

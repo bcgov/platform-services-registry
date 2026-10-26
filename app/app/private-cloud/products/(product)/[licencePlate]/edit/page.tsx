@@ -94,6 +94,7 @@ export default privateCloudProductEdit(({ session }) => {
     defaultValues: {
       hasRepositories: null,
       repositories: [],
+      notificationEmails: [],
       isAgMinistry: false,
       isAgMinistryChecked: true,
     },
@@ -122,6 +123,7 @@ export default privateCloudProductEdit(({ session }) => {
         resourceRequests,
         isAgMinistry: false,
         isAgMinistryChecked: true,
+        notificationEmails: currentProduct.notificationEmails ?? [],
       },
       {
         keepDirtyValues: true,
