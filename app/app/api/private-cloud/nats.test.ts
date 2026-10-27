@@ -31,6 +31,14 @@ describe('Private Cloud NATs', () => {
           expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
           expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
         ]),
+        ...(decisionData.notificationEmails ?? []).map((email) =>
+          expect.objectContaining({
+            email,
+            idir: '',
+            upn: '',
+            role: 'additional-contact',
+          }),
+        ),
         description: decisionData.description,
         licencePlate: decisionData.licencePlate,
         namespaces: expect.arrayContaining([
@@ -71,6 +79,14 @@ describe('Private Cloud NATs', () => {
           expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
           expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
         ]),
+        ...(decisionData.notificationEmails ?? []).map((email) =>
+          expect.objectContaining({
+            email,
+            idir: '',
+            upn: '',
+            role: 'additional-contact',
+          }),
+        ),
         description: decisionData.description,
         licencePlate: decisionData.licencePlate,
         namespaces: expect.arrayContaining([
@@ -111,6 +127,14 @@ describe('Private Cloud NATs', () => {
           expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
           expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
         ]),
+        ...(decisionData.notificationEmails ?? []).map((email) =>
+          expect.objectContaining({
+            email,
+            idir: '',
+            upn: '',
+            role: 'additional-contact',
+          }),
+        ),
         description: decisionData.description,
         licencePlate: decisionData.licencePlate,
         namespaces: expect.arrayContaining([

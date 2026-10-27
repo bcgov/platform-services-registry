@@ -90,10 +90,6 @@ export function comparePrivateProductData(data1: any, data2: any) {
       case 'repositories':
         repositoriesChanged = true;
         break;
-
-      case 'notificationEmails':
-        contactsChanged = true;
-        break;
     }
   }
 
