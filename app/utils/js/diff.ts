@@ -80,7 +80,7 @@ export function diffExt<T = any>(data1: T, data2: T, fields: string[]) {
           op: dff.op,
           path: dff.path,
           loc: dff.path.join('.'),
-          oldVal: dff.value,
+          oldVal: value,
           newVal: '',
         });
       }
