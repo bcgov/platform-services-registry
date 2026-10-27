@@ -49,6 +49,7 @@ export default function NotificationEmails({ disabled = false }: Props) {
       </p>
 
       <textarea
+        aria-label="Additional Notification Emails (optional)"
         name={field.name}
         ref={field.ref}
         disabled={disabled}
