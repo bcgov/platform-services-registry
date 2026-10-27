@@ -14,7 +14,12 @@ import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-clo
 import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
 export async function createPrivateCloudProduct() {
-  const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
+  const requestData = await createSamplePrivateCloudProductData({
+    data: {
+      cluster: Cluster.SILVER,
+      notificationEmails: ['cgi-team@example.com', 'support@example.com'],
+    },
+  });
   await mockSessionByIdirGuid(requestData.projectOwner.idirGuid);
 
   let response: any;
@@ -50,6 +55,7 @@ export async function updatePrivateCloudProduct() {
     data: {
       cluster: Cluster.SILVER,
       resourceRequests: resourceRequests1,
+      notificationEmails: ['old-team@example.com'],
     },
   });
 
@@ -84,6 +90,7 @@ export async function updatePrivateCloudProduct() {
   response = await editPrivateCloudProduct(decisionData.licencePlate, {
     ...decisionData,
     resourceRequests: resourceRequests2,
+    notificationEmails: ['cgi-team@example.com', 'support@example.com'],
   });
 
   if (response.status !== 200) return null;
@@ -111,7 +118,12 @@ export async function updatePrivateCloudProduct() {
 }
 
 export async function deletePrivateCloudProduct() {
-  const productData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
+  const productData = await createSamplePrivateCloudProductData({
+    data: {
+      cluster: Cluster.SILVER,
+      notificationEmails: ['cgi-team@example.com'],
+    },
+  });
 
   await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
 
