@@ -5,7 +5,7 @@ interface Props {
   requestedEmails: string[];
 }
 
-export default function NotificationEmailChanges({ currentEmails, requestedEmails }: Props) {
+export default function NotificationEmailChanges({ currentEmails, requestedEmails }: Readonly<Props>) {
   const normalize = (email: string) => email.trim().toLowerCase();
 
   const current = new Set(currentEmails.map(normalize));

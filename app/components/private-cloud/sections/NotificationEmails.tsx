@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
 interface Props {
@@ -13,7 +13,7 @@ const parseEmails = (value: string): string[] =>
     .map((email) => email.trim())
     .filter(Boolean);
 
-export default function NotificationEmails({ disabled = false }: Props) {
+export default function NotificationEmails({ disabled = false }: Readonly<Props>) {
   const { control } = useFormContext();
 
   const { field, fieldState } = useController({
