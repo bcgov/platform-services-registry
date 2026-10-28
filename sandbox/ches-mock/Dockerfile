@@ -1,4 +1,4 @@
-FROM node:24.22.1-alpine AS build
+FROM node:26.12.1-alpine AS build
 WORKDIR /opt
 
 COPY ches-mock ./context
