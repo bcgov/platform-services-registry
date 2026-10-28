@@ -33,7 +33,7 @@ RUN apk add --no-cache \
 
 
 # Install Node tools and dependencies
-RUN npm install -g turbo pnpm@12.15.0 && \
+RUN npm install -g turbo pnpm@12.16.1 && \
     pnpm install --frozen-lockfile
 
 COPY app ./app
