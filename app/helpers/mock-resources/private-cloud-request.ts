@@ -40,6 +40,7 @@ export function createSamplePrivateCloudRequest(args?: {
     archivedAt: new Date(),
     organizationId: organization.id,
     organization: organization,
+    notificationEmails: [],
   };
 
   const product = {

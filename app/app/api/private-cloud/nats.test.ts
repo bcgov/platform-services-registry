@@ -7,6 +7,39 @@ import {
 } from '@/services/api-test/private-cloud/helpers';
 import { sendNatsMessage } from '@/services/nats/core';
 
+function getExpectedNamespaces(licencePlate: string) {
+  return expect.arrayContaining(
+    ['dev', 'test', 'prod', 'tools'].map((env) =>
+      expect.objectContaining({
+        name: `${licencePlate}-${env}`,
+      }),
+    ),
+  );
+}
+
+function getExpectedContacts(decisionData: {
+  projectOwner: { email: string };
+  primaryTechnicalLead: { email: string };
+  secondaryTechnicalLead: { email: string } | null;
+  notificationEmails: string[];
+}) {
+  return expect.arrayContaining([
+    expect.objectContaining({ email: decisionData.projectOwner.email }),
+    expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
+    ...(decisionData.secondaryTechnicalLead
+      ? [expect.objectContaining({ email: decisionData.secondaryTechnicalLead.email })]
+      : []),
+    ...decisionData.notificationEmails.map((email) =>
+      expect.objectContaining({
+        email,
+        idir: '',
+        upn: '',
+        role: 'additional-contact',
+      }),
+    ),
+  ]);
+}
+
 describe('Private Cloud NATs', () => {
   beforeEach(() => {
     // @ts-ignore
@@ -17,7 +50,7 @@ describe('Private Cloud NATs', () => {
     const decisionData = await createPrivateCloudProduct();
     expect(decisionData).not.toBeNull();
     if (!decisionData) return;
-
+    expect(decisionData.notificationEmails).toHaveLength(2);
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(1);
     expect(sendNatsMessage).toHaveBeenCalledWith(
@@ -26,27 +59,10 @@ describe('Private Cloud NATs', () => {
       expect.objectContaining({
         action: 'create',
         cluster_name: decisionData.cluster.toLowerCase(),
-        contacts: expect.arrayContaining([
-          expect.objectContaining({ email: decisionData.projectOwner.email }),
-          expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
-          expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
-        ]),
+        contacts: getExpectedContacts(decisionData),
         description: decisionData.description,
         licencePlate: decisionData.licencePlate,
-        namespaces: expect.arrayContaining([
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-dev`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-test`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-prod`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-tools`,
-          }),
-        ]),
+        namespaces: getExpectedNamespaces(decisionData.licencePlate),
         profile_id: expect.any(String),
       }),
     );
@@ -56,7 +72,7 @@ describe('Private Cloud NATs', () => {
     const decisionData = await updatePrivateCloudProduct();
     expect(decisionData).not.toBeNull();
     if (!decisionData) return;
-
+    expect(decisionData.notificationEmails).toHaveLength(2);
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(2);
     expect(sendNatsMessage).toHaveBeenNthCalledWith(
@@ -66,27 +82,10 @@ describe('Private Cloud NATs', () => {
       expect.objectContaining({
         action: 'edit',
         cluster_name: decisionData.cluster.toLowerCase(),
-        contacts: expect.arrayContaining([
-          expect.objectContaining({ email: decisionData.projectOwner.email }),
-          expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
-          expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
-        ]),
+        contacts: getExpectedContacts(decisionData),
         description: decisionData.description,
         licencePlate: decisionData.licencePlate,
-        namespaces: expect.arrayContaining([
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-dev`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-test`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-prod`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-tools`,
-          }),
-        ]),
+        namespaces: getExpectedNamespaces(decisionData.licencePlate),
         profile_id: expect.any(String),
       }),
     );
@@ -96,7 +95,7 @@ describe('Private Cloud NATs', () => {
     const decisionData = await deletePrivateCloudProduct();
     expect(decisionData).not.toBeNull();
     if (!decisionData) return;
-
+    expect(decisionData.notificationEmails).toHaveLength(1);
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(2);
     expect(sendNatsMessage).toHaveBeenNthCalledWith(
@@ -106,27 +105,10 @@ describe('Private Cloud NATs', () => {
       expect.objectContaining({
         action: 'delete',
         cluster_name: decisionData.cluster.toLowerCase(),
-        contacts: expect.arrayContaining([
-          expect.objectContaining({ email: decisionData.projectOwner.email }),
-          expect.objectContaining({ email: decisionData.primaryTechnicalLead.email }),
-          expect.objectContaining({ email: decisionData.secondaryTechnicalLead?.email }),
-        ]),
+        contacts: getExpectedContacts(decisionData),
         description: decisionData.description,
         licencePlate: decisionData.licencePlate,
-        namespaces: expect.arrayContaining([
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-dev`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-test`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-prod`,
-          }),
-          expect.objectContaining({
-            name: `${decisionData.licencePlate}-tools`,
-          }),
-        ]),
+        namespaces: getExpectedNamespaces(decisionData.licencePlate),
         profile_id: expect.any(String),
       }),
     );

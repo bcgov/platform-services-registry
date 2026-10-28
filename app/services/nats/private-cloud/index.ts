@@ -24,6 +24,7 @@ export default async function createPrivateCloudNatsMessage(
     secondaryTechnicalLead,
     members,
     isTest,
+    notificationEmails,
   } = request.decisionData;
 
   const subscribers = members.filter(
@@ -101,6 +102,12 @@ export default async function createPrivateCloudNatsMessage(
         idir,
         upn,
         role: 'subscriber',
+      })),
+      ...(notificationEmails ?? []).map((email) => ({
+        email,
+        idir: '',
+        upn: '',
+        role: 'additional-contact',
       })),
     ].filter(Boolean),
   };

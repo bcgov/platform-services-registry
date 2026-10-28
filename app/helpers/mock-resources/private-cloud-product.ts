@@ -105,6 +105,7 @@ export function createSamplePrivateCloudProduct(args?: {
     organization: organization,
     ...data,
     resourceRequests,
+    notificationEmails: data?.notificationEmails ?? [],
   };
 
   return product;
