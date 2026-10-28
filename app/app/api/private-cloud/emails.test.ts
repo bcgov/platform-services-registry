@@ -19,7 +19,7 @@ describe('Private Cloud Emails', () => {
     const decisionData = await createPrivateCloudProduct();
     expect(decisionData).not.toBeNull();
     if (!decisionData) return;
-
+    expect(decisionData.notificationEmails).toEqual(['cgi-team@example.com', 'support@example.com']);
     const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
     expect(sendEmail).toHaveBeenCalled();
@@ -42,6 +42,7 @@ describe('Private Cloud Emails', () => {
           decisionData.projectOwner.email,
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
+          ...decisionData.notificationEmails,
         ]),
         body: emailTextContaining('success! your provisioning request is complete!'),
       }),
@@ -52,7 +53,7 @@ describe('Private Cloud Emails', () => {
     const decisionData = await updatePrivateCloudProduct();
     expect(decisionData).not.toBeNull();
     if (!decisionData) return;
-
+    expect(decisionData.notificationEmails).toEqual(['cgi-team@example.com', 'support@example.com']);
     const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
     expect(sendEmail).toHaveBeenCalled();
@@ -76,6 +77,7 @@ describe('Private Cloud Emails', () => {
           decisionData.projectOwner.email,
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
+          'old-team@example.com',
         ]),
         body: emailTextContaining('success! your provisioning request is complete!'),
       }),
@@ -99,6 +101,8 @@ describe('Private Cloud Emails', () => {
           decisionData.projectOwner.email,
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
+          ...decisionData.notificationEmails,
+          'old-team@example.com',
         ]),
         body: emailTextContaining(
           `The project set edit request for ${decisionData.name} has been successfully completed. You can now log in to OpenShift cluster console [https://console.apps.silver.devops.gov.bc.ca/] and you will see your new resource quota values.`,
@@ -111,7 +115,7 @@ describe('Private Cloud Emails', () => {
     const decisionData = await deletePrivateCloudProduct();
     expect(decisionData).not.toBeNull();
     if (!decisionData) return;
-
+    expect(decisionData.notificationEmails).toEqual(['cgi-team@example.com']);
     const reviewerEmails = await findUserEmailsByAuthRole(GlobalRole.PrivateReviewer);
 
     expect(sendEmail).toHaveBeenCalled();
@@ -135,6 +139,7 @@ describe('Private Cloud Emails', () => {
           decisionData.projectOwner.email,
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
+          ...decisionData.notificationEmails,
         ]),
         body: emailTextContaining('success! your provisioning request is complete!'),
       }),
@@ -158,6 +163,7 @@ describe('Private Cloud Emails', () => {
           decisionData.projectOwner.email,
           decisionData.primaryTechnicalLead.email,
           decisionData.secondaryTechnicalLead?.email,
+          ...decisionData.notificationEmails,
         ]),
         body: emailTextContaining(`The project set deletion for ${decisionData.name} has been successfully completed.`),
       }),
