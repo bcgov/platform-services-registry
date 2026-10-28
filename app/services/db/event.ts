@@ -81,6 +81,27 @@ const validationSchemas = {
   [EventType.LOGOUT]: z.undefined(),
   [EventType.EXPORT_PRIVATE_CLOUD_PRODUCT]: z.any(),
   [EventType.EXPORT_PUBLIC_CLOUD_PRODUCT]: z.any(),
+  [EventType.CREATE_TEAM]: z.object({
+    id: objectId,
+    data: z.object({
+      name: z.string(),
+      code: z.string(),
+    }),
+  }),
+  [EventType.UPDATE_TEAM]: z.object({
+    id: objectId,
+    data: z.object({
+      name: z.string(),
+      code: z.string(),
+    }),
+  }),
+  [EventType.DELETE_TEAM]: z.object({
+    id: objectId,
+    data: z.object({
+      name: z.string(),
+      code: z.string(),
+    }),
+  }),
 };
 
 type EventDataMap = {
