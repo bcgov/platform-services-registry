@@ -15,7 +15,7 @@ type TeamInput = {
 };
 
 export async function listTeams() {
-  return prisma.team.findMany({
+  return await prisma.team.findMany({
     where: {
       OR: [{ archivedAt: null }, { archivedAt: { isSet: false } }],
     },
@@ -24,7 +24,7 @@ export async function listTeams() {
 }
 
 export async function getTeam(id: string) {
-  return prisma.team.findUnique({
+  return await prisma.team.findUnique({
     where: { id },
   });
 }
@@ -87,7 +87,7 @@ export async function archiveTeams(ids: string[], userId: string) {
 }
 
 export async function updateTeamMembers(id: string, members: TeamMemberInput[]) {
-  return prisma.team.update({
+  return await prisma.team.update({
     where: { id },
     data: { members },
   });
