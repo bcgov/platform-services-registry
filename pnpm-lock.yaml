@@ -232,7 +232,7 @@ importers:
         version: 2.2.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@hookform/resolvers':
         specifier: ^6.0.0
-        version: 6.0.0(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
+        version: 6.0.2(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
       '@keycloak/keycloak-admin-client':
         specifier: 26.8.1
         version: 26.8.1
@@ -1658,12 +1658,11 @@ packages:
       react: ^18 || ^19 || ^19.0.0-rc
       react-dom: ^18 || ^19 || ^19.0.0-rc
 
-  '@hookform/resolvers@6.0.0':
-    resolution: {integrity: sha512-6iBzQnB+YwAveVc8HUi6QYLITn5X+xNKRMFIcNXHZlvp2aTI7yWbj4n/JodXxirMCcBc4VCjb2aYAJh4x07mVw==}
+  '@hookform/resolvers@6.0.2':
+    resolution: {integrity: sha512-e2dqUOlaGuirKVOd/iZWk/Yg5zeaGw7t0hSc3LzxL3o7eZGwZkTyEbBL8H52m0wRKEsNLWoMGOiXGHbPHTXlEQ==}
     peerDependencies:
       '@sinclair/typebox': '>=0.25.24'
       '@standard-schema/spec': ^1.0.0
-      '@typeschema/main': '>=0.13.7'
       '@vinejs/vine': ^2.0.0 || ^3.0.0 || ^4.0.0
       ajv: ^8.12.0
       ajv-errors: ^3.0.0
@@ -1690,8 +1689,6 @@ packages:
       '@sinclair/typebox':
         optional: true
       '@standard-schema/spec':
-        optional: true
-      '@typeschema/main':
         optional: true
       '@vinejs/vine':
         optional: true
@@ -10064,7 +10061,7 @@ snapshots:
       react-dom: 19.3.1(react@19.3.1)
       use-sync-external-store: 1.6.0(react@19.3.1)
 
-  '@hookform/resolvers@6.0.0(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)':
+  '@hookform/resolvers@6.0.2(@sinclair/typebox@0.34.49)(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)':
     dependencies:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.91.0(@types/react@19.3.0)(react@19.3.1)
