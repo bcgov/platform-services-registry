@@ -17,6 +17,11 @@ const licencePlateSchema = z.object({
   licencePlate: z.string().min(6),
 });
 
+const teamEventSchema = z.object({
+  id: objectId,
+  data: z.object({ name: z.string(), code: z.string() }),
+});
+
 const validationSchemas = {
   [EventType.CREATE_TEAM_API_TOKEN]: z.object({
     clientUid: z.string(),
@@ -77,6 +82,9 @@ const validationSchemas = {
     to: objectId,
     data: organizationBodySchema,
   }),
+  [EventType.CREATE_TEAM]: teamEventSchema,
+  [EventType.UPDATE_TEAM]: teamEventSchema,
+  [EventType.DELETE_TEAM]: teamEventSchema,
   [EventType.LOGIN]: z.undefined(),
   [EventType.LOGOUT]: z.undefined(),
   [EventType.EXPORT_PRIVATE_CLOUD_PRODUCT]: z.any(),

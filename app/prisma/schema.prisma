@@ -716,6 +716,9 @@ enum EventType {
   CREATE_ORGANIZATION
   UPDATE_ORGANIZATION
   DELETE_ORGANIZATION
+  CREATE_TEAM
+  UPDATE_TEAM
+  DELETE_TEAM
 }
 
 enum TaskType {
@@ -768,6 +771,31 @@ model Organization {
   privateCloudRequestDataList PrivateCloudRequestData[] @relation("organization")
   publicCloudProducts         PublicCloudProduct[]      @relation("organization")
   publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
+}
+
+enum TeamMemberRole {
+  PRODUCT_OWNER
+  TECHNICAL_LEAD
+  EDITOR
+  VIEWER
+  BILLING_VIEWER
+  EXPENSE_AUTHORITY
+}
+
+type TeamMember {
+  userId String
+  roles  TeamMemberRole[]
+}
+
+model Team {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  code        String       @unique
+  description String?
+  members     TeamMember[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  archivedAt  DateTime?
 }
 
 type ForecastMonthlyValue {
