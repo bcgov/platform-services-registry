@@ -3,11 +3,19 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, NotFoundResponse, OkResponse } from '@/core/responses';
 import { EventType } from '@/prisma/client';
 import { createEvent } from '@/services/db';
-import { findUnknownMemberUserIds, getTeamDetail } from '@/services/db/team';
+import { activeTeamWhere, findUnknownMemberUserIds, getTeamDetail } from '@/services/db/team';
 import { ObjectId } from '@/validation-schemas';
-import { TeamBody } from '@/validation-schemas/team';
+import { TeamUpdateBody } from '@/validation-schemas/team';
 
-export default async function updateOp({ session, id, body }: { session: Session; id: ObjectId; body: TeamBody }) {
+export default async function updateOp({
+  session,
+  id,
+  body,
+}: {
+  session: Session;
+  id: ObjectId;
+  body: TeamUpdateBody;
+}) {
   const existing = await prisma.team.findUnique({ where: { id } });
   if (!existing) return NotFoundResponse('Team not found');
   if (existing.archivedAt) return BadRequestResponse('Archived teams cannot be changed');
@@ -17,17 +25,21 @@ export default async function updateOp({ session, id, body }: { session: Session
     if (sameCode) return BadRequestResponse(`Team code ${body.code} already exists`);
   }
 
-  const unknownUserIds = await findUnknownMemberUserIds(body.members);
-  if (unknownUserIds.length > 0) {
-    return BadRequestResponse(`Unknown users: ${unknownUserIds.join(', ')}`);
+  if (body.members) {
+    const unknownUserIds = await findUnknownMemberUserIds(body.members);
+    if (unknownUserIds.length > 0) {
+      return BadRequestResponse(`Unknown users: ${unknownUserIds.join(', ')}`);
+    }
   }
 
-  const team = await prisma.team.update({ where: { id }, data: body });
+  // Filter on active teams in the write too, in case the team was archived after the read above.
+  const { count } = await prisma.team.updateMany({ where: { id, ...activeTeamWhere }, data: body });
+  if (count === 0) return BadRequestResponse('Archived teams cannot be changed');
 
   await createEvent(EventType.UPDATE_TEAM, session.user.id, {
-    id: team.id,
-    data: { name: team.name, code: team.code },
+    id,
+    data: { name: body.name, code: body.code },
   });
 
-  return OkResponse(await getTeamDetail(team.id));
+  return OkResponse(await getTeamDetail(id));
 }

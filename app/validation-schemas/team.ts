@@ -25,6 +25,11 @@ export const teamBodySchema = z.object({
   members: teamMembersSchema.default([]),
 });
 
+// Members are optional on update so a details-only update keeps the existing members.
+export const teamUpdateBodySchema = teamBodySchema.extend({
+  members: teamMembersSchema.optional(),
+});
+
 export const teamMembersBodySchema = z.object({
   members: teamMembersSchema,
 });
@@ -41,4 +46,5 @@ export const teamArchiveBodySchema = z.object({
 });
 
 export type TeamBody = z.infer<typeof teamBodySchema>;
+export type TeamUpdateBody = z.infer<typeof teamUpdateBodySchema>;
 export type TeamMembers = z.infer<typeof teamMembersSchema>;

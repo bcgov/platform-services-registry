@@ -3,7 +3,7 @@ import prisma from '@/core/prisma';
 import { BadRequestResponse, NotFoundResponse, OkResponse } from '@/core/responses';
 import { EventType } from '@/prisma/client';
 import { createEvent } from '@/services/db';
-import { findUnknownMemberUserIds, getTeamDetail } from '@/services/db/team';
+import { activeTeamWhere, findUnknownMemberUserIds, getTeamDetail } from '@/services/db/team';
 import { ObjectId } from '@/validation-schemas';
 import { TeamMembers } from '@/validation-schemas/team';
 
@@ -25,13 +25,15 @@ export default async function updateMembersOp({
     return BadRequestResponse(`Unknown users: ${unknownUserIds.join(', ')}`);
   }
 
-  const team = await prisma.team.update({ where: { id }, data: { members } });
+  // Filter on active teams in the write too, in case the team was archived after the read above.
+  const { count } = await prisma.team.updateMany({ where: { id, ...activeTeamWhere }, data: { members } });
+  if (count === 0) return BadRequestResponse('Archived teams cannot be changed');
 
   await createEvent(EventType.UPDATE_TEAM, session.user.id, {
-    id: team.id,
-    data: { name: team.name, code: team.code },
+    id,
+    data: { name: existing.name, code: existing.code },
   });
 
-  const detail = await getTeamDetail(team.id);
+  const detail = await getTeamDetail(id);
   return OkResponse(detail?.members ?? []);
 }

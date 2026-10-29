@@ -133,6 +133,19 @@ describe('Teams API', () => {
     expect(members[0].roles).toEqual([TeamMemberRole.TECHNICAL_LEAD, TeamMemberRole.EDITOR]);
   });
 
+  it('keeps existing members when an update leaves members out', async () => {
+    const userId = await getMockUserId(0);
+    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamMemberRole.PRODUCT_OWNER] }]);
+
+    const updateRes = await updateTeam(team.id, { name: 'Payments Team', code: 'PAYMENTS' });
+    expect(updateRes.status).toBe(200);
+
+    const updated = await updateRes.json();
+    expect(updated.name).toBe('Payments Team');
+    expect(updated.members).toHaveLength(1);
+    expect(updated.members[0].userId).toBe(userId);
+  });
+
   it('archives teams and hides them from the list by default', async () => {
     const teamA = await createTeamAsAdmin('TEAM-A');
     const teamB = await createTeamAsAdmin('TEAM-B');
