@@ -1,8 +1,10 @@
-import { GET as _listTeamMembers, PUT as _updateTeamMembers } from '@/app/api/teams/[id]/members/route';
+import { DELETE as _removeTeamMember, PUT as _updateTeamMember } from '@/app/api/teams/[id]/members/[userId]/route';
+import { GET as _listTeamMembers, POST as _addTeamMember } from '@/app/api/teams/[id]/members/route';
 import { DELETE as _deleteTeam, GET as _getTeam, PUT as _updateTeam } from '@/app/api/teams/[id]/route';
 import { POST as _archiveTeams } from '@/app/api/teams/archive/route';
 import { GET as _listTeams, POST as _createTeam } from '@/app/api/teams/route';
-import { TeamBody, TeamMembers } from '@/validation-schemas/team';
+import { TeamMemberRole } from '@/prisma/client';
+import { TeamBody, TeamMemberBody, TeamUpdateBody } from '@/validation-schemas/team';
 import { createRoute } from './core';
 
 const teamCollectionRoute = createRoute('/teams');
@@ -22,7 +24,7 @@ export async function getTeam(id: string) {
   return result;
 }
 
-export async function updateTeam(id: string, data: Partial<TeamBody>) {
+export async function updateTeam(id: string, data: Partial<TeamUpdateBody>) {
   const result = await teamCollectionRoute.put(_updateTeam, '/{{id}}', data, { pathParams: { id } });
   return result;
 }
@@ -42,12 +44,24 @@ export async function listTeamMembers(id: string) {
   return result;
 }
 
-export async function updateTeamMembers(id: string, members: TeamMembers) {
+export async function addTeamMember(id: string, data: Partial<TeamMemberBody>) {
+  const result = await teamCollectionRoute.post(_addTeamMember, '/{{id}}/members', data, { pathParams: { id } });
+  return result;
+}
+
+export async function updateTeamMember(id: string, userId: string, roles: TeamMemberRole[]) {
   const result = await teamCollectionRoute.put(
-    _updateTeamMembers,
-    '/{{id}}/members',
-    { members },
-    { pathParams: { id } },
+    _updateTeamMember,
+    '/{{id}}/members/{{userId}}',
+    { roles },
+    { pathParams: { id, userId } },
   );
+  return result;
+}
+
+export async function removeTeamMember(id: string, userId: string) {
+  const result = await teamCollectionRoute.delete(_removeTeamMember, '/{{id}}/members/{{userId}}', {
+    pathParams: { id, userId },
+  });
   return result;
 }

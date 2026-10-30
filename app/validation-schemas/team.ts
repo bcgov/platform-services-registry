@@ -2,13 +2,21 @@ import { z } from 'zod';
 import { TeamMemberRole } from '@/prisma/client';
 import { objectId } from './common';
 
+const teamMemberRolesSchema = z
+  .array(z.enum(TeamMemberRole))
+  .min(1, { message: 'Please assign at least one role to a member' });
+
+export const teamMemberBodySchema = z.object({
+  userId: objectId,
+  roles: teamMemberRolesSchema,
+});
+
+export const teamMemberRolesBodySchema = z.object({
+  roles: teamMemberRolesSchema,
+});
+
 export const teamMembersSchema = z
-  .array(
-    z.object({
-      userId: objectId,
-      roles: z.array(z.enum(TeamMemberRole)).min(1, { message: 'Please assign at least one role to a member' }),
-    }),
-  )
+  .array(teamMemberBodySchema)
   .refine((members) => new Set(members.map((member) => member.userId)).size === members.length, {
     message: 'Each user can only be added to a team once',
   });
@@ -25,14 +33,8 @@ export const teamBodySchema = z.object({
   members: teamMembersSchema.default([]),
 });
 
-// Members are optional on update so a details-only update keeps the existing members.
-export const teamUpdateBodySchema = teamBodySchema.extend({
-  members: teamMembersSchema.optional(),
-});
-
-export const teamMembersBodySchema = z.object({
-  members: teamMembersSchema,
-});
+// Members are changed one at a time through the members endpoints, not through a team update.
+export const teamUpdateBodySchema = teamBodySchema.omit({ members: true });
 
 export const teamListQuerySchema = z.object({
   includeArchived: z
@@ -48,3 +50,4 @@ export const teamArchiveBodySchema = z.object({
 export type TeamBody = z.infer<typeof teamBodySchema>;
 export type TeamUpdateBody = z.infer<typeof teamUpdateBodySchema>;
 export type TeamMembers = z.infer<typeof teamMembersSchema>;
+export type TeamMemberBody = z.infer<typeof teamMemberBodySchema>;

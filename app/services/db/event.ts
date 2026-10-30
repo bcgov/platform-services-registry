@@ -22,6 +22,11 @@ const teamEventSchema = z.object({
   data: z.object({ name: z.string(), code: z.string() }),
 });
 
+const teamMemberEventSchema = z.object({
+  id: objectId,
+  data: z.object({ userId: objectId, roles: z.array(z.string()) }),
+});
+
 const validationSchemas = {
   [EventType.CREATE_TEAM_API_TOKEN]: z.object({
     clientUid: z.string(),
@@ -85,6 +90,9 @@ const validationSchemas = {
   [EventType.CREATE_TEAM]: teamEventSchema,
   [EventType.UPDATE_TEAM]: teamEventSchema,
   [EventType.DELETE_TEAM]: teamEventSchema,
+  [EventType.CREATE_TEAM_MEMBER]: teamMemberEventSchema,
+  [EventType.UPDATE_TEAM_MEMBER]: teamMemberEventSchema,
+  [EventType.DELETE_TEAM_MEMBER]: teamMemberEventSchema,
   [EventType.LOGIN]: z.undefined(),
   [EventType.LOGOUT]: z.undefined(),
   [EventType.EXPORT_PRIVATE_CLOUD_PRODUCT]: z.any(),

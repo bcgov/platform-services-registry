@@ -29,6 +29,9 @@ export const eventTypeNames: Record<EventType, string> = {
   [EventType.CREATE_TEAM]: 'Create Team',
   [EventType.UPDATE_TEAM]: 'Update Team',
   [EventType.DELETE_TEAM]: 'Delete Team',
+  [EventType.CREATE_TEAM_MEMBER]: 'Add Team Member',
+  [EventType.UPDATE_TEAM_MEMBER]: 'Update Team Member',
+  [EventType.DELETE_TEAM_MEMBER]: 'Remove Team Member',
 };
 
 export const eventSorts = [

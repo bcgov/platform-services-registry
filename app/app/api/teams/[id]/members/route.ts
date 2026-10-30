@@ -2,9 +2,9 @@ import { z } from 'zod';
 import { GlobalPermissions } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { objectId } from '@/validation-schemas';
-import { teamMembersBodySchema } from '@/validation-schemas/team';
+import { teamMemberBodySchema } from '@/validation-schemas/team';
+import addMemberOp from '../../_operations/add-member';
 import listMembersOp from '../../_operations/list-members';
-import updateMembersOp from '../../_operations/update-members';
 
 export const GET = createApiHandler({
   permissions: [GlobalPermissions.ViewTeams],
@@ -14,10 +14,10 @@ export const GET = createApiHandler({
   return res;
 });
 
-export const PUT = createApiHandler({
+export const POST = createApiHandler({
   permissions: [GlobalPermissions.ManageTeams],
-  validations: { pathParams: z.object({ id: objectId }), body: teamMembersBodySchema },
+  validations: { pathParams: z.object({ id: objectId }), body: teamMemberBodySchema },
 })(async ({ pathParams, body, session }) => {
-  const res = await updateMembersOp({ session, id: pathParams.id, members: body.members });
+  const res = await addMemberOp({ session, id: pathParams.id, body });
   return res;
 });
