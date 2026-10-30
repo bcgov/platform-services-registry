@@ -1,7 +1,7 @@
 ARG deployment_tag
 
 # 1st stage to build the image
-FROM node:24.22.1-alpine AS build
+FROM node:26.13.0-alpine AS build
 
 WORKDIR /workspace
 
@@ -33,7 +33,7 @@ RUN apk add --no-cache \
 
 
 # Install Node tools and dependencies
-RUN npm install -g turbo pnpm@12.15.0 && \
+RUN npm install -g turbo pnpm@12.16.1 && \
     pnpm install --frozen-lockfile
 
 COPY app ./app
@@ -53,7 +53,7 @@ RUN npx ts-node scripts/render-react-email-tailwind-style.ts && \
 
 # 2nd stage to copy image and create a smaller final image
 # FROM gcr.io/distroless/nodejs18-debian12
-FROM node:24.22.1-alpine
+FROM node:26.13.0-alpine
 
 WORKDIR /workspace/app
 

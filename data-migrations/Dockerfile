@@ -1,4 +1,4 @@
-FROM node:24.22.1-alpine
+FROM node:26.13.0-alpine
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY data-migrations/migrate-mongo-config.js ./data-migrations/migrate-mongo-con
 COPY data-migrations/migrations ./data-migrations/migrations
 
 
-RUN npm install -g turbo pnpm@12.15.0
+RUN npm install -g turbo pnpm@12.16.1
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 WORKDIR /app/data-migrations

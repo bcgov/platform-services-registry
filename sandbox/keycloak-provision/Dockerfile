@@ -1,4 +1,4 @@
-FROM node:24.22.1-alpine AS build
+FROM node:26.13.0-alpine AS build
 WORKDIR /opt
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -7,12 +7,12 @@ COPY sandbox/types.ts ./sandbox/types.ts
 COPY sandbox/keycloak-provision ./sandbox/keycloak-provision
 COPY sandbox/_packages ./sandbox/_packages
 
-RUN npm install -g turbo pnpm@12.15.0
+RUN npm install -g turbo pnpm@12.16.1
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm --dir sandbox/_packages/keycloak-admin build
 RUN pnpm --dir sandbox/keycloak-provision build
 
-FROM node:24.22.1-alpine
+FROM node:26.13.0-alpine
 WORKDIR /opt
 
 COPY --from=build /opt/sandbox/keycloak-provision/build ./

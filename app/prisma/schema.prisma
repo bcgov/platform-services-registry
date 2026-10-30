@@ -89,6 +89,44 @@ type SessionTeam {
   roles    String[]
 }
 
+model Team {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  code        String       @unique
+  description String?
+  metadata    Json?
+  rules       Json?
+  policies    Json?
+  mappings    Json?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  archivedAt  DateTime?
+  members     TeamMember[]
+}
+
+model TeamMember {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  teamId    String     @db.ObjectId
+  team      Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId    String     @db.ObjectId
+  user      User       @relation("teamMemberships", fields: [userId], references: [id])
+  roles     TeamRole[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([teamId, userId])
+  @@index([userId])
+}
+
+enum TeamRole {
+  PRODUCT_OWNER
+  TECHNICAL_LEAD
+  EDITOR
+  VIEWER
+  BILLING_VIEWER
+  EXPENSE_AUTHORITY
+}
+
 model PrivateCloudRequest {
   id                             String                          @id @default(auto()) @map("_id") @db.ObjectId
   licencePlate                   String
@@ -183,6 +221,7 @@ model PrivateCloudProduct {
   repositories                     Repository[]
   gitOpsRepositories               Repository[]
   hasRepositories                  Boolean?
+  notificationEmails               String[]                    @default([])
 }
 
 model PrivateCloudRequestData {
@@ -211,6 +250,7 @@ model PrivateCloudRequestData {
   originalRequests         PrivateCloudRequest[]       @relation("originalData")
   repositories             Repository[]
   hasRepositories          Boolean?
+  notificationEmails       String[]                    @default([])
 }
 
 model PrivateCloudProductWebhook {
@@ -775,40 +815,6 @@ model Organization {
   privateCloudRequestDataList PrivateCloudRequestData[] @relation("organization")
   publicCloudProducts         PublicCloudProduct[]      @relation("organization")
   publicCloudRequestDataList  PublicCloudRequestData[]  @relation("organization")
-}
-
-enum TeamMemberRole {
-  PRODUCT_OWNER
-  TECHNICAL_LEAD
-  EDITOR
-  VIEWER
-  BILLING_VIEWER
-  EXPENSE_AUTHORITY
-}
-
-model Team {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  code        String       @unique
-  description String?
-  members     TeamMember[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  archivedAt  DateTime?
-}
-
-model TeamMember {
-  id        String           @id @default(auto()) @map("_id") @db.ObjectId
-  teamId    String           @db.ObjectId
-  team      Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  userId    String           @db.ObjectId
-  user      User             @relation("teamMemberships", fields: [userId], references: [id])
-  roles     TeamMemberRole[]
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-
-  @@unique([teamId, userId])
-  @@index([userId])
 }
 
 type ForecastMonthlyValue {

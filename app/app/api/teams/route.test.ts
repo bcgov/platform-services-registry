@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { GlobalRole } from '@/constants';
 import prisma from '@/core/prisma';
 import { mockNoRoleUsers } from '@/helpers/mock-users';
-import { EventType, TeamMemberRole } from '@/prisma/client';
+import { EventType, TeamRole } from '@/prisma/client';
 import { mockSessionByIdirGuid, mockSessionByRole } from '@/services/api-test/core';
 import {
   addTeamMember,
@@ -68,7 +68,7 @@ describe('Teams API', () => {
     const createRes = await createTeam({ name: 'Team B', code: 'TEAM-B' });
     expect(createRes.status).toBe(401);
 
-    const addMemberRes = await addTeamMember(team.id, { userId, roles: [TeamMemberRole.VIEWER] });
+    const addMemberRes = await addTeamMember(team.id, { userId, roles: [TeamRole.VIEWER] });
     expect(addMemberRes.status).toBe(401);
 
     const deleteRes = await deleteTeam(team.id);
@@ -87,12 +87,12 @@ describe('Teams API', () => {
 
   it('creates a team with members and records an event', async () => {
     const userId = await getMockUserId(0);
-    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamMemberRole.PRODUCT_OWNER] }]);
+    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamRole.PRODUCT_OWNER] }]);
 
     expect(team.code).toBe('PAYMENTS');
     expect(team.members).toHaveLength(1);
     expect(team.members[0].user.id).toBe(userId);
-    expect(team.members[0].roles).toEqual([TeamMemberRole.PRODUCT_OWNER]);
+    expect(team.members[0].roles).toEqual([TeamRole.PRODUCT_OWNER]);
 
     const membership = await prisma.teamMember.findUnique({ where: { teamId_userId: { teamId: team.id, userId } } });
     expect(membership).not.toBeNull();
@@ -111,7 +111,7 @@ describe('Teams API', () => {
     const unknownRes = await createTeam({
       name: 'Other',
       code: 'OTHER',
-      members: [{ userId: MISSING_ID, roles: [TeamMemberRole.VIEWER] }],
+      members: [{ userId: MISSING_ID, roles: [TeamRole.VIEWER] }],
     });
     expect(unknownRes.status).toBe(400);
 
@@ -122,8 +122,8 @@ describe('Teams API', () => {
       name: 'Other',
       code: 'OTHER',
       members: [
-        { userId, roles: [TeamMemberRole.VIEWER] },
-        { userId, roles: [TeamMemberRole.EDITOR] },
+        { userId, roles: [TeamRole.VIEWER] },
+        { userId, roles: [TeamRole.EDITOR] },
       ],
     });
     expect(repeatedRes.status).toBe(400);
@@ -131,7 +131,7 @@ describe('Teams API', () => {
 
   it('updates the team details and keeps its members', async () => {
     const userId = await getMockUserId(0);
-    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamMemberRole.PRODUCT_OWNER] }]);
+    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamRole.PRODUCT_OWNER] }]);
 
     const updateRes = await updateTeam(team.id, {
       name: 'Payments Team',
@@ -151,22 +151,22 @@ describe('Teams API', () => {
     const team = await createTeamAsAdmin('PAYMENTS');
     const userId = await getMockUserId(1);
 
-    const addMemberRes = await addTeamMember(team.id, { userId, roles: [TeamMemberRole.TECHNICAL_LEAD] });
+    const addMemberRes = await addTeamMember(team.id, { userId, roles: [TeamRole.TECHNICAL_LEAD] });
     expect(addMemberRes.status).toBe(200);
     expect((await addMemberRes.json()).user.id).toBe(userId);
     expect((await getLatestEvent(EventType.CREATE_TEAM_MEMBER))?.data).toMatchObject({
       id: team.id,
-      data: { userId, roles: [TeamMemberRole.TECHNICAL_LEAD] },
+      data: { userId, roles: [TeamRole.TECHNICAL_LEAD] },
     });
 
-    const updateRes = await updateTeamMember(team.id, userId, [TeamMemberRole.TECHNICAL_LEAD, TeamMemberRole.EDITOR]);
+    const updateRes = await updateTeamMember(team.id, userId, [TeamRole.TECHNICAL_LEAD, TeamRole.EDITOR]);
     expect(updateRes.status).toBe(200);
     expect((await getLatestEvent(EventType.UPDATE_TEAM_MEMBER))?.data).toMatchObject({ id: team.id });
 
     const listRes = await listTeamMembers(team.id);
     const members = await listRes.json();
     expect(members).toHaveLength(1);
-    expect(members[0].roles).toEqual([TeamMemberRole.TECHNICAL_LEAD, TeamMemberRole.EDITOR]);
+    expect(members[0].roles).toEqual([TeamRole.TECHNICAL_LEAD, TeamRole.EDITOR]);
 
     const removeRes = await removeTeamMember(team.id, userId);
     expect(removeRes.status).toBe(200);
@@ -179,15 +179,15 @@ describe('Teams API', () => {
   it('rejects adding an existing member or an unknown user, and changing someone who is not a member', async () => {
     const userId = await getMockUserId(0);
     const otherUserId = await getMockUserId(1);
-    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamMemberRole.PRODUCT_OWNER] }]);
+    const team = await createTeamAsAdmin('PAYMENTS', [{ userId, roles: [TeamRole.PRODUCT_OWNER] }]);
 
-    const existingRes = await addTeamMember(team.id, { userId, roles: [TeamMemberRole.VIEWER] });
+    const existingRes = await addTeamMember(team.id, { userId, roles: [TeamRole.VIEWER] });
     expect(existingRes.status).toBe(400);
 
-    const unknownRes = await addTeamMember(team.id, { userId: MISSING_ID, roles: [TeamMemberRole.VIEWER] });
+    const unknownRes = await addTeamMember(team.id, { userId: MISSING_ID, roles: [TeamRole.VIEWER] });
     expect(unknownRes.status).toBe(400);
 
-    const updateRes = await updateTeamMember(team.id, otherUserId, [TeamMemberRole.VIEWER]);
+    const updateRes = await updateTeamMember(team.id, otherUserId, [TeamRole.VIEWER]);
     expect(updateRes.status).toBe(404);
 
     const removeRes = await removeTeamMember(team.id, otherUserId);
@@ -196,8 +196,8 @@ describe('Teams API', () => {
 
   it('lets a user belong to several teams', async () => {
     const userId = await getMockUserId(0);
-    await createTeamAsAdmin('TEAM-A', [{ userId, roles: [TeamMemberRole.EDITOR] }]);
-    await createTeamAsAdmin('TEAM-B', [{ userId, roles: [TeamMemberRole.VIEWER] }]);
+    await createTeamAsAdmin('TEAM-A', [{ userId, roles: [TeamRole.EDITOR] }]);
+    await createTeamAsAdmin('TEAM-B', [{ userId, roles: [TeamRole.VIEWER] }]);
 
     const memberships = await prisma.teamMember.findMany({ where: { userId }, include: { team: true } });
     expect(memberships.map((membership) => membership.team.code).sort()).toEqual(['TEAM-A', 'TEAM-B']);
@@ -224,7 +224,7 @@ describe('Teams API', () => {
     const updateArchivedRes = await updateTeam(teamA.id, { name: 'Team A', code: 'TEAM-A' });
     expect(updateArchivedRes.status).toBe(400);
 
-    const addMemberArchivedRes = await addTeamMember(teamA.id, { userId, roles: [TeamMemberRole.VIEWER] });
+    const addMemberArchivedRes = await addTeamMember(teamA.id, { userId, roles: [TeamRole.VIEWER] });
     expect(addMemberArchivedRes.status).toBe(400);
   });
 

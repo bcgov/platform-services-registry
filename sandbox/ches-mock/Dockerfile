@@ -1,9 +1,9 @@
-FROM node:24.22.1-alpine AS build
+FROM node:26.13.0-alpine AS build
 WORKDIR /opt
 
 COPY ches-mock ./context
 
-RUN npm install -g turbo pnpm@12.15.0
+RUN npm install -g turbo pnpm@12.16.1
 RUN cd context && pnpm install --frozen-lockfile --ignore-scripts && pnpm build
 
 FROM node:22.12.0-alpine3.19

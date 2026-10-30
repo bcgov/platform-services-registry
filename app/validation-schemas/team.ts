@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { TeamMemberRole } from '@/prisma/client';
+import { TeamRole } from '@/prisma/client';
 import { objectId } from './common';
 
 const teamMemberRolesSchema = z
-  .array(z.enum(TeamMemberRole))
+  .array(z.enum(TeamRole))
   .min(1, { message: 'Please assign at least one role to a member' });
 
 export const teamMemberBodySchema = z.object({

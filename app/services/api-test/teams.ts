@@ -3,7 +3,7 @@ import { GET as _listTeamMembers, POST as _addTeamMember } from '@/app/api/teams
 import { DELETE as _deleteTeam, GET as _getTeam, PUT as _updateTeam } from '@/app/api/teams/[id]/route';
 import { POST as _archiveTeams } from '@/app/api/teams/archive/route';
 import { GET as _listTeams, POST as _createTeam } from '@/app/api/teams/route';
-import { TeamMemberRole } from '@/prisma/client';
+import { TeamRole } from '@/prisma/client';
 import { TeamBody, TeamMemberBody, TeamUpdateBody } from '@/validation-schemas/team';
 import { createRoute } from './core';
 
@@ -49,7 +49,7 @@ export async function addTeamMember(id: string, data: Partial<TeamMemberBody>) {
   return result;
 }
 
-export async function updateTeamMember(id: string, userId: string, roles: TeamMemberRole[]) {
+export async function updateTeamMember(id: string, userId: string, roles: TeamRole[]) {
   const result = await teamCollectionRoute.put(
     _updateTeamMember,
     '/{{id}}/members/{{userId}}',

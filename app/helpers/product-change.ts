@@ -26,6 +26,7 @@ const privateDataFields = [
   'resourceRequests',
   'supportPhoneNumber',
   'repositories',
+  'notificationEmails',
 ];
 
 function preparePrivateCloudProductCloudData(data: any) {
@@ -35,6 +36,9 @@ function preparePrivateCloudProductCloudData(data: any) {
       roles: (member.roles || []).join(', '),
     }));
   }
+
+  data.notificationEmails = (data.notificationEmails ?? []).map((email: string) => email.trim().toLowerCase()).sort();
+
   data.repositories = (data.repositories ?? []).map(({ url }: { url: string }) => url).sort();
   return data;
 }

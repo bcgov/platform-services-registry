@@ -139,7 +139,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
   isTest: z.preprocess((value) => (value === undefined ? false : processBoolean(value)), z.boolean()),
   resourceRequests: resourceRequestsEnvSchema,
   quotaContactName: z.string().max(50).optional(),
-  quotaContactEmail: z.string().email().or(z.literal('')).nullable().optional(),
+  quotaContactEmail: z.email().or(z.literal('')).nullable().optional(),
   quotaJustification: z.string().max(privateCloudQuotaJustificationMaxLength).optional(),
   supportPhoneNumber: z
     .string()
@@ -157,6 +157,7 @@ export const _privateCloudCreateRequestBodySchema = z.object({
       },
     ),
   requestComment: optionalCommentSchema,
+  notificationEmails: z.array(z.string().trim().pipe(z.email('Invalid email address'))).default([]),
 });
 
 export const privateCloudProductWebhookBodySchema = z.object({

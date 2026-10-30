@@ -37,7 +37,7 @@ export default function DescriptionChanges({
           <Text className="mt-0">{descRequested}</Text>
         </div>
       )}
-      {ministryCurrent !== ministryRequested && (
+      {ministryCurrent.code !== ministryRequested.code && (
         <div className="mb-4">
           <Text className="font-semibold mb-0">Current Ministry</Text>
           <Text className="mt-0 mb-0">{ministryCurrent.name}</Text>

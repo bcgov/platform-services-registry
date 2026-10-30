@@ -1,7 +1,7 @@
-import React from 'react';
 import SupportContact from '@/components/shared/SupportContact';
 import TeamContactsBase from '@/components/shared/TeamContacts';
 import AdditionalTeamMembers from './AdditionalTeamMembers';
+import NotificationEmails from './NotificationEmails';
 
 interface Props {
   isTeamContactsDisabled?: boolean;
@@ -70,6 +70,8 @@ export default function TeamContacts({
           />
         </>
       )}
+
+      <NotificationEmails disabled={isTeamContactsDisabled} />
       <SupportContact disabled={isTeamContactsDisabled} />
     </div>
   );

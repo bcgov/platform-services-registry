@@ -11,157 +11,120 @@ import {
 } from '@/services/api-test/private-cloud/products';
 import { makePrivateCloudRequestDecision } from '@/services/api-test/private-cloud/requests';
 import { provisionPrivateCloudProduct } from '@/services/api-test/v1/private-cloud';
-import { PrivateCloudRequestDetail } from '@/types/private-cloud';
 
-export async function createPrivateCloudProduct() {
-  const requestData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
+async function createApprovedPrivateCloudProduct(
+  data: NonNullable<Parameters<typeof createSamplePrivateCloudProductData>[0]>['data'],
+) {
+  const requestData = await createSamplePrivateCloudProductData({ data });
+
   await mockSessionByIdirGuid(requestData.projectOwner.idirGuid);
 
-  let response: any;
+  const createResponse = await createPrivateCloudProductTest(requestData);
+  if (createResponse.status !== 200) return null;
 
-  response = await createPrivateCloudProductTest(requestData);
-  if (response.status !== 200) return null;
-
-  let resData: PrivateCloudRequestDetail = await response.json();
-  let decisionData = resData.decisionData;
+  const createRequest = await createResponse.json();
 
   await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-  response = await makePrivateCloudRequestDecision(resData.id, {
-    ...decisionData,
+  const approvalResponse = await makePrivateCloudRequestDecision(createRequest.id, {
+    ...createRequest.decisionData,
     type: RequestType.CREATE,
     decision: DecisionStatus.APPROVED,
   });
 
-  if (response.status !== 200) return null;
+  if (approvalResponse.status !== 200) return null;
 
-  resData = await response.json();
-  decisionData = resData.decisionData;
+  const approvedRequest = await approvalResponse.json();
 
   await mockTeamServiceAccount(['private-admin']);
-  response = await provisionPrivateCloudProduct(decisionData.licencePlate);
-  if (response.status !== 200) return null;
 
-  return decisionData;
+  const provisionResponse = await provisionPrivateCloudProduct(approvedRequest.decisionData.licencePlate);
+  if (provisionResponse.status !== 200) return null;
+
+  return approvedRequest.decisionData;
+}
+
+export async function createPrivateCloudProduct() {
+  return createApprovedPrivateCloudProduct({
+    cluster: Cluster.SILVER,
+    notificationEmails: ['cgi-team@example.com', 'support@example.com'],
+  });
 }
 
 export async function updatePrivateCloudProduct() {
-  const productData = await createSamplePrivateCloudProductData({
-    data: {
-      cluster: Cluster.SILVER,
-      resourceRequests: resourceRequests1,
-    },
+  const initialData = await createApprovedPrivateCloudProduct({
+    cluster: Cluster.SILVER,
+    resourceRequests: resourceRequests1,
+    notificationEmails: ['old-team@example.com'],
   });
 
-  await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
-
-  let response: any;
-  response = await createPrivateCloudProductTest(productData);
-  if (response.status !== 200) return null;
-
-  let resData = await response.json();
-  let decisionData = resData.decisionData;
-
-  await mockSessionByRole(GlobalRole.PrivateReviewer);
-
-  response = await makePrivateCloudRequestDecision(resData.id, {
-    ...decisionData,
-    type: RequestType.CREATE,
-    decision: DecisionStatus.APPROVED,
-  });
-
-  if (response.status !== 200) return null;
-
-  resData = await response.json();
-  decisionData = resData.decisionData;
-
-  await mockTeamServiceAccount(['private-admin']);
-  response = await provisionPrivateCloudProduct(decisionData.licencePlate);
-  if (response.status !== 200) return null;
+  if (!initialData) return null;
 
   await mockSessionByRole(GlobalRole.PrivateAdmin);
 
-  response = await editPrivateCloudProduct(decisionData.licencePlate, {
-    ...decisionData,
+  const editResponse = await editPrivateCloudProduct(initialData.licencePlate, {
+    ...initialData,
+    isAgMinistry: initialData.organization.isAgMinistry,
     resourceRequests: resourceRequests2,
+    notificationEmails: ['cgi-team@example.com', 'support@example.com'],
   });
 
-  if (response.status !== 200) return null;
-  resData = await response.json();
-  decisionData = resData.decisionData;
+  if (editResponse.status !== 200) return null;
+
+  const editRequest = await editResponse.json();
 
   await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-  response = await makePrivateCloudRequestDecision(resData.id, {
-    ...decisionData,
+  const approvalResponse = await makePrivateCloudRequestDecision(editRequest.id, {
+    ...editRequest.decisionData,
     type: RequestType.EDIT,
     decision: DecisionStatus.APPROVED,
   });
 
-  if (response.status !== 200) return null;
+  if (approvalResponse.status !== 200) return null;
 
-  const decisionResData: PrivateCloudRequestDetail = await response.json();
-  const decisionResdecisionData = decisionResData.decisionData;
+  const approvedRequest = await approvalResponse.json();
 
   await mockTeamServiceAccount(['private-admin']);
-  response = await provisionPrivateCloudProduct(decisionResdecisionData.licencePlate);
-  if (response.status !== 200) return null;
 
-  return decisionResdecisionData;
+  const provisionResponse = await provisionPrivateCloudProduct(approvedRequest.decisionData.licencePlate);
+  if (provisionResponse.status !== 200) return null;
+
+  return approvedRequest.decisionData;
 }
 
 export async function deletePrivateCloudProduct() {
-  const productData = await createSamplePrivateCloudProductData({ data: { cluster: Cluster.SILVER } });
-
-  await mockSessionByIdirGuid(productData.projectOwner.idirGuid);
-
-  let response: any;
-  response = await createPrivateCloudProductTest(productData);
-  if (response.status !== 200) return null;
-
-  let resData = await response.json();
-  let decisionData = resData.decisionData;
-
-  await mockSessionByRole(GlobalRole.PrivateReviewer);
-
-  response = await makePrivateCloudRequestDecision(resData.id, {
-    ...decisionData,
-    type: RequestType.CREATE,
-    decision: DecisionStatus.APPROVED,
+  const initialData = await createApprovedPrivateCloudProduct({
+    cluster: Cluster.SILVER,
+    notificationEmails: ['cgi-team@example.com'],
   });
 
-  if (response.status !== 200) return null;
-
-  resData = await response.json();
-  decisionData = resData.decisionData;
-
-  await mockTeamServiceAccount(['private-admin']);
-  response = await provisionPrivateCloudProduct(decisionData.licencePlate);
-  if (response.status !== 200) return null;
+  if (!initialData) return null;
 
   await mockSessionByRole(GlobalRole.PrivateAdmin);
-  response = await deletePrivateCloudProductTest(decisionData.licencePlate, 'Test delete comment');
 
-  if (response.status !== 200) return null;
-  resData = await response.json();
-  decisionData = resData.decisionData;
+  const deleteResponse = await deletePrivateCloudProductTest(initialData.licencePlate, 'Test delete comment');
+
+  if (deleteResponse.status !== 200) return null;
+
+  const deleteRequest = await deleteResponse.json();
 
   await mockSessionByRole(GlobalRole.PrivateReviewer);
 
-  response = await makePrivateCloudRequestDecision(resData.id, {
-    ...decisionData,
+  const approvalResponse = await makePrivateCloudRequestDecision(deleteRequest.id, {
+    ...deleteRequest.decisionData,
     type: RequestType.DELETE,
     decision: DecisionStatus.APPROVED,
   });
 
-  if (response.status !== 200) return null;
+  if (approvalResponse.status !== 200) return null;
 
-  const decisionResData: PrivateCloudRequestDetail = await response.json();
-  const decisionResdecisionData = decisionResData.decisionData;
+  const approvedRequest = await approvalResponse.json();
 
   await mockTeamServiceAccount(['private-admin']);
-  response = await provisionPrivateCloudProduct(decisionResdecisionData.licencePlate);
-  if (response.status !== 200) return null;
 
-  return decisionResdecisionData;
+  const provisionResponse = await provisionPrivateCloudProduct(approvedRequest.decisionData.licencePlate);
+  if (provisionResponse.status !== 200) return null;
+
+  return approvedRequest.decisionData;
 }
