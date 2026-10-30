@@ -560,10 +560,10 @@ importers:
         version: 18.0.9
       migrate-mongo:
         specifier: ^14.0.0
-        version: 14.0.7(mongodb@7.7.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9))
+        version: 14.0.7(mongodb@7.8.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9))
       mongodb:
         specifier: ^7.0.0
-        version: 7.7.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9)
+        version: 7.8.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9)
 
   sandbox/_packages/keycloak-admin:
     dependencies:
@@ -7007,8 +7007,8 @@ packages:
     resolution: {integrity: sha512-ZoS07RoFqpKYQwAk59qmrx8+jJHNHU30UjlU96QktiGn1ltvDr+vCznLX5DiUBLEpMAHatHNWV1nM/74ul66kA==}
     engines: {node: '>=20.19.0'}
 
-  mongodb@7.7.0:
-    resolution: {integrity: sha512-XG1xXEqyouAV8GCb3PuRaujofeXKpAJAPvXYWZgHl6Dz4QHSJ1nRLl0+GpqaLTwKvC0RFE9truOur34RNFY1nw==}
+  mongodb@7.8.0:
+    resolution: {integrity: sha512-p2NKagbQ41+daACG/ZSvhTzeAo+DoEyWE9Cmpf/SyP3pTC43+X0mwKE/44PpKtCxp5wOxnXz+t2pXEZRSkt9Yg==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.806.0
@@ -15622,11 +15622,11 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.2
 
-  migrate-mongo@14.0.7(mongodb@7.7.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9)):
+  migrate-mongo@14.0.7(mongodb@7.8.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9)):
     dependencies:
       cli-table3: 0.6.5
       commander: 14.0.3
-      mongodb: 7.7.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9)
+      mongodb: 7.8.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9)
 
   mime-db@1.52.0: {}
 
@@ -15691,7 +15691,7 @@ snapshots:
       '@types/whatwg-url': 13.0.0
       whatwg-url: 14.2.0
 
-  mongodb@7.7.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9):
+  mongodb@7.8.0(@aws-sdk/credential-providers@3.1117.0)(socks@2.8.9):
     dependencies:
       '@mongodb-js/saslprep': 1.5.4
       bson: 7.3.3
