@@ -1,4 +1,5 @@
 pre-commit==4.7.0
+nodeenv>=1.11.1
 detect-secrets==1.5.0
 autopep8==2.3.2
 black==26.10.1
