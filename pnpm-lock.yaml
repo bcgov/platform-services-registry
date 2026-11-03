@@ -238,7 +238,7 @@ importers:
         version: 26.8.1
       '@kubernetes/client-node':
         specifier: ^2.0.0
-        version: 2.0.1(supports-color@8.1.1)
+        version: 2.0.2(supports-color@8.1.1)
       '@mantine/colors-generator':
         specifier: ^9.0.0
         version: 9.7.4(chroma-js@3.2.0)
@@ -2382,8 +2382,8 @@ packages:
     resolution: {integrity: sha512-1l69rXFuMOw0nQ98u2sZLrVqrSugb0QSx+Pan9cqL0b1xfWBWfVt9MjXqCSpv0BEBvig/NUz7TJm6/ugiW3r4A==}
     engines: {node: '>=18'}
 
-  '@kubernetes/client-node@2.0.1':
-    resolution: {integrity: sha512-evJgmEtgArEYlj6DNkMGjK41IrFK/hEwb5lWVxx0VRBWybQpnvi+2TtA19mLgVfRHfqX5yjHObX6e9W7LEZBjw==}
+  '@kubernetes/client-node@2.0.2':
+    resolution: {integrity: sha512-AvVq87luFXIoo95dkBsNnzU6pIwKGJM5CZD/iLfxMPXPzVa4w8isIMvXmYly+4TkodQFf3fQzX3KDysVy1OYng==}
 
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
@@ -10702,7 +10702,7 @@ snapshots:
       camelize-ts: 3.0.0
       url-template: 3.1.1
 
-  '@kubernetes/client-node@2.0.1(supports-color@8.1.1)':
+  '@kubernetes/client-node@2.0.2(supports-color@8.1.1)':
     dependencies:
       '@types/js-yaml': 4.0.9
       '@types/node': 26.6.6
