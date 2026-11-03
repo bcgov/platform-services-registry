@@ -92,6 +92,7 @@ describe('Teams API', () => {
     expect(team.code).toBe('PAYMENTS');
     expect(team.members).toHaveLength(1);
     expect(team.members[0].user.id).toBe(userId);
+    expect(Object.keys(team.members[0].user).sort()).toEqual(['email', 'firstName', 'id', 'image', 'lastName']);
     expect(team.members[0].roles).toEqual([TeamRole.PRODUCT_OWNER]);
 
     const membership = await prisma.teamMember.findUnique({ where: { teamId_userId: { teamId: team.id, userId } } });

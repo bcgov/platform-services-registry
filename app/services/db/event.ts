@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
 import { parsePaginationParams } from '@/helpers/pagination';
-import { EventType, Prisma } from '@/prisma/client';
+import { EventType, Prisma, TeamRole } from '@/prisma/client';
 import { objectId } from '@/validation-schemas';
 import { EventSearchBody } from '@/validation-schemas/event';
 import { organizationBodySchema } from '@/validation-schemas/organization';
@@ -24,7 +24,7 @@ const teamEventSchema = z.object({
 
 const teamMemberEventSchema = z.object({
   id: objectId,
-  data: z.object({ userId: objectId, roles: z.array(z.string()) }),
+  data: z.object({ userId: objectId, roles: z.array(z.enum(TeamRole)) }),
 });
 
 const validationSchemas = {

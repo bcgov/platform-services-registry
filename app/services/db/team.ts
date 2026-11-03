@@ -19,7 +19,10 @@ const activeTeamConditions: Prisma.TeamWhereInput[] = [{ archivedAt: null }, { a
 
 export const activeTeamWhere: Prisma.TeamWhereInput = { OR: activeTeamConditions };
 
-const teamMemberInclude = { user: true } satisfies Prisma.TeamMemberInclude;
+// Any signed-in user can view teams, so only return the user fields the Teams API needs.
+const teamMemberInclude = {
+  user: { select: { id: true, firstName: true, lastName: true, email: true, image: true } },
+} satisfies Prisma.TeamMemberInclude;
 
 // Writes to a team only while it is active, so a write that races an archive fails instead of
 // changing an archived team. Returns null when the team is no longer active.
