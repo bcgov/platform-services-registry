@@ -1,5 +1,6 @@
 import { Session } from 'next-auth';
 import { BadRequestResponse, NotFoundResponse, OkResponse } from '@/core/responses';
+import { Prisma } from '@/prisma/client';
 import { addTeamMember, findUnknownUserIds, getTeam, getTeamMember } from '@/services/db/team';
 import { ObjectId } from '@/validation-schemas';
 import { TeamMemberBody } from '@/validation-schemas/team';
@@ -23,7 +24,17 @@ export default async function addMemberOp({
   const existing = await getTeamMember(id, body.userId);
   if (existing) return BadRequestResponse('This user is already a member of the team');
 
-  const member = await addTeamMember(id, session.user.id, body);
+  let member;
+  try {
+    member = await addTeamMember(id, session.user.id, body);
+  } catch (error) {
+    // Two requests can pass the check above at the same time; the unique index rejects the second one.
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      return BadRequestResponse('This user is already a member of the team');
+    }
+
+    throw error;
+  }
   if (!member) return BadRequestResponse('Archived teams cannot be changed');
 
   return OkResponse(member);

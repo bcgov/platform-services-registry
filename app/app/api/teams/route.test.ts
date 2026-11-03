@@ -195,6 +195,18 @@ describe('Teams API', () => {
     expect(removeRes.status).toBe(404);
   });
 
+  it('rejects one of two requests that add the same member at the same time', async () => {
+    const team = await createTeamAsAdmin('PAYMENTS');
+    const userId = await getMockUserId(0);
+
+    const responses = await Promise.all([
+      addTeamMember(team.id, { userId, roles: [TeamRole.VIEWER] }),
+      addTeamMember(team.id, { userId, roles: [TeamRole.EDITOR] }),
+    ]);
+    expect(responses.map((res) => res.status).sort()).toEqual([200, 400]);
+    expect(await prisma.teamMember.count({ where: { teamId: team.id, userId } })).toBe(1);
+  });
+
   it('lets a user belong to several teams', async () => {
     const userId = await getMockUserId(0);
     await createTeamAsAdmin('TEAM-A', [{ userId, roles: [TeamRole.EDITOR] }]);
