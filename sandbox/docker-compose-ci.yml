@@ -3,6 +3,8 @@ services:
     image: ghcr.io/bcgov/pltsvc-sandbox-keycloak:latest
     pull_policy: always
     build: {}
+    environment:
+      KC_HTTP_MANAGEMENT_HEALTH_ENABLED: 'false'
 
   keycloak-provision:
     image: ghcr.io/bcgov/pltsvc-sandbox-keycloak-provision:latest
