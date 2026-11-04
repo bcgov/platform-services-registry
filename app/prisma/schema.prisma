@@ -68,6 +68,7 @@ model User {
   tasksStarted                                          Task[]                    @relation("AssigneeToTasks")
   privateCloudRequestsAsCanceler                        PrivateCloudRequest[]     @relation("cancelledBy")
   publicCloudRequestsAsCanceler                         PublicCloudRequest[]      @relation("cancelledBy")
+  teamMemberships                                       TeamMember[]              @relation("teamMemberships")
 }
 
 model UserSession {
@@ -103,9 +104,18 @@ model Team {
   members     TeamMember[]
 }
 
-type TeamMember {
-  userId String
-  roles  TeamRole[]
+model TeamMember {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  teamId    String     @db.ObjectId
+  team      Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId    String     @db.ObjectId
+  user      User       @relation("teamMemberships", fields: [userId], references: [id])
+  roles     TeamRole[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([teamId, userId])
+  @@index([userId])
 }
 
 enum TeamRole {
@@ -750,6 +760,9 @@ enum EventType {
   CREATE_TEAM
   UPDATE_TEAM
   DELETE_TEAM
+  CREATE_TEAM_MEMBER
+  UPDATE_TEAM_MEMBER
+  DELETE_TEAM_MEMBER
 }
 
 enum TaskType {

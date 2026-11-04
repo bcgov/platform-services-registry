@@ -1,23 +1,48 @@
 import prisma from '@/core/prisma';
+import { mockNoRoleUsers } from '@/helpers/mock-users';
 import { EventType, TeamRole } from '@/prisma/client';
-import { archiveTeam, createTeam, getTeam, listTeams, updateTeam, updateTeamMembers } from './team';
+import {
+  addTeamMember,
+  archiveTeam,
+  createTeam,
+  getTeam,
+  getTeamDetail,
+  getTeamMember,
+  listTeams,
+  removeTeamMember,
+  updateTeam,
+  updateTeamMemberRoles,
+} from './team';
 
 describe('Team DB service', () => {
   const userId = '507f1f77bcf86cd799439011'; // pragma: allowlist secret
-  const createdIds: string[] = [];
+  let memberUserId: string;
+
+  beforeAll(async () => {
+    const user = await prisma.user.findFirstOrThrow({ where: { idirGuid: mockNoRoleUsers[0].idirGuid } });
+    memberUserId = user.id;
+  });
+
+  beforeEach(async () => {
+    await prisma.teamMember.deleteMany();
+    await prisma.team.deleteMany();
+  });
 
   afterAll(async () => {
     await prisma.event.deleteMany({
       where: {
         type: {
-          in: [EventType.CREATE_TEAM, EventType.UPDATE_TEAM, EventType.DELETE_TEAM],
+          in: [
+            EventType.CREATE_TEAM,
+            EventType.UPDATE_TEAM,
+            EventType.DELETE_TEAM,
+            EventType.CREATE_TEAM_MEMBER,
+            EventType.UPDATE_TEAM_MEMBER,
+            EventType.DELETE_TEAM_MEMBER,
+          ],
         },
         userId,
       },
-    });
-
-    await prisma.team.deleteMany({
-      where: { id: { in: createdIds } },
     });
   });
 
@@ -29,16 +54,16 @@ describe('Team DB service', () => {
       code,
       members: [
         {
-          userId,
+          userId: memberUserId,
           roles: [TeamRole.PRODUCT_OWNER, TeamRole.TECHNICAL_LEAD],
         },
       ],
     });
 
-    createdIds.push(team.id);
-
     expect(team.code).toBe(code);
-    expect(team.members[0].roles).toEqual([TeamRole.PRODUCT_OWNER, TeamRole.TECHNICAL_LEAD]);
+
+    const member = await getTeamMember(team.id, memberUserId);
+    expect(member?.roles).toEqual([TeamRole.PRODUCT_OWNER, TeamRole.TECHNICAL_LEAD]);
 
     const event = await prisma.event.findFirst({
       where: {
@@ -59,40 +84,43 @@ describe('Team DB service', () => {
     const team = await createTeam(userId, {
       name: 'Original Team',
       code: `U${Date.now()}`,
-      members: [{ userId, roles: [TeamRole.EDITOR] }],
+      members: [{ userId: memberUserId, roles: [TeamRole.EDITOR] }],
     });
-    createdIds.push(team.id);
 
     const updated = await updateTeam(team.id, userId, {
       name: 'Updated Team',
       code: team.code,
     });
 
-    expect(updated.name).toBe('Updated Team');
-    expect(updated.members).toEqual(team.members);
+    expect(updated?.name).toBe('Updated Team');
 
-    const retrieved = await getTeam(team.id);
+    const retrieved = await getTeamDetail(team.id);
     expect(retrieved?.name).toBe('Updated Team');
+    expect(retrieved?.members).toHaveLength(1);
   });
 
-  it('updates members separately', async () => {
+  it('adds, updates and removes members one at a time', async () => {
     const team = await createTeam(userId, {
       name: 'Membership Test',
       code: `M${Date.now()}`,
     });
-    createdIds.push(team.id);
 
-    const updated = await updateTeamMembers(team.id, [{ userId, roles: [TeamRole.VIEWER, TeamRole.BILLING_VIEWER] }]);
+    const added = await addTeamMember(team.id, userId, { userId: memberUserId, roles: [TeamRole.VIEWER] });
+    expect(added?.roles).toEqual([TeamRole.VIEWER]);
 
-    expect(updated.members[0].roles).toEqual([TeamRole.VIEWER, TeamRole.BILLING_VIEWER]);
+    const updated = await updateTeamMemberRoles(team.id, userId, added!.id, [TeamRole.VIEWER, TeamRole.BILLING_VIEWER]);
+    expect(updated?.roles).toEqual([TeamRole.VIEWER, TeamRole.BILLING_VIEWER]);
+
+    const removed = await removeTeamMember(team.id, userId, added!.id);
+    expect(removed?.userId).toBe(memberUserId);
+    expect(await getTeamMember(team.id, memberUserId)).toBeNull();
   });
 
-  it('archives teams without deleting them and records a delete event', async () => {
+  it('archives teams without deleting them, records a delete event and blocks further changes', async () => {
     const team = await createTeam(userId, {
       name: 'Archive Test',
       code: `A${Date.now()}`,
     });
-    createdIds.push(team.id);
 
     const archived = await archiveTeam(team.id, userId);
 
@@ -101,6 +129,9 @@ describe('Team DB service', () => {
 
     const active = await listTeams();
     expect(active.some((item) => item.id === team.id)).toBe(false);
+
+    const all = await listTeams({ includeArchived: true });
+    expect(all.some((item) => item.id === team.id)).toBe(true);
 
     const event = await prisma.event.findFirst({
       where: {
@@ -113,5 +144,8 @@ describe('Team DB service', () => {
     expect(event?.data).toMatchObject({
       id: team.id,
     });
+
+    expect(await updateTeam(team.id, userId, { name: 'Changed', code: team.code })).toBeNull();
+    expect(await addTeamMember(team.id, userId, { userId: memberUserId, roles: [TeamRole.VIEWER] })).toBeNull();
   });
 });
