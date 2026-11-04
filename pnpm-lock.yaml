@@ -232,7 +232,7 @@ importers:
         version: 2.2.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@hookform/resolvers':
         specifier: ^7.0.0
-        version: 7.0.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
+        version: 7.0.2(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
       '@keycloak/keycloak-admin-client':
         specifier: 26.8.1
         version: 26.8.1
@@ -1658,8 +1658,8 @@ packages:
       react: ^18 || ^19 || ^19.0.0-rc
       react-dom: ^18 || ^19 || ^19.0.0-rc
 
-  '@hookform/resolvers@7.0.1':
-    resolution: {integrity: sha512-F3aM0dDWsRGmFjnnXjogaGLwP7gY2HA6/c5qp4v4Im/UV7pTNkX+WAjcOlM1V0PE0zoMzuPqCyaYtMzUhoFToA==}
+  '@hookform/resolvers@7.0.2':
+    resolution: {integrity: sha512-8JVNoDGKwBc1iBy/e1CKXJ3ixvN7Ef3NHYlIA+9uuc5ZM+SV9E2nw5vy0SOvu+OMAfBxmyEmEOlGdpd0seQcxg==}
     peerDependencies:
       '@standard-schema/spec': ^1.0.0
       '@vinejs/vine': ^2.0.0 || ^3.0.0 || ^4.0.0
@@ -8373,9 +8373,6 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  tailwindcss@4.3.3:
-    resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
-
   tailwindcss@4.3.4:
     resolution: {integrity: sha512-PCJZTFFdG+sL3gvnP1Do9o6GbkvH2q0p04xSs3f7cSvmAeK+sttG+/7ncK1fdRwKFfC7n+wDDJaOMBSefkI9ow==}
 
@@ -10046,7 +10043,7 @@ snapshots:
       react-dom: 19.3.1(react@19.3.1)
       use-sync-external-store: 1.6.0(react@19.3.1)
 
-  '@hookform/resolvers@7.0.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)':
+  '@hookform/resolvers@7.0.2(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)':
     dependencies:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.91.0(@types/react@19.3.0)(react@19.3.1)
@@ -11426,7 +11423,7 @@ snapshots:
     dependencies:
       '@react-email/text': 0.1.6(react@19.3.1)
       react: 19.3.1
-      tailwindcss: 4.3.3
+      tailwindcss: 4.3.4
     optionalDependencies:
       '@react-email/body': 0.3.0(react@19.3.1)
       '@react-email/button': 0.2.1(react@19.3.1)
@@ -16534,7 +16531,7 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       socket.io: 4.8.3(supports-color@8.1.1)
-      tailwindcss: 4.3.3
+      tailwindcss: 4.3.4
       tsconfig-paths: 4.2.0
     transitivePeerDependencies:
       - bufferutil
@@ -17351,8 +17348,6 @@ snapshots:
       sucrase: 3.35.1
     transitivePeerDependencies:
       - ts-node
-
-  tailwindcss@4.3.3: {}
 
   tailwindcss@4.3.4: {}
 
