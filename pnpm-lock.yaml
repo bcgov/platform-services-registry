@@ -234,8 +234,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.3(@standard-schema/spec@1.1.0)(ajv@8.20.0)(class-transformer@0.5.1)(fp-ts@2.16.11)(io-ts@2.2.22(fp-ts@2.16.11))(joi@18.2.9)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(yup@1.7.1)(zod@4.6.7)
       '@keycloak/keycloak-admin-client':
-        specifier: 26.8.1
-        version: 26.8.1
+        specifier: 26.8.2
+        version: 26.8.2
       '@kubernetes/client-node':
         specifier: ^2.0.0
         version: 2.0.2(supports-color@8.1.1)
@@ -2386,6 +2386,10 @@ packages:
 
   '@keycloak/keycloak-admin-client@26.8.1':
     resolution: {integrity: sha512-1l69rXFuMOw0nQ98u2sZLrVqrSugb0QSx+Pan9cqL0b1xfWBWfVt9MjXqCSpv0BEBvig/NUz7TJm6/ugiW3r4A==}
+    engines: {node: '>=18'}
+
+  '@keycloak/keycloak-admin-client@26.8.2':
+    resolution: {integrity: sha512-+DCQwK0u4owm3aKg5tSVJPrw96lIJFT+EJ613FKu6g0KldkrCF2eCL3x4jpmcxe/+lbyitzUGxXkQO9YZ9vQSQ==}
     engines: {node: '>=18'}
 
   '@kubernetes/client-node@2.0.2':
@@ -10706,6 +10710,17 @@ snapshots:
       jsep: 1.4.0
 
   '@keycloak/keycloak-admin-client@26.8.1':
+    dependencies:
+      '@microsoft/kiota-abstractions': 1.0.0-preview.103
+      '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
+      '@microsoft/kiota-serialization-form': 1.0.0-preview.103
+      '@microsoft/kiota-serialization-json': 1.0.0-preview.103
+      '@microsoft/kiota-serialization-multipart': 1.0.0-preview.103
+      '@microsoft/kiota-serialization-text': 1.0.0-preview.103
+      camelize-ts: 3.0.0
+      url-template: 3.1.1
+
+  '@keycloak/keycloak-admin-client@26.8.2':
     dependencies:
       '@microsoft/kiota-abstractions': 1.0.0-preview.103
       '@microsoft/kiota-http-fetchlibrary': 1.0.0-preview.103
