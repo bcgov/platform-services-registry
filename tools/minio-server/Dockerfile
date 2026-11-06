@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
       -ldflags "$(go run buildscripts/gen-ldflags.go)" \
       -o /out/minio .
 
-FROM alpine:3.24.3
+FROM alpine:3.24.4
 
 RUN apk add --no-cache ca-certificates
 
