@@ -1,7 +1,8 @@
 import { WeasyPrint } from '@/services/weasyprint/client';
 import { PublicCloudBillingDetailDecorated } from '@/types/public-cloud';
-import BillingMouV1, { css as cssV1 } from './BillingMouV1';
-import BillingMouV2, { css as cssV2 } from './BillingMouV2';
+import BillingMouV1 from './BillingMouV1';
+import BillingMouV2 from './BillingMouV2';
+import { css } from './styles';
 import { Product } from './types';
 
 const weasyClient = new WeasyPrint();
@@ -21,7 +22,7 @@ export async function generateEmouPdf(product: Product, billing: PublicCloudBill
 
   const buff = await weasyClient.generatePdf({
     html,
-    css: version === 2 ? cssV2 : cssV1,
+    css,
   });
   return buff;
 }

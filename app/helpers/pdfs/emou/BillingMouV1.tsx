@@ -5,100 +5,15 @@ import { PublicCloudBillingDetailDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
 import { Product } from './types';
 
-export const css = `
-@page {
-  size: LETTER;
-  margin: 0.5cm;
-
-  @top-left {
-    content: element(header);
-  }
-
-  @top-right {
-    content: "Page " counter(page) " of " counter(pages);
-    font-style: italic;
-  }
-}
-
-* {
-  font-family: "BCSans", sans-serif;
-}
-
-.break {
-  page-break-before: always;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border: 1px solid #000;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #f4f4f4;
-}
-
-.header {
-  position: running(header);
-  font-style: italic;
-}
-
-.label {
-  color: #6b6b6b;
-}
-
-.strong {
-  font-weight: bold;
-}
-
-.mt-0 {
-  margin-top: 0;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-`;
-
-function formatCurrency(value: number, { suffix = 'CAD' }: { suffix: 'CAD' | 'USD' }) {
-  return `$${value.toFixed(2)} ${suffix}`;
-}
-
 export default function BillingMou({
   product,
   billing,
-}: {
+}: Readonly<{
   product: Product;
   billing: PublicCloudBillingDetailDecorated;
-}) {
-  const values: number[] = [];
-  if (product.environmentsEnabled.development) values.push(product.budget.dev);
-  if (product.environmentsEnabled.test) values.push(product.budget.test);
-  if (product.environmentsEnabled.production) values.push(product.budget.prod);
-  if (product.environmentsEnabled.tools) values.push(product.budget.tools);
-
-  const totalBudget = _sumBy(values, (val) => {
-    const num = Number(val);
-    return isNaN(num) ? 0 : num;
-  });
-
+}>) {
   const isAWS = product.provider === Provider.AWS || product.provider === Provider.AWS_LZA;
 
-  const currency = isAWS ? 'USD' : 'CAD';
   const service = isAWS ? 'AWS' : 'Microsoft Azure';
 
   return (
@@ -156,14 +71,14 @@ export default function BillingMou({
         </p>
         <p>
           This agreement will be in effect from the date of signing, until a written notification is provided to the
-          CSBC, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator
+          CSBC, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator{' '}
           <a
             href="https://digital.gov.bc.ca/cloud/services/public/"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-1"
           >
-            &nbsp;service website.
+            service website.
           </a>
         </p>
       </div>
@@ -174,7 +89,7 @@ export default function BillingMou({
 
       <table>
         <tr>
-          <td>Client Code</td>
+          <th>Client Code</th>
           <td>RC</td>
           <td>SL</td>
           <td>STOB</td>
@@ -212,8 +127,8 @@ export default function BillingMou({
 
       <table>
         <tr>
-          <td colSpan={2}>The CSBC Citizen Service’s Expense Authority</td>
-          <td colSpan={2}>The Ministry’s Expense Authority</td>
+          <th colSpan={2}>The CSBC Citizen Service’s Expense Authority</th>
+          <th colSpan={2}>The Ministry’s Expense Authority</th>
         </tr>
         <tr>
           <td>Name</td>

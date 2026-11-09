@@ -5,7 +5,7 @@ interface AgreementTermsV2Props {
   provider: Provider;
 }
 
-export default function AgreementTermsV2({ name, provider }: AgreementTermsV2Props) {
+export default function AgreementTermsV2({ name, provider }: Readonly<AgreementTermsV2Props>) {
   const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;
 
   const service = isAWS ? 'AWS' : 'Microsoft Azure';
