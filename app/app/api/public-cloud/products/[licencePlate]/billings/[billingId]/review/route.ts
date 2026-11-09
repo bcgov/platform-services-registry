@@ -3,7 +3,7 @@ import { GlobalRole } from '@/constants';
 import createApiHandler from '@/core/api-handler';
 import { logger } from '@/core/logging';
 import prisma from '@/core/prisma';
-import { OkResponse, UnauthorizedResponse } from '@/core/responses';
+import { BadRequestResponse, OkResponse, UnauthorizedResponse } from '@/core/responses';
 import { formatFullName } from '@/helpers/user';
 import { Prisma, RequestType, TaskStatus, TaskType } from '@/prisma/client';
 import { sendAdminCreateRequestEmails } from '@/services/ches/public-cloud';
@@ -32,7 +32,7 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     where: {
       type: TaskType.REVIEW_PUBLIC_CLOUD_MOU,
       status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
-      data: { equals: { licencePlate } },
+      data: { equals: { licencePlate, billingId } },
     },
   });
 
@@ -40,7 +40,29 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
     return UnauthorizedResponse();
   }
 
-  await tasks.close(TaskType.REVIEW_PUBLIC_CLOUD_MOU, { licencePlate, session, decision });
+  const billing = await prisma.publicCloudBilling.findFirst({
+    where: {
+      id: billingId,
+      licencePlate,
+      signed: true,
+      approved: false,
+    },
+  });
+
+  if (!billing) {
+    return BadRequestResponse('invalid billing');
+  }
+
+  const closedCount = await tasks.close(TaskType.REVIEW_PUBLIC_CLOUD_MOU, {
+    licencePlate,
+    billingId,
+    session,
+    decision,
+  });
+
+  if (closedCount === 0) {
+    return UnauthorizedResponse();
+  }
 
   if (decision === 'APPROVE') {
     const billing = await prisma.publicCloudBilling.update({

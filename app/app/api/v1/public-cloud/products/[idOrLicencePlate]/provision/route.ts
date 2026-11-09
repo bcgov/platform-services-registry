@@ -192,6 +192,7 @@ export const POST = apiHandler(async ({ pathParams, session, body }) => {
       updatedRequestDecorated.decisionData.expenseAuthorityId
     ) {
       const lastBilling = await prisma.publicCloudBilling.findFirst({
+        where: { licencePlate },
         select: { accountCoding: true },
         orderBy: { createdAt: Prisma.SortOrder.desc },
       });

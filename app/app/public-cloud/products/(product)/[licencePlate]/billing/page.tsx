@@ -1,18 +1,22 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { Button } from '@mantine/core';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { proxy, useSnapshot } from 'valtio';
 import { z } from 'zod';
 import Table from '@/components/generic/table/Table';
 import { openConfirmModal } from '@/components/modal/confirm';
+import { failure, success } from '@/components/notification';
 import AccountCodingSection from '@/components/public-cloud/sections/AccountCoding';
 import { requestSortsInProduct, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
+import AgreementAppendixV2 from '@/helpers/pdfs/emou/AgreementAppendixV2';
+import AgreementTermsV2 from '@/helpers/pdfs/emou/AgreementTermsV2';
 import { AccountCoding } from '@/prisma/client';
-import { searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
+import { renewPublicCloudBilling, searchPublicCloudBillings } from '@/services/backend/public-cloud/billings';
 import { updateAccountCoding as _updateAccountCoding } from '@/services/backend/public-cloud/products';
 import { usePublicProductState } from '@/states/global';
 import { PublicCloudBillingSimpleDecorated } from '@/types/public-cloud';
@@ -88,6 +92,20 @@ export default publicCloudProductBillings(({ getPathParams, session }) => {
   const snap = useSnapshot(pageState);
   const { licencePlate = '' } = pathParams ?? {};
 
+  const queryClient = useQueryClient();
+  const [, publicProductSnap] = usePublicProductState();
+
+  const { mutateAsync: renewBilling, isPending: isRenewing } = useMutation({
+    mutationFn: () => renewPublicCloudBilling(licencePlate),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['billings'] });
+      success();
+    },
+    onError: (error: Error) => {
+      failure({ error });
+    },
+  });
+
   const { data: billingData, isLoading } = useQuery({
     queryKey: ['billings', snap],
     queryFn: () => searchPublicCloudBillings({ licencePlate, includeMetadata: false }),
@@ -103,6 +121,11 @@ export default publicCloudProductBillings(({ getPathParams, session }) => {
     totalCount = billingData.totalCount;
   }
 
+  const canRenew =
+    !!publicProductSnap.currentProduct?._permissions.editAccountCoding &&
+    billings.some((billing) => billing.approved && (billing.agreementVersion ?? 1) === 1) &&
+    !billings.some((billing) => billing.approved && billing.agreementVersion === 2);
+
   return (
     <>
       {!isLoading && (
@@ -113,7 +136,39 @@ export default publicCloudProductBillings(({ getPathParams, session }) => {
         />
       )}
 
-      <h3 className="font-bold text-xl mt-3 mb-2">Billings</h3>
+      <div className="flex items-center justify-between mt-3 mb-2">
+        <h3 className="font-bold text-xl">Billings</h3>
+
+        {canRenew && (
+          <Button
+            loading={isRenewing}
+            onClick={async () => {
+              const product = publicProductSnap.currentProduct;
+              if (!product) return;
+
+              const res = await openConfirmModal({
+                content: (
+                  <div>
+                    <AgreementTermsV2 name={product.name} provider={product.provider} />
+                    <AgreementAppendixV2 />
+                  </div>
+                ),
+                submitColor: 'primary',
+              });
+
+              if (!res.state.confirmed) return;
+
+              try {
+                await renewBilling();
+              } catch {
+                // Error notification is handled by onError.
+              }
+            }}
+          >
+            Re-sign eMOU
+          </Button>
+        )}
+      </div>
       <Table totalCount={totalCount} page={1} pageSize={50} isLoading={isLoading}>
         <TableBody data={billings} session={session!} />
       </Table>

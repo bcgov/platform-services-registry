@@ -30,6 +30,7 @@ export function createSamplePublicCloudBilling(args?: {
     approvedBy,
     createdAt: new Date(),
     updatedAt: new Date(),
+    agreementVersion: data?.agreementVersion ?? null,
     ...data,
   };
 
