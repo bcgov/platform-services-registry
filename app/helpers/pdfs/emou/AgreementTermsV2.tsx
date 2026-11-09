@@ -1,107 +1,25 @@
-import { formatFullName } from '@/helpers/user';
 import { Provider } from '@/prisma/client';
-import { PublicCloudBillingDetailDecorated } from '@/types/public-cloud';
-import { formatDate } from '@/utils/js';
-import { Product } from './types';
 
-export const css = `
-@page {
-  size: LETTER;
-  margin: 0.5cm;
-
-  @top-left {
-    content: element(header);
-  }
-
-  @top-right {
-    content: "Page " counter(page) " of " counter(pages);
-    font-style: italic;
-  }
+interface AgreementTermsV2Props {
+  name: string;
+  provider: Provider;
 }
 
-* {
-  font-family: "BCSans", sans-serif;
-}
-
-.break {
-  page-break-before: always;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border: 1px solid #000;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #f4f4f4;
-}
-
-.header {
-  position: running(header);
-  font-style: italic;
-}
-
-.label {
-  color: #6b6b6b;
-}
-
-.strong {
-  font-weight: bold;
-}
-
-.mt-0 {
-  margin-top: 0;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-`;
-
-export default function BillingMou({
-  product,
-  billing,
-}: {
-  product: Product;
-  billing: PublicCloudBillingDetailDecorated;
-}) {
-  const isAWS = product.provider === Provider.AWS || product.provider === Provider.AWS_LZA;
+export default function AgreementTermsV2({ name, provider }: AgreementTermsV2Props) {
+  const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;
 
   const service = isAWS ? 'AWS' : 'Microsoft Azure';
   const platform = isAWS ? 'Amazon Web Services (AWS) Landing Zone' : 'Microsoft Azure Landing Zone';
-
   const contract = isAWS ? 'existing cloud service contracts' : 'existing service and software licence contracts';
-
   const fee = isAWS ? '6% Shared Services Canada fee' : '6% CSBC administrative fee';
 
   return (
-    <div>
-      <div className="header">
-        <div className="right">Printed on {formatDate(new Date())}</div>
-      </div>
-
-      <h1 className="text-center">Service Agreement</h1>
-
+    <>
       <p>This agreement is between;</p>
       <p className="text-center font-semibold">Connected Services BC, hereby referred to as “CSBC”</p>
 
       <p>And</p>
-      <p className="text-center font-semibold">The {product.name}, hereby referred to as “the Requester”</p>
+      <p className="text-center font-semibold">The {name}, hereby referred to as “the Requester”</p>
 
       <p>
         For the consumption and use of CSBC’s cloud platform offering and related services, accessible to the
@@ -190,69 +108,6 @@ export default function BillingMou({
         and/or the project is successfully offboarded, as described on the{' '}
         <a href="https://digital.gov.bc.ca/cloud/services/public/">Public Cloud website</a>.
       </p>
-
-      <div className="break"></div>
-
-      <p>If you are a Schedule A client – please provide your coding below;</p>
-
-      <table>
-        <tbody>
-          <tr>
-            <th>Client Code</th>
-            <th>RC</th>
-            <th>SL</th>
-            <th>STOB</th>
-            <th>Project Code</th>
-          </tr>
-          <tr>
-            <td>{billing.accountCoding.cc}</td>
-            <td>{billing.accountCoding.rc}</td>
-            <td>{billing.accountCoding.sl}</td>
-            <td>{billing.accountCoding.stob}</td>
-            <td>{billing.accountCoding.pc}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p>This agreement is signed on {formatDate(billing.signedAt, 'dd/MM/yy')} by:</p>
-
-      <table>
-        <tbody>
-          <tr>
-            <th colSpan={2}>The Ministry of Citizens’ Services Expense Authority</th>
-            <th colSpan={2}>The Requester’s Expense Authority</th>
-          </tr>
-          <tr>
-            <td>Name</td>
-            <td>{formatFullName(billing.approvedBy)}</td>
-            <td>Name</td>
-            <td>{formatFullName(billing.signedBy)}</td>
-          </tr>
-          <tr>
-            <td>Position Title</td>
-            <td>{billing.approvedBy?.jobTitle || ''}</td>
-            <td>Position Title</td>
-            <td>{billing.signedBy?.jobTitle || ''}</td>
-          </tr>
-          <tr>
-            <td>Branch</td>
-            <td>{billing.approvedBy?.officeLocation || ''}</td>
-            <td>Branch</td>
-            <td>{billing.signedBy?.officeLocation || ''}</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div className="break"></div>
-
-      <h2>Appendix A – Exclusions &amp; Exemptions</h2>
-
-      <p>
-        Appendix A applies to Broader Public Sector organizations, Special Accounts, Restricted Programs, and any other
-        service arrangements where CSBC determines that voted funding does not replace cost recovery. These exclusions
-        and exemptions remain subject to CSBC review and may be updated as funding, policy, or service delivery
-        requirements change.
-      </p>
-    </div>
+    </>
   );
 }

@@ -44,6 +44,7 @@ export async function createTask(data: CreateTaskData) {
       roles: [GlobalRole.BillingReviewer],
       data: {
         licencePlate: data.billing.licencePlate,
+        billingId: data.billing.id,
       },
     },
   });
@@ -56,34 +57,30 @@ export async function createTask(data: CreateTaskData) {
 
 export interface CloseTaskData {
   licencePlate: string;
+  billingId: string;
   session: Session;
   decision: 'APPROVE' | 'REJECT';
 }
 
 export async function closeTask(data: CloseTaskData) {
-  const { licencePlate, session, decision } = data;
+  const { licencePlate, billingId, session, decision } = data;
 
-  const taskProm = prisma.task.updateMany({
+  const result = await prisma.task.updateMany({
     where: {
       type,
       status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
-      OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
       data: {
-        equals: {
-          licencePlate,
-        },
+        equals: { licencePlate, billingId },
       },
+      OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
     },
     data: {
       status: TaskStatus.COMPLETED,
       completedAt: new Date(),
       completedBy: session.user.id,
-      closedMetadata: {
-        decision,
-      },
+      closedMetadata: { decision },
     },
   });
 
-  const [tasks] = await Promise.all([taskProm]);
-  return tasks.count;
+  return result.count;
 }

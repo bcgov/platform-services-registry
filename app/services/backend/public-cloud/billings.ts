@@ -57,3 +57,11 @@ export async function downloadPublicCloudBillings(data: PublicCloudBillingSearch
 
   return result;
 }
+
+export async function renewPublicCloudBilling(licencePlate: string) {
+  const result = await parentInstance
+    .post(`/products/${encodeURIComponent(licencePlate)}/billings/renew`)
+    .then((res) => res.data);
+
+  return result;
+}
