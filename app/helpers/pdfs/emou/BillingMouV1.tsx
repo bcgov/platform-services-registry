@@ -1,8 +1,8 @@
-import _sumBy from 'lodash-es/sumBy';
-import { formatFullName } from '@/helpers/user';
 import { Provider } from '@/prisma/client';
 import { PublicCloudBillingDetailDecorated } from '@/types/public-cloud';
 import { formatDate } from '@/utils/js';
+import BillingAccountCoding from './BillingAccountCoding';
+import BillingSignatures from './BillingSignatures';
 import { Product } from './types';
 
 export default function BillingMou({
@@ -90,10 +90,10 @@ export default function BillingMou({
       <table>
         <tr>
           <th>Client Code</th>
-          <td>RC</td>
-          <td>SL</td>
-          <td>STOB</td>
-          <td>Project Code</td>
+          <th>RC</th>
+          <th>SL</th>
+          <th>STOB</th>
+          <th>Project Code</th>
         </tr>
         <tr>
           <td>112</td>
@@ -106,49 +106,15 @@ export default function BillingMou({
 
       <p>The account coding for the Ministry is as follows;</p>
 
-      <table>
-        <tr>
-          <td>Client Code</td>
-          <td>RC</td>
-          <td>SL</td>
-          <td>STOB</td>
-          <td>Project Code</td>
-        </tr>
-        <tr>
-          <td>{billing.accountCoding.cc}</td>
-          <td>{billing.accountCoding.rc}</td>
-          <td>{billing.accountCoding.sl}</td>
-          <td>{billing.accountCoding.stob}</td>
-          <td>{billing.accountCoding.pc}</td>
-        </tr>
-      </table>
+      <BillingAccountCoding accountCoding={billing.accountCoding} />
 
       <p>This agreement is signed on this day {formatDate(billing.signedAt, 'dd/MM/yy')} by</p>
 
-      <table>
-        <tr>
-          <th colSpan={2}>The CSBC Citizen Service’s Expense Authority</th>
-          <th colSpan={2}>The Ministry’s Expense Authority</th>
-        </tr>
-        <tr>
-          <td>Name</td>
-          <td>{formatFullName(billing.approvedBy)}</td>
-          <td>Name</td>
-          <td>{formatFullName(billing.signedBy)}</td>
-        </tr>
-        <tr>
-          <td>Position Title</td>
-          <td>{billing.approvedBy?.jobTitle || ''}</td>
-          <td>Position Title</td>
-          <td>{billing.signedBy?.jobTitle || ''}</td>
-        </tr>
-        <tr>
-          <td>Branch</td>
-          <td>{billing.approvedBy?.officeLocation || ''}</td>
-          <td>Branch</td>
-          <td>{billing.signedBy?.officeLocation || ''}</td>
-        </tr>
-      </table>
+      <BillingSignatures
+        billing={billing}
+        leftTitle="The CSBC Citizen Service’s Expense Authority"
+        rightTitle="The Ministry’s Expense Authority"
+      />
     </div>
   );
 }
