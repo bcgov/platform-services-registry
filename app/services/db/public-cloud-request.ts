@@ -6,6 +6,7 @@ import { parsePaginationParams } from '@/helpers/pagination';
 import { DecisionStatus, Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
+import { getRequestStatusFilter } from './request-status-filter';
 import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
@@ -92,7 +93,17 @@ export async function searchPublicCloudRequests({
   }
 
   if (status && status.length > 0) {
-    where.decisionStatus = { in: status };
+    const existingConditions: Prisma.PublicCloudRequestWhereInput[] = [];
+
+    if (where.AND) {
+      if (Array.isArray(where.AND)) {
+        existingConditions.push(...where.AND);
+      } else {
+        existingConditions.push(where.AND);
+      }
+    }
+
+    where.AND = [...existingConditions, getRequestStatusFilter<Prisma.PublicCloudRequestWhereInput>(status)];
   }
 
   const { data: docs, totalCount } = await models.publicCloudRequest.list(
