@@ -7,7 +7,7 @@ import TableBodyPublicRequests from '@/components/table/TableBodyPublicRequests'
 import { requestSorts, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPublicCloudRequestData } from '@/helpers/row-mapper';
-import { searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
+import { downloadPublicCloudRequests, searchPublicCloudRequests } from '@/services/backend/public-cloud/requests';
 import { PublicCloudRequestSimpleDecorated } from '@/types/public-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
@@ -57,6 +57,7 @@ export default publicCloudRequests(() => {
       sortOptions={requestSorts.map((v) => v.label)}
       filters={<FilterPanel />}
       isLoading={isLoading}
+      onExport={() => downloadPublicCloudRequests(snap)}
     >
       <TableBodyPublicRequests rows={requests} isLoading={isLoading} />
     </Table>

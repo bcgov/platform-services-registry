@@ -6,6 +6,7 @@ import {
   PrivateCloudRequestDetailDecorated,
   PrivateCloudRequestSearch,
 } from '@/types/private-cloud';
+import { downloadFile } from '@/utils/browser';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
 import { instance as parentInstance } from './instance';
 
@@ -56,4 +57,17 @@ export async function resendPrivateCloudRequest(id: string) {
 export async function cancelPrivateCloudRequest(id: string) {
   const result = await instance.put(`/${id}/cancel`).then((res) => res.data);
   return result as PrivateCloudRequestDetail;
+}
+
+export async function downloadPrivateCloudRequests(data: PrivateCloudRequestSearchBody) {
+  const { page, pageSize, ...filters } = data;
+
+  const result = await instance.post('/download', filters, { responseType: 'blob' }).then((res) => {
+    if (res.status === 204) return false;
+
+    downloadFile(res.data, 'private-cloud-requests.csv');
+    return true;
+  });
+
+  return result;
 }

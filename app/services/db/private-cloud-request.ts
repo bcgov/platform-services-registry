@@ -25,6 +25,8 @@ export async function searchPrivateCloudRequests({
   types,
   status,
   temporary,
+  quotaChange,
+  quotaIncrease,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
@@ -97,6 +99,18 @@ export async function searchPrivateCloudRequests({
 
   if (types && types.length > 0) {
     where.type = { in: types };
+  }
+
+  if (quotaChange) {
+    where.isQuotaChanged = true;
+  }
+
+  if (quotaIncrease) {
+    where.changes = {
+      is: {
+        quotasIncrease: true,
+      },
+    };
   }
 
   if (status && status.length > 0) {
