@@ -20,6 +20,8 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     BASE_URL: string;
     LOGOUT_URL: string;
     TOKEN_URL: string;
+    POWER_BI_TEAM_METRICS_URL: string;
+    POWER_BI_CODE_QUALITY_URL: string;
     ORGANIZATIONS: Organization[];
     ORGANIZATION_OPTIONS: { value: string; label: string }[];
     ORGANIZATION_SEARCH_OPTIONS: { value: string; label: string }[];
@@ -39,6 +41,8 @@ export const { state: appState, useValtioState: useAppState } = createGlobalValt
     BASE_URL: '',
     LOGOUT_URL: '',
     TOKEN_URL: '',
+    POWER_BI_TEAM_METRICS_URL: '',
+    POWER_BI_CODE_QUALITY_URL: '',
     ORGANIZATIONS: [],
     ORGANIZATION_OPTIONS: [],
     ORGANIZATION_SEARCH_OPTIONS: [],

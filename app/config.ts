@@ -14,6 +14,12 @@ export const BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP || new Date().toISOSt
 export const LOG_DATABASE = process.env.LOG_DATABASE === 'true';
 export const ENABLE_DELETION_CHECK = !['localdev', 'dev'].includes(APP_ENV);
 export const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+export const POWER_BI_TEAM_METRICS_URL =
+  process.env.POWER_BI_TEAM_METRICS_URL ||
+  'https://app.powerbi.com/reportEmbed?reportId=15c3c401-8c88-4ed5-8c86-d932528bb39f&groupId=504fc8bb-87db-4d59-b170-ee7d168e3d27';
+export const POWER_BI_CODE_QUALITY_URL =
+  process.env.POWER_BI_CODE_QUALITY_URL ||
+  'https://app.powerbi.com/reportEmbed?reportId=1d4f431b-b553-47d4-9dd9-ed981f6f6b16';
 
 // Keycloak environments
 export const AUTH_BASE_URL = process.env.AUTH_BASE_URL || 'http://localhost:8080';
