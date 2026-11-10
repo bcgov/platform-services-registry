@@ -241,68 +241,89 @@ export async function upsertPublicCloudBillings({
   expenseAuthorityId?: string;
   session: Session;
 }) {
-  let licencePlate = '';
-  if (product) {
-    licencePlate = product.licencePlate;
-  } else if (request) {
-    licencePlate = request.decisionData.licencePlate;
-  } else {
-    return;
-  }
+  const licencePlate = product?.licencePlate ?? request?.decisionData.licencePlate;
 
-  if (!accountCoding && !expenseAuthorityId) {
-    return null;
-  }
+  if (!licencePlate) return null;
+  if (!accountCoding && !expenseAuthorityId) return null;
 
-  await Promise.all([
-    prisma.publicCloudBilling.deleteMany({ where: { licencePlate, OR: [{ signed: false }, { approved: false }] } }),
-    prisma.task.deleteMany({
-      where: {
-        type: { in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU] },
-        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
-        data: {
-          equals: {
-            licencePlate,
-          },
-        },
-      },
-    }),
-  ]);
-
-  const billing = await prisma.publicCloudBilling.findFirst({
+  const latestBilling = await prisma.publicCloudBilling.findFirst({
     where: { licencePlate },
     orderBy: { createdAt: Prisma.SortOrder.desc },
-    skip: 0,
-    take: 1,
+  });
+  accountCoding ??= latestBilling?.accountCoding;
+  expenseAuthorityId ??= latestBilling?.expenseAuthorityId;
+
+  if (!accountCoding || !expenseAuthorityId) {
+    throw new Error(
+      `Cannot create Public Cloud billing for ${licencePlate}: missing account coding or expense authority`,
+    );
+  }
+
+  const newOneRequired =
+    !latestBilling ||
+    !_isEqual(latestBilling.accountCoding, accountCoding) ||
+    latestBilling.expenseAuthorityId !== expenseAuthorityId;
+
+  if (!newOneRequired) return null;
+
+  const pendingBillings = await prisma.publicCloudBilling.findMany({
+    where: {
+      licencePlate,
+      signed: false,
+      approved: false,
+    },
+    select: { id: true },
   });
 
-  let newOneRequired = false;
+  const taskDataFilters: Prisma.TaskWhereInput[] = [
+    { data: { equals: { licencePlate } } },
+    ...pendingBillings.map(({ id }) => ({
+      data: { equals: { licencePlate, billingId: id } },
+    })),
+  ];
 
-  if (!billing) {
-    newOneRequired = true;
-  } else {
-    if (!accountCoding) accountCoding = billing.accountCoding;
-    else if (!expenseAuthorityId) expenseAuthorityId = billing.expenseAuthorityId;
-
-    if (!_isEqual(billing.accountCoding, accountCoding) || !_isEqual(billing.expenseAuthorityId, expenseAuthorityId)) {
-      newOneRequired = true;
-    }
-  }
-
-  const proms: any = [];
-
-  if (newOneRequired && accountCoding && expenseAuthorityId) {
-    const billing = await prisma.publicCloudBilling.create({
-      data: {
-        accountCoding,
-        licencePlate,
-        expenseAuthority: { connect: { id: expenseAuthorityId } },
+  // Remove tasks associated with superseded unsigned agreements.
+  await prisma.task.deleteMany({
+    where: {
+      type: {
+        in: [TaskType.SIGN_PUBLIC_CLOUD_MOU, TaskType.REVIEW_PUBLIC_CLOUD_MOU],
       },
-      include: publicCloudBillingDetailInclude,
-    });
-    const billingDecorated = await models.publicCloudBilling.decorate(billing, session, true);
-    proms.push(tasks.create(TaskType.SIGN_PUBLIC_CLOUD_MOU, { product, request, billing: billingDecorated }));
-  }
+      status: {
+        in: [TaskStatus.ASSIGNED, TaskStatus.STARTED],
+      },
+      OR: taskDataFilters,
+    },
+  });
 
-  if (proms.length > 0) await Promise.all(proms);
+  // Preserve signed agreements, including those awaiting review.
+  await prisma.publicCloudBilling.deleteMany({
+    where: {
+      licencePlate,
+      signed: false,
+      approved: false,
+    },
+  });
+
+  // Create the new v2 billing for the current Expense Authority.
+  const newBilling = await prisma.publicCloudBilling.create({
+    data: {
+      accountCoding,
+      licencePlate,
+      agreementVersion: 2,
+      expenseAuthority: {
+        connect: { id: expenseAuthorityId },
+      },
+    },
+    include: publicCloudBillingDetailInclude,
+  });
+
+  const billingDecorated = await models.publicCloudBilling.decorate(newBilling, session, true);
+
+  await tasks.create(TaskType.SIGN_PUBLIC_CLOUD_MOU, {
+    product,
+    request,
+    billing: billingDecorated,
+  });
+
+  return billingDecorated;
 }
