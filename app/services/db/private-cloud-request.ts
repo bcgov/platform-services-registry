@@ -99,7 +99,23 @@ export async function searchPrivateCloudRequests({
   }
 
   if (status && status.length > 0) {
-    where.decisionStatus = { in: status };
+    const statusConditions: Prisma.PrivateCloudRequestWhereInput[] = [{ decisionStatus: { in: status } }];
+
+    if (status.includes(DecisionStatus.AUTO_APPROVED)) {
+      statusConditions.push({
+        decisionStatus: DecisionStatus.PROVISIONED,
+        OR: [{ decisionMakerId: null }, { decisionMakerId: { isSet: false } }],
+      });
+    }
+
+    if (status.includes(DecisionStatus.APPROVED)) {
+      statusConditions.push({
+        decisionStatus: DecisionStatus.PROVISIONED,
+        decisionMakerId: { not: null },
+      });
+    }
+
+    where.AND = [...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []), { OR: statusConditions }];
   }
 
   const { data: docs, totalCount } = await models.privateCloudRequest.list(

@@ -295,16 +295,6 @@ describe('Search Public Cloud Requests - Validations', () => {
     expect(dat1.totalCount).toBe(11);
   });
 
-  it('should successfully search 1 requests by admin', async () => {
-    await mockSessionByRole(GlobalRole.Admin);
-
-    const res1 = await searchPublicCloudRequests({ status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED] });
-    expect(res1.status).toBe(200);
-    const dat1 = await res1.json();
-
-    expect(dat1.totalCount).toBe(1);
-  });
-
   it('should successfully search 5 requests by admin with search criteria', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
@@ -317,6 +307,58 @@ describe('Search Public Cloud Requests - Validations', () => {
     const dat1 = await res1.json();
 
     expect(dat1.totalCount).toBe(4);
+  });
+
+  it('should include provisioned requests when filtering by approved statuses', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const res = await searchPublicCloudRequests({
+      status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED],
+    });
+
+    expect(res.status).toBe(200);
+
+    const data = await res.json();
+
+    expect(data.totalCount).toBe(11);
+    expect(
+      data.docs.some((req: { decisionStatus: DecisionStatus }) => req.decisionStatus === DecisionStatus.PROVISIONED),
+    ).toBe(true);
+  });
+
+  it('should return auto-approved provisioned requests', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const provisionedRequest = await prisma.publicCloudRequest.findFirst({
+      where: { decisionStatus: DecisionStatus.PROVISIONED },
+    });
+
+    expect(provisionedRequest).not.toBeNull();
+    if (!provisionedRequest) return;
+
+    const originalDecisionMakerId = provisionedRequest.decisionMakerId;
+
+    try {
+      await prisma.publicCloudRequest.update({
+        where: { id: provisionedRequest.id },
+        data: { decisionMakerId: null },
+      });
+
+      const res = await searchPublicCloudRequests({
+        status: [DecisionStatus.AUTO_APPROVED],
+      });
+
+      expect(res.status).toBe(200);
+
+      const data = await res.json();
+
+      expect(data.docs.some((req: { id: string }) => req.id === provisionedRequest.id)).toBe(true);
+    } finally {
+      await prisma.publicCloudRequest.update({
+        where: { id: provisionedRequest.id },
+        data: { decisionMakerId: originalDecisionMakerId },
+      });
+    }
   });
 
   it('should successfully search 1 request by admin with search criteria', async () => {

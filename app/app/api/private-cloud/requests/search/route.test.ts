@@ -234,14 +234,81 @@ describe('Search Private Cloud Requests - Validations', () => {
     expect(dat1.totalCount).toBe(11);
   });
 
-  it('should successfully search 1 requests by admin', async () => {
+  it('should include provisioned requests when filtering by approved statuses', async () => {
     await mockSessionByRole(GlobalRole.Admin);
 
-    const res1 = await searchPrivateCloudRequests({ status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED] });
-    expect(res1.status).toBe(200);
-    const dat1 = await res1.json();
+    const res = await searchPrivateCloudRequests({
+      status: [DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED],
+    });
 
-    expect(dat1.totalCount).toBe(1);
+    expect(res.status).toBe(200);
+
+    const data = await res.json();
+
+    expect(data.totalCount).toBe(11);
+    expect(
+      data.docs.some((req: { decisionStatus: DecisionStatus }) => req.decisionStatus === DecisionStatus.PROVISIONED),
+    ).toBe(true);
+  });
+
+  it('should distinguish auto-approved and manually approved provisioned requests', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const provisionedRequest = await prisma.privateCloudRequest.findFirst({
+      where: { decisionStatus: DecisionStatus.PROVISIONED },
+    });
+
+    expect(provisionedRequest).not.toBeNull();
+    if (!provisionedRequest) return;
+
+    const originalDecisionMakerId = provisionedRequest.decisionMakerId;
+
+    try {
+      await prisma.privateCloudRequest.update({
+        where: { id: provisionedRequest.id },
+        data: { decisionMakerId: null },
+      });
+
+      const autoApprovedRes = await searchPrivateCloudRequests({
+        status: [DecisionStatus.AUTO_APPROVED],
+      });
+
+      expect(autoApprovedRes.status).toBe(200);
+
+      const autoApprovedData = await autoApprovedRes.json();
+
+      expect(autoApprovedData.docs.some((req: { id: string }) => req.id === provisionedRequest.id)).toBe(true);
+
+      await prisma.privateCloudRequest.update({
+        where: { id: provisionedRequest.id },
+        data: { decisionMakerId: PO.id },
+      });
+
+      const manuallyApprovedRes = await searchPrivateCloudRequests({
+        status: [DecisionStatus.AUTO_APPROVED],
+      });
+
+      expect(manuallyApprovedRes.status).toBe(200);
+
+      const manuallyApprovedData = await manuallyApprovedRes.json();
+
+      expect(manuallyApprovedData.docs.some((req: { id: string }) => req.id === provisionedRequest.id)).toBe(false);
+
+      const approvedRes = await searchPrivateCloudRequests({
+        status: [DecisionStatus.APPROVED],
+      });
+
+      expect(approvedRes.status).toBe(200);
+
+      const approvedData = await approvedRes.json();
+
+      expect(approvedData.docs.some((req: { id: string }) => req.id === provisionedRequest.id)).toBe(true);
+    } finally {
+      await prisma.privateCloudRequest.update({
+        where: { id: provisionedRequest.id },
+        data: { decisionMakerId: originalDecisionMakerId },
+      });
+    }
   });
 
   it('should successfully search 5 requests by admin with search criteria', async () => {
