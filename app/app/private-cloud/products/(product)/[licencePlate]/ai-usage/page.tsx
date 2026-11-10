@@ -1,80 +1,127 @@
 'use client';
+
+import { Alert, SegmentedControl } from '@mantine/core';
 import { useParams } from 'next/navigation';
-import React from 'react';
-import { usePrivateProductState } from '@/states/global';
+import { useState } from 'react';
+import { useAppState, usePrivateProductState } from '@/states/global';
 
 export default function AIUsagePage() {
-  const params = useParams();
-  const licencePlate = params?.licencePlate as string;
+  const { licencePlate } = useParams();
+  const [view, setView] = useState('team');
   const [, snap] = usePrivateProductState();
-
-  const workspaceId = '504fc8bb-87db-4d59-b170-ee7d168e3d27';
-  const reportId = '15c3c401-8c88-4ed5-8c86-d932528bb39f';
+  const [, appSnap] = useAppState();
 
   const product = snap.currentProduct;
+  const isCodeQuality = view === 'quality';
+  const heading = isCodeQuality ? 'Code Quality AI Usage Metrics' : 'Team AI Usage Metrics';
   const teamUsers = product
     ? [product.projectOwner, product.primaryTechnicalLead, product.secondaryTechnicalLead, ...product.members]
     : [];
   const teamGitHubUsernames = Array.from(
-    new Set(teamUsers.flatMap((user) => (user?.githubAccount?.username ? [user.githubAccount.username] : []))),
+    new Set(
+      teamUsers
+        .map((user) => user?.githubAccount?.username?.trim())
+        .filter((username): username is string =>
+          /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/.test(username ?? ''),
+        ),
+    ),
   );
+  const repositoryNames = Array.from(
+    new Set(
+      (product?.repositories ?? [])
+        .map(({ url }) => {
+          const trimmedUrl = url.trim();
+          const normalizedUrl = trimmedUrl.startsWith('http') ? trimmedUrl : `https://${trimmedUrl}`;
+          if (!URL.canParse(normalizedUrl)) return undefined;
+          return new URL(normalizedUrl).pathname
+            .replace(/\/+$/, '')
+            .split('/')
+            .pop()
+            ?.replace(/\.git$/, '');
+        })
+        .filter((name): name is string => Boolean(name) && /^[A-Za-z0-9._-]{1,100}$/.test(name ?? '')),
+    ),
+  );
+  const filterValues = isCodeQuality ? repositoryNames : teamGitHubUsernames;
+  const reportUrl = isCodeQuality ? appSnap.info.POWER_BI_CODE_QUALITY_URL : appSnap.info.POWER_BI_TEAM_METRICS_URL;
+  const embedUrl = URL.canParse(reportUrl) ? new URL(reportUrl) : null;
+  const validReportUrl =
+    embedUrl?.origin === 'https://app.powerbi.com' &&
+    embedUrl.pathname === '/reportEmbed' &&
+    !embedUrl.username &&
+    !embedUrl.password &&
+    /^[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}$/.test(embedUrl.searchParams.get('reportId') ?? '');
 
-  const formattedUsernames = teamGitHubUsernames.map((username) => `'${username}'`).join(',');
+  let message = '';
+  if (!product || product.licencePlate !== licencePlate) {
+    message = 'Product information is unavailable. Please reload the page.';
+  } else if (filterValues.length === 0) {
+    message = isCodeQuality
+      ? 'No valid repositories configured. Add repository URLs to this product to view code quality metrics.'
+      : 'There are no valid GitHub usernames associated with the team members for this project.';
+  } else if (!validReportUrl) {
+    message = 'The dashboard URL is missing or invalid. Please contact the Registry team.';
+  }
 
-  const filterString = `ai_credit_usage/username in (${formattedUsernames})`;
-
-  const embedUrl = `https://app.powerbi.com/reportEmbed?reportId=${reportId}&groupId=${workspaceId}&autoAuth=true&filterPaneEnabled=false&navContentPaneEnabled=false&filter=${filterString}`;
-
-  if (teamGitHubUsernames.length === 0) {
-    return (
-      <div style={{ padding: '24px', backgroundColor: '#ffffff', borderRadius: '8px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#003366', margin: 0 }}>
-          No Team GitHub Usernames Found
-        </h2>
-        <p style={{ color: '#4b5563', marginTop: '8px' }}>
-          There are no GitHub usernames associated with the team members for this project.
-        </p>
-      </div>
+  if (embedUrl && !message) {
+    const formattedValues = filterValues.map((value) => `'${value.replace(/'/g, "''")}'`).join(',');
+    embedUrl.searchParams.set(
+      'filter',
+      `ai_credit_usage/${isCodeQuality ? 'repository' : 'username'} in (${formattedValues})`,
     );
+    embedUrl.searchParams.set('autoAuth', 'true');
+    embedUrl.searchParams.set('filterPaneEnabled', 'false');
+    embedUrl.searchParams.set('navContentPaneEnabled', 'false');
+    // Power BI URL filters require %20 for spaces; URLSearchParams encodes them as '+'.
+    embedUrl.search = embedUrl.search.replace(/\+/g, '%20');
   }
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#ffffff', borderRadius: '8px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#003366', margin: 0 }}>Team AI Usage Metrics</h2>
-        <p style={{ color: '#4b5563', marginTop: '8px' }}>
-          Showing telemetry for team on project: <strong style={{ color: '#000' }}>{licencePlate}</strong>
+    <div className="rounded-lg bg-white p-6">
+      <div className="mb-6">
+        <div className="flex flex-wrap items-center gap-4">
+          <h2 className="m-0 text-2xl font-semibold text-bcblue">{heading}</h2>
+          <SegmentedControl
+            aria-label="AI usage view"
+            value={view}
+            onChange={setView}
+            data={[
+              { label: 'Team Metrics', value: 'team' },
+              { label: 'Code Quality', value: 'quality' },
+            ]}
+          />
+        </div>
+        <p className="mt-2 text-gray-600">
+          {isCodeQuality
+            ? 'Showing code quality metrics for repositories on project: '
+            : 'Showing telemetry for team on project: '}
+          <strong className="text-black">{licencePlate}</strong>
         </p>
       </div>
-      {/* Fallback link just in case */}
-      <div style={{ marginBottom: '24px' }}>
-        <a
-          href={embedUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#1a56db', textDecoration: 'underline' }}
-        >
-          Open full dashboard
-        </a>
-      </div>
-      <div
-        style={{
-          aspectRatio: '16/9',
-          width: '100%',
-          border: '1px solid #e5e7eb',
-          borderRadius: '8px',
-          overflow: 'hidden',
-        }}
-      >
-        <iframe
-          title="Team Centric AI Usage Report"
-          src={embedUrl}
-          width="100%"
-          height="100%"
-          style={{ border: 'none' }}
-          allowFullScreen
-        />
-      </div>
+      {message ? (
+        <Alert color="blue">{message}</Alert>
+      ) : (
+        <>
+          <div className="mb-6">
+            <a href={embedUrl?.href} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">
+              Open full dashboard
+            </a>
+          </div>
+          <div className="aspect-video w-full overflow-hidden rounded-lg border border-gray-200">
+            <iframe
+              key={view}
+              title={isCodeQuality ? 'Code Quality AI Usage Report' : 'Team Centric AI Usage Report'}
+              src={embedUrl?.href}
+              width="100%"
+              height="100%"
+              className="border-0"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              referrerPolicy="no-referrer"
+              allowFullScreen
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

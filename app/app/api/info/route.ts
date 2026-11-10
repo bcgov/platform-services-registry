@@ -9,6 +9,8 @@ import {
   BASE_URL,
   AUTH_SERVER_URL,
   AUTH_RELM,
+  POWER_BI_TEAM_METRICS_URL,
+  POWER_BI_CODE_QUALITY_URL,
 } from '@/config';
 import createApiHandler from '@/core/api-handler';
 import prisma from '@/core/prisma';
@@ -32,6 +34,8 @@ export const GET = apiHandler(async () => {
     BASE_URL,
     LOGOUT_URL,
     TOKEN_URL,
+    POWER_BI_TEAM_METRICS_URL,
+    POWER_BI_CODE_QUALITY_URL,
     ORGANIZATIONS: orgs,
   });
 });
