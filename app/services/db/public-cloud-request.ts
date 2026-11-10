@@ -6,6 +6,7 @@ import { parsePaginationParams } from '@/helpers/pagination';
 import { DecisionStatus, Prisma } from '@/prisma/client';
 import { models } from '@/services/db';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
+import { getRequestStatusFilter } from './request-status-filter';
 import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
@@ -92,23 +93,17 @@ export async function searchPublicCloudRequests({
   }
 
   if (status && status.length > 0) {
-    const statusConditions: Prisma.PublicCloudRequestWhereInput[] = [{ decisionStatus: { in: status } }];
+    const existingConditions: Prisma.PublicCloudRequestWhereInput[] = [];
 
-    if (status.includes(DecisionStatus.AUTO_APPROVED)) {
-      statusConditions.push({
-        decisionStatus: DecisionStatus.PROVISIONED,
-        OR: [{ decisionMakerId: null }, { decisionMakerId: { isSet: false } }],
-      });
+    if (where.AND) {
+      if (Array.isArray(where.AND)) {
+        existingConditions.push(...where.AND);
+      } else {
+        existingConditions.push(where.AND);
+      }
     }
 
-    if (status.includes(DecisionStatus.APPROVED)) {
-      statusConditions.push({
-        decisionStatus: DecisionStatus.PROVISIONED,
-        decisionMakerId: { not: null },
-      });
-    }
-
-    where.AND = [...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []), { OR: statusConditions }];
+    where.AND = [...existingConditions, getRequestStatusFilter<Prisma.PublicCloudRequestWhereInput>(status)];
   }
 
   const { data: docs, totalCount } = await models.publicCloudRequest.list(

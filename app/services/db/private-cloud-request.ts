@@ -7,6 +7,7 @@ import { DecisionStatus, Prisma, RequestType } from '@/prisma/client';
 import { models, publicCloudRequestDetailInclude } from '@/services/db';
 import { PrivateCloudRequestSearch } from '@/types/private-cloud';
 import { PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
+import { getRequestStatusFilter } from './request-status-filter';
 import { getMatchingUserIds } from './user';
 
 const defaultSortKey = 'updatedAt';
@@ -99,23 +100,17 @@ export async function searchPrivateCloudRequests({
   }
 
   if (status && status.length > 0) {
-    const statusConditions: Prisma.PrivateCloudRequestWhereInput[] = [{ decisionStatus: { in: status } }];
+    const existingConditions: Prisma.PrivateCloudRequestWhereInput[] = [];
 
-    if (status.includes(DecisionStatus.AUTO_APPROVED)) {
-      statusConditions.push({
-        decisionStatus: DecisionStatus.PROVISIONED,
-        OR: [{ decisionMakerId: null }, { decisionMakerId: { isSet: false } }],
-      });
+    if (where.AND) {
+      if (Array.isArray(where.AND)) {
+        existingConditions.push(...where.AND);
+      } else {
+        existingConditions.push(where.AND);
+      }
     }
 
-    if (status.includes(DecisionStatus.APPROVED)) {
-      statusConditions.push({
-        decisionStatus: DecisionStatus.PROVISIONED,
-        decisionMakerId: { not: null },
-      });
-    }
-
-    where.AND = [...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []), { OR: statusConditions }];
+    where.AND = [...existingConditions, getRequestStatusFilter<Prisma.PrivateCloudRequestWhereInput>(status)];
   }
 
   const { data: docs, totalCount } = await models.privateCloudRequest.list(
