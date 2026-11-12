@@ -104,7 +104,7 @@ mongodb:
   image:
     registry: ghcr.io
     repository: bcgov/bitnami-mongodb
-    tag: 9.0.4
+    tag: 9.0.8
     digest: ""
 
   architecture: replicaset
