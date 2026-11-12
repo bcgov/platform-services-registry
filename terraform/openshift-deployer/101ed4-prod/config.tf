@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.17.1"
+  required_version = "1.17.2"
 
   backend "kubernetes" {
     namespace     = "101ed4-prod"
