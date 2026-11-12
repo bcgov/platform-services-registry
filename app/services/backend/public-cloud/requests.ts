@@ -76,7 +76,7 @@ export async function cancelPublicCloudRequest(id: string, decisionComment: Comm
 }
 
 export async function downloadPublicCloudRequests(data: PublicCloudRequestSearchBody) {
-  const { page, pageSize, ...filters } = data;
+  const { page, pageSize, ...filters } = prepareSearchPayload(data);
 
   const result = await instance.post('/download', filters, { responseType: 'blob' }).then((res) => {
     if (res.status === 204) return false;

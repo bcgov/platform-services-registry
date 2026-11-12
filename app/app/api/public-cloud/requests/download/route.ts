@@ -13,6 +13,7 @@ export const POST = createApiHandler({
   const { docs } = await searchPublicCloudRequests({
     ...filters,
     session,
+    forExport: true,
   });
 
   if (docs.length === 0) {
