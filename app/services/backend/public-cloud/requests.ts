@@ -6,6 +6,7 @@ import {
   PublicCloudRequestDetailDecorated,
   PublicCloudRequestSearch,
 } from '@/types/public-cloud';
+import { downloadFile } from '@/utils/browser';
 import { PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
 import { Comment } from '@/validation-schemas/shared';
 import { instance as parentInstance } from './instance';
@@ -72,4 +73,17 @@ export async function resendPublicCloudRequest(id: string) {
 export async function cancelPublicCloudRequest(id: string, decisionComment: Comment) {
   const result = await instance.post(`/${id}/cancel`, { decisionComment }).then((res) => res.data);
   return result as PublicCloudRequestDetail;
+}
+
+export async function downloadPublicCloudRequests(data: PublicCloudRequestSearchBody) {
+  const { page, pageSize, ...filters } = prepareSearchPayload(data);
+
+  const result = await instance.post('/download', filters, { responseType: 'blob' }).then((res) => {
+    if (res.status === 204) return false;
+
+    downloadFile(res.data, 'public-cloud-requests.csv');
+    return true;
+  });
+
+  return result;
 }

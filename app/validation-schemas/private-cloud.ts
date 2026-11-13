@@ -230,6 +230,8 @@ export const privateCloudRequestSearchBodySchema = z.object({
   types: z.array(z.enum(RequestType)).optional(),
   status: z.array(z.enum(DecisionStatus)).optional(),
   temporary: z.array(z.enum(['YES', 'NO'])).optional(),
+  quotaChange: z.boolean().optional(),
+  quotaIncrease: z.boolean().optional(),
   sortValue: z.string().optional(),
   sortKey: z.string().optional(),
   sortOrder: z.preprocess(processEnumString, z.enum(Prisma.SortOrder)).optional(),

@@ -7,7 +7,7 @@ import TableBodyPrivateRequests from '@/components/table/TableBodyPrivateRequest
 import { requestSorts, GlobalRole } from '@/constants';
 import createClientPage from '@/core/client-page';
 import { processPrivateCloudRequestData } from '@/helpers/row-mapper';
-import { searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
+import { downloadPrivateCloudRequests, searchPrivateCloudRequests } from '@/services/backend/private-cloud/requests';
 import { PrivateCloudRequestSimpleDecorated } from '@/types/private-cloud';
 import FilterPanel from './FilterPanel';
 import { pageState } from './state';
@@ -57,6 +57,7 @@ export default privateCloudRequests(() => {
       sortOptions={requestSorts.map((v) => v.label)}
       filters={<FilterPanel />}
       isLoading={isLoading}
+      onExport={() => downloadPrivateCloudRequests(snap)}
     >
       <TableBodyPrivateRequests rows={requests} isLoading={isLoading} />
     </Table>
