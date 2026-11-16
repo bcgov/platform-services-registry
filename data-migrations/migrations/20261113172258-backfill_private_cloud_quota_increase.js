@@ -1,7 +1,7 @@
 const BATCH_SIZE = 100;
 
 const environments = ['development', 'test', 'production', 'tools'];
-const resources = ['cpu', 'memory', 'storage'];
+const resources = ['cpu', 'memory', 'storage', 'gpu'];
 
 function getQuotaIncrease(original, decision) {
   if (!original || !decision) return null;
