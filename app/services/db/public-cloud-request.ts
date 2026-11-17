@@ -26,11 +26,13 @@ export async function searchPublicCloudRequests({
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
+  forExport = false,
 }: PublicCloudRequestSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
   extraFilter?: Prisma.PublicCloudRequestWhereInput;
+  forExport?: boolean;
 }) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
@@ -112,7 +114,16 @@ export async function searchPublicCloudRequests({
       skip,
       take,
       orderBy,
-      includeCount: true,
+      includeCount: !forExport,
+      ...(forExport && {
+        select: {
+          licencePlate: true,
+          type: true,
+          decisionStatus: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
     },
     session,
   );

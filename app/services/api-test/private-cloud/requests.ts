@@ -1,4 +1,5 @@
 import { POST as _makePrivateCloudRequestDecision } from '@/app/api/private-cloud/requests/[id]/decision/route';
+import { POST as _downloadPrivateCloudRequests } from '@/app/api/private-cloud/requests/download/route';
 import { POST as _searchPrivateCloudRequests } from '@/app/api/private-cloud/requests/search/route';
 import { PrivateCloudRequestSimple } from '@/types/private-cloud';
 import { PrivateCloudRequestDecisionBody, PrivateCloudRequestSearchBody } from '@/validation-schemas/private-cloud';
@@ -20,4 +21,8 @@ export async function makePrivateCloudRequestDecision(id: string, data: Partial<
 export async function searchPrivateCloudRequests(data: Partial<PrivateCloudRequestSearchBody>) {
   const result = await requestCollectionRoute.post(_searchPrivateCloudRequests, '/search', data);
   return result;
+}
+
+export async function downloadPrivateCloudRequests(data: Partial<PrivateCloudRequestSearchBody> = {}) {
+  return requestCollectionRoute.post(_downloadPrivateCloudRequests, '/download', data);
 }

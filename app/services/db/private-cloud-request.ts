@@ -25,15 +25,19 @@ export async function searchPrivateCloudRequests({
   types,
   status,
   temporary,
+  quotaChange,
+  quotaIncrease,
   search,
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
+  forExport = false,
 }: PrivateCloudRequestSearchBody & {
   session: Session;
   skip?: number;
   take?: number;
   extraFilter?: Prisma.PrivateCloudRequestWhereInput;
+  forExport?: boolean;
 }) {
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
@@ -99,6 +103,18 @@ export async function searchPrivateCloudRequests({
     where.type = { in: types };
   }
 
+  if (quotaChange) {
+    where.isQuotaChanged = true;
+  }
+
+  if (quotaIncrease) {
+    where.changes = {
+      is: {
+        quotasIncrease: true,
+      },
+    };
+  }
+
   if (status && status.length > 0) {
     const existingConditions: Prisma.PrivateCloudRequestWhereInput[] = [];
 
@@ -119,7 +135,17 @@ export async function searchPrivateCloudRequests({
       skip,
       take,
       orderBy: orderBy ?? defaultOrderBy,
-      includeCount: true,
+      includeCount: !forExport,
+      ...(forExport && {
+        select: {
+          licencePlate: true,
+          type: true,
+          decisionStatus: true,
+          createdAt: true,
+          updatedAt: true,
+          isQuotaChanged: true,
+        },
+      }),
     },
     session,
   );

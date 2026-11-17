@@ -108,10 +108,10 @@ export default async function updateOp({
   const previousRequest = await getLastEffectivePrivateCloudRequest(product.licencePlate);
 
   const newOrganization = await prisma.organization.findUnique({ where: { id: organizationId } });
-  const { changes, ...otherChangeMeta } = comparePrivateProductData(
-    { ...comparisonData, organization: newOrganization },
-    previousRequest?.decisionData,
-  );
+  const { changes, ...otherChangeMeta } = comparePrivateProductData(previousRequest?.decisionData, {
+    ...comparisonData,
+    organization: newOrganization,
+  });
 
   const quotaChangeInfo = quotaChangeStatus.isEligibleForAutoApproval
     ? {}

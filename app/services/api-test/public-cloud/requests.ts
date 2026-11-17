@@ -1,4 +1,5 @@
 import { POST as _makePublicCloudRequestDecision } from '@/app/api/public-cloud/requests/[id]/decision/route';
+import { POST as _downloadPublicCloudRequests } from '@/app/api/public-cloud/requests/download/route';
 import { POST as _searchPublicCloudRequests } from '@/app/api/public-cloud/requests/search/route';
 import { PublicCloudRequestSimple } from '@/types/public-cloud';
 import { PublicCloudRequestDecisionBody, PublicCloudRequestSearchBody } from '@/validation-schemas/public-cloud';
@@ -20,4 +21,8 @@ export async function makePublicCloudRequestDecision(id: string, data: Partial<P
     pathParams: { id },
   });
   return result;
+}
+
+export async function downloadPublicCloudRequests(data: Partial<PublicCloudRequestSearchBody> = {}) {
+  return requestCollectionRoute.post(_downloadPublicCloudRequests, '/download', data);
 }

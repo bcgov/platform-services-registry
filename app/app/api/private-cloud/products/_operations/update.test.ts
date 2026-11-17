@@ -287,6 +287,64 @@ describe('Update Private Cloud Product - Validations', () => {
     expect(response.status).toBe(200);
   });
 
+  it('should set quotasIncrease to true when quota is increased', async () => {
+    const { request } = await createAndProvisionProduct(Cluster.SILVER);
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const oldCpu = request.decisionData.resourceRequests.development.cpu;
+
+    const response = await editPrivateCloudProduct(request.licencePlate, {
+      ...request.decisionData,
+      isAgMinistry: request.project?.organization.isAgMinistry || false,
+      resourceRequests: {
+        ...request.decisionData.resourceRequests,
+        development: {
+          ...request.decisionData.resourceRequests.development,
+          cpu: oldCpu + 1,
+        },
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    const updatedRequest = await response.json();
+
+    expect(updatedRequest.isQuotaChanged).toBe(true);
+    expect(updatedRequest.changes?.quotasChanged).toBe(true);
+    expect(updatedRequest.changes?.quotasIncrease).toBe(true);
+  });
+
+  it('should set quotasIncrease to false when quota is decreased', async () => {
+    const { request } = await createAndProvisionProduct(Cluster.SILVER);
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const oldCpu = request.decisionData.resourceRequests.development.cpu;
+
+    expect(oldCpu).toBeGreaterThanOrEqual(0.5);
+
+    const response = await editPrivateCloudProduct(request.licencePlate, {
+      ...request.decisionData,
+      isAgMinistry: request.project?.organization.isAgMinistry || false,
+      resourceRequests: {
+        ...request.decisionData.resourceRequests,
+        development: {
+          ...request.decisionData.resourceRequests.development,
+          cpu: oldCpu - 0.5,
+        },
+      },
+    });
+
+    expect(response.status).toBe(200);
+
+    const updatedRequest = await response.json();
+
+    expect(updatedRequest.isQuotaChanged).toBe(true);
+    expect(updatedRequest.changes?.quotasChanged).toBe(true);
+    expect(updatedRequest.changes?.quotasIncrease).toBe(false);
+  });
+
   it('should reset GPU quota to 0 for unsupported clusters on update', async () => {
     const { request } = await createAndProvisionProduct(Cluster.SILVER);
 

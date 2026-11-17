@@ -1,10 +1,10 @@
+import { Switch } from '@mantine/core';
 import { useSnapshot } from 'valtio';
 import FormMultiSelect from '@/components/generic/select/FormMultiSelect';
 import { clustersWithoutDR } from '@/constants';
 import { Cluster, DecisionStatus, RequestType } from '@/prisma/client';
 import { appState } from '@/states/global';
 import { pageState } from './state';
-
 export default function FilterPanel() {
   const appSnapshot = useSnapshot(appState);
   const pageSnapshot = useSnapshot(pageState);
@@ -66,6 +66,40 @@ export default function FilterPanel() {
         }}
         classNames={{ wrapper: 'col-span-2' }}
       />
+      <div className="col-span-4 flex items-center">
+        <Switch
+          label="Quota Change only"
+          checked={pageSnapshot.quotaChange ?? false}
+          onChange={(event) => {
+            pageState.quotaChange = event.currentTarget.checked;
+
+            if (!event.currentTarget.checked) {
+              pageState.quotaIncrease = false;
+            }
+
+            pageState.page = 1;
+          }}
+          classNames={{
+            label: 'whitespace-nowrap',
+          }}
+        />
+      </div>
+      <div className="col-span-4 flex items-center">
+        <Switch
+          label="Quota Increase only"
+          checked={pageSnapshot.quotaIncrease ?? false}
+          onChange={(event) => {
+            pageState.quotaIncrease = event.currentTarget.checked;
+
+            if (event.currentTarget.checked) {
+              pageState.quotaChange = true;
+            }
+
+            pageState.page = 1;
+          }}
+          classNames={{ label: 'whitespace-nowrap' }}
+        />
+      </div>
     </div>
   );
 }

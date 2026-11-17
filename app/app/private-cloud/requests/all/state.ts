@@ -10,6 +10,8 @@ export const pageState = proxy<PrivateCloudRequestSearchBody>({
   ministries: [],
   clusters: [],
   temporary: [],
+  quotaChange: false,
+  quotaIncrease: false,
   status: [
     DecisionStatus.PENDING,
     DecisionStatus.APPROVED,
