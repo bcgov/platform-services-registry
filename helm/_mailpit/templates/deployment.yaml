@@ -36,7 +36,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ $deploymentTag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - --db-file
+            - --database
             - "/var/lib/mailpit/mailpit.db"
           env:
             - name: DEPLOYMENT_TAG
