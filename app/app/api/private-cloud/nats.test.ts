@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { PRIVATE_NATS_URL } from '@/config';
+import { PRIVATE_NATS_URL, PRIVATE_NATS_USERNAME, PRIVATE_NATS_PASSWORD } from '@/config';
 import {
   createPrivateCloudProduct,
   updatePrivateCloudProduct,
@@ -65,6 +65,10 @@ describe('Private Cloud NATs', () => {
         namespaces: getExpectedNamespaces(decisionData.licencePlate),
         profile_id: expect.any(String),
       }),
+      {
+        user: PRIVATE_NATS_USERNAME,
+        pass: PRIVATE_NATS_PASSWORD,
+      },
     );
   });
 
@@ -88,6 +92,10 @@ describe('Private Cloud NATs', () => {
         namespaces: getExpectedNamespaces(decisionData.licencePlate),
         profile_id: expect.any(String),
       }),
+      {
+        user: PRIVATE_NATS_USERNAME,
+        pass: PRIVATE_NATS_PASSWORD,
+      },
     );
   });
 
@@ -111,6 +119,10 @@ describe('Private Cloud NATs', () => {
         namespaces: getExpectedNamespaces(decisionData.licencePlate),
         profile_id: expect.any(String),
       }),
+      {
+        user: PRIVATE_NATS_USERNAME,
+        pass: PRIVATE_NATS_PASSWORD,
+      },
     );
   });
 });

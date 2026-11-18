@@ -1,4 +1,11 @@
-import { PRIVATE_NATS_URL, PUBLIC_NATS_URL } from '@/config';
+import {
+  PRIVATE_NATS_URL,
+  PRIVATE_NATS_USERNAME,
+  PRIVATE_NATS_PASSWORD,
+  PUBLIC_NATS_URL,
+  PUBLIC_NATS_USERNAME,
+  PUBLIC_NATS_PASSWORD,
+} from '@/config';
 import { RequestType } from '@/prisma/client';
 import { isEligibleForDeletion } from '@/services/k8s/reads';
 import createPrivateCloudNatsMessage from '@/services/nats/private-cloud';
@@ -27,7 +34,10 @@ export async function sendPrivateCloudNatsMessage(
 
   const messageBody = await createPrivateCloudNatsMessage(request, contactChanged);
 
-  await sendNatsMessage(PRIVATE_NATS_URL, natsSubject, messageBody);
+  await sendNatsMessage(PRIVATE_NATS_URL, natsSubject, messageBody, {
+    user: PRIVATE_NATS_USERNAME,
+    pass: PRIVATE_NATS_PASSWORD,
+  });
 }
 
 export async function sendPublicCloudNatsMessage(
@@ -38,5 +48,8 @@ export async function sendPublicCloudNatsMessage(
 
   const messageBody = await createPublicCloudNatsMessage(request);
 
-  await sendNatsMessage(PUBLIC_NATS_URL, natsSubject, messageBody);
+  await sendNatsMessage(PUBLIC_NATS_URL, natsSubject, messageBody, {
+    user: PUBLIC_NATS_USERNAME,
+    pass: PUBLIC_NATS_PASSWORD,
+  });
 }

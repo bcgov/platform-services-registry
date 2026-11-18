@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { PUBLIC_NATS_URL } from '@/config';
+import { PUBLIC_NATS_URL, PUBLIC_NATS_USERNAME, PUBLIC_NATS_PASSWORD } from '@/config';
 import {
   createPublicCloudProduct,
   updatePublicCloudProduct,
@@ -69,6 +69,10 @@ describe('Public Cloud NATs', () => {
         PUBLIC_NATS_URL,
         `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
         getExpectedNatsMessage(decisionData, 'CREATE'),
+        {
+          user: PUBLIC_NATS_USERNAME,
+          pass: PUBLIC_NATS_PASSWORD,
+        },
       );
     }
   });
@@ -85,6 +89,10 @@ describe('Public Cloud NATs', () => {
         PUBLIC_NATS_URL,
         `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
         getExpectedNatsMessage(decisionData, 'EDIT'),
+        {
+          user: PUBLIC_NATS_USERNAME,
+          pass: PUBLIC_NATS_PASSWORD,
+        },
       );
     }
   });
@@ -100,6 +108,10 @@ describe('Public Cloud NATs', () => {
         PUBLIC_NATS_URL,
         `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
         getExpectedNatsMessage(decisionData, 'DELETE'),
+        {
+          user: PUBLIC_NATS_USERNAME,
+          pass: PUBLIC_NATS_PASSWORD,
+        },
       );
     }
   });
