@@ -73,16 +73,16 @@ spec:
             export AIRFLOW_FINANCE_DAG_ID='{{ .Data.data.AIRFLOW_FINANCE_DAG_ID }}'
             {{- end }}
             {{- if .Data.data.PRIVATE_NATS_USERNAME }}
-            export PRIVATE_NATS_USERNAME='{{ .Data.data.PRIVATE_NATS_USERNAME }}'
+            export PRIVATE_NATS_USERNAME='{{ .Data.data.PRIVATE_NATS_USERNAME | replaceAll "'" "'\"'\"'" }}'
             {{- end }}
             {{- if .Data.data.PRIVATE_NATS_PASSWORD }}
-            export PRIVATE_NATS_PASSWORD='{{ .Data.data.PRIVATE_NATS_PASSWORD }}'
+            export PRIVATE_NATS_PASSWORD='{{ .Data.data.PRIVATE_NATS_PASSWORD | replaceAll "'" "'\"'\"'" }}'
             {{- end }}
             {{- if .Data.data.PUBLIC_NATS_USERNAME }}
-            export PUBLIC_NATS_USERNAME='{{ .Data.data.PUBLIC_NATS_USERNAME }}'
+            export PUBLIC_NATS_USERNAME='{{ .Data.data.PUBLIC_NATS_USERNAME | replaceAll "'" "'\"'\"'" }}'
             {{- end }}
             {{- if .Data.data.PUBLIC_NATS_PASSWORD }}
-            export PUBLIC_NATS_PASSWORD='{{ .Data.data.PUBLIC_NATS_PASSWORD }}'
+            export PUBLIC_NATS_PASSWORD='{{ .Data.data.PUBLIC_NATS_PASSWORD | replaceAll "'" "'\"'\"'" }}'
             {{- end }}
           {{- end }}`}}
       labels:
