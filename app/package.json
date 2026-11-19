@@ -86,6 +86,8 @@
     "next": "^16.0.0",
     "next-auth": "^4.24.12",
     "postcss": "8.5.30",
+    "powerbi-client": "^2.25.0",
+    "powerbi-client-react": "^2.0.2",
     "react": "^19.2.1",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.2.8",

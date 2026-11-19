@@ -14,12 +14,6 @@ export const BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP || new Date().toISOSt
 export const LOG_DATABASE = process.env.LOG_DATABASE === 'true';
 export const ENABLE_DELETION_CHECK = !['localdev', 'dev'].includes(APP_ENV);
 export const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-export const POWER_BI_TEAM_METRICS_URL =
-  process.env.POWER_BI_TEAM_METRICS_URL ||
-  'https://app.powerbi.com/reportEmbed?reportId=15c3c401-8c88-4ed5-8c86-d932528bb39f&groupId=504fc8bb-87db-4d59-b170-ee7d168e3d27';
-export const POWER_BI_CODE_QUALITY_URL =
-  process.env.POWER_BI_CODE_QUALITY_URL ||
-  'https://app.powerbi.com/reportEmbed?reportId=1d4f431b-b553-47d4-9dd9-ed981f6f6b16';
 
 // Keycloak environments
 export const AUTH_BASE_URL = process.env.AUTH_BASE_URL || 'http://localhost:8080';
@@ -77,6 +71,15 @@ export const MS_GRAPH_API_CLIENT_PRIVATE_KEY = decodeEscapedNewlines(process.env
 export const MS_GRAPH_API_CLIENT_CERTIFICATE = decodeEscapedNewlines(process.env.MS_GRAPH_API_CLIENT_CERTIFICATE ?? '');
 export const MS_GRAPH_API_PROXY_URL = process.env.MS_GRAPH_API_PROXY_URL || 'http://localhost:8000';
 export const USE_MS_GRAPH_API_PROXY = process.env.USE_MS_GRAPH_API_PROXY === 'true';
+
+// Fabric / Power BI "app owns data" embedding via a service principal.
+export const POWER_BI_API_URL = process.env.POWER_BI_API_URL || 'https://api.powerbi.com/v1.0/myorg';
+export const FABRIC_TENANT_ID = process.env.FABRIC_TENANT_ID || '';
+export const FABRIC_CLIENT_ID = process.env.FABRIC_CLIENT_ID || '';
+export const FABRIC_CLIENT_SECRET = process.env.FABRIC_CLIENT_SECRET || '';
+export const FABRIC_WORKSPACE_ID = process.env.FABRIC_WORKSPACE_ID || '';
+export const FABRIC_AI_USAGE_TEAM_REPORT_ID = process.env.FABRIC_AI_USAGE_TEAM_REPORT_ID || '';
+export const FABRIC_AI_USAGE_CODE_QUALITY_REPORT_ID = process.env.FABRIC_AI_USAGE_CODE_QUALITY_REPORT_ID || '';
 
 export const PUBLIC_AZURE_ACCESS_EMAILS = process.env.PUBLIC_AZURE_ACCESS_EMAILS || '';
 export const WEASYPRINT_URL = process.env.WEASYPRINT_URL || 'http://localhost:8090';
