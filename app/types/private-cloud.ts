@@ -57,7 +57,17 @@ export type PrivateCloudProductDetail = Prisma.PrivateCloudProductGetPayload<{
   activeRequest?: Prisma.PrivateCloudRequestGetPayload<null> | null;
 };
 
-type _PrivateCloudProductDetail = Omit<PrivateCloudProductDetail, 'members'> & ExtendedPrivateCloudProductMembersData;
+type UserWithGitHubAccount = User & { githubAccount: { username: string; accountId: string } | null };
+
+type _PrivateCloudProductDetail = Omit<
+  PrivateCloudProductDetail,
+  'members' | 'projectOwner' | 'primaryTechnicalLead' | 'secondaryTechnicalLead'
+> & {
+  projectOwner: UserWithGitHubAccount;
+  primaryTechnicalLead: UserWithGitHubAccount;
+  secondaryTechnicalLead: UserWithGitHubAccount | null;
+  members: (PrivateCloudProductMember & UserWithGitHubAccount)[];
+};
 
 export type PrivateCloudProductDetailDecorated = _PrivateCloudProductDetail & PrivateCloudProductDecorate;
 
