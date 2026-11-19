@@ -57,6 +57,12 @@ export const PUBLIC_NATS_PORT = process.env.PUBLIC_NATS_PORT || '4222';
 export const PRIVATE_NATS_URL = `${PRIVATE_NATS_HOST}:${PRIVATE_NATS_PORT}`;
 export const PUBLIC_NATS_URL = `${PUBLIC_NATS_HOST}:${PUBLIC_NATS_PORT}`;
 
+export const PRIVATE_NATS_USERNAME = process.env.PRIVATE_NATS_USERNAME;
+export const PRIVATE_NATS_PASSWORD = process.env.PRIVATE_NATS_PASSWORD;
+
+export const PUBLIC_NATS_USERNAME = process.env.PUBLIC_NATS_USERNAME;
+export const PUBLIC_NATS_PASSWORD = process.env.PUBLIC_NATS_PASSWORD;
+
 export const MS_GRAPH_API_URL = process.env.MS_GRAPH_API_URL || 'https://graph.microsoft.com';
 export const MS_GRAPH_API_TENANT_ID = process.env.MS_GRAPH_API_TENANT_ID || '';
 export const MS_GRAPH_API_TOKEN_ENDPOINT =
