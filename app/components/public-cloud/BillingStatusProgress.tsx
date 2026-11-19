@@ -90,20 +90,6 @@ export default function BillingStatusProgress({
     <>
       {billing.approvedBy && <UserProfile data={billing.approvedBy} />}
       <BillingDate date={billing.approvedAt} />
-      {data && session?.permissions.downloadPublicCloudBillingMou && (
-        <Button
-          color="success"
-          loading={downloading}
-          onClick={async () => {
-            if (!data) return;
-            setDownloading(true);
-            await downloadPublicCloudBillingPDF(billing.id, getPublicCloudEmouFileName(data.name, data.provider));
-            setDownloading(false);
-          }}
-        >
-          Download
-        </Button>
-      )}
     </>
   );
 
@@ -174,16 +160,37 @@ export default function BillingStatusProgress({
 
   if (billing.approved) {
     return (
-      <Stepper active={3} iconSize={35} className={cn(className)}>
-        <Stepper.Step label="Assigned" description={getAssignedContent()} />
-        <Stepper.Step label="Signed" description={getSignedContent()} />
-        <Stepper.Step
-          label="Approved"
-          color="success"
-          completedIcon={<IconConfetti style={{ width: rem(20), height: rem(20) }} />}
-          description={getApprovedContent()}
-        />
-      </Stepper>
+      <div className={cn(className)}>
+        <Stepper active={3} iconSize={35}>
+          <Stepper.Step label="Assigned" description={getAssignedContent()} />
+          <Stepper.Step label="Signed" description={getSignedContent()} />
+          <Stepper.Step
+            label="Approved"
+            color="success"
+            completedIcon={<IconConfetti style={{ width: rem(20), height: rem(20) }} />}
+            description={getApprovedContent()}
+          />
+        </Stepper>
+
+        {data && session?.permissions.downloadPublicCloudBillingMou && (
+          <div className="mt-3 flex justify-end">
+            <Button
+              color="success"
+              loading={downloading}
+              onClick={async () => {
+                setDownloading(true);
+                try {
+                  await downloadPublicCloudBillingPDF(billing.id, getPublicCloudEmouFileName(data.name, data.provider));
+                } finally {
+                  setDownloading(false);
+                }
+              }}
+            >
+              Download
+            </Button>
+          </div>
+        )}
+      </div>
     );
   }
 

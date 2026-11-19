@@ -84,6 +84,7 @@ export default async function createOp({ session, body }: { session: Session; bo
     {
       data: {
         licencePlate,
+        agreementVersion: 2,
         expenseAuthority: { connect: { id: expenseAuthorityId } },
         accountCoding: {
           cc: '',

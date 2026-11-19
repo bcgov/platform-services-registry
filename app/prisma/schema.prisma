@@ -353,6 +353,7 @@ model PublicCloudBilling {
   approvedBy         User?         @relation("approvedBy", fields: [approvedById], references: [id])
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
+  agreementVersion   Int?          @default(1)
 }
 
 type AccountCoding {
