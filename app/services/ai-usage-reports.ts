@@ -2,7 +2,8 @@ import { FABRIC_AI_USAGE_CODE_QUALITY_REPORT_ID, FABRIC_AI_USAGE_TEAM_REPORT_ID,
 import { AiUsageEmbedInfo, AiUsageReportKey, FabricReportFilter } from '@/types/fabric';
 import { generateReportEmbedToken } from './fabric';
 
-const GITHUB_USERNAME_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
+// GitHub usernames and organization names share the same rules.
+const GITHUB_NAME_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPOSITORY_NAME_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 
 type TeamUser = { githubAccount?: { username: string } | null } | null | undefined;
@@ -17,8 +18,7 @@ export interface AiUsageProduct {
 
 interface AiUsageReportDefinition {
   reportId: string;
-  filterTarget: { table: string; column: string };
-  getFilterValues: (product: AiUsageProduct) => string[];
+  getFilters: (product: AiUsageProduct) => FabricReportFilter[] | null;
 }
 
 function unique(values: (string | undefined)[], pattern: RegExp) {
@@ -34,38 +34,57 @@ export function getTeamGitHubUsernames({
   const users = [projectOwner, primaryTechnicalLead, secondaryTechnicalLead, ...members];
   return unique(
     users.map((user) => user?.githubAccount?.username?.trim()),
-    GITHUB_USERNAME_PATTERN,
+    GITHUB_NAME_PATTERN,
   );
 }
 
-// Repository URLs are free text; the report is keyed by the bare repository name (last path segment).
-export function getRepositoryNames({ repositories }: AiUsageProduct) {
-  return unique(
-    (repositories ?? []).map(({ url }) => {
-      const trimmedUrl = url.trim();
-      const normalizedUrl = trimmedUrl.startsWith('http') ? trimmedUrl : `https://${trimmedUrl}`;
-      if (!URL.canParse(normalizedUrl)) return undefined;
+// Repository URLs are free text, e.g. `https://github.com/<organization>/<repository>/tree/main`.
+function parseRepository(url: string) {
+  const trimmedUrl = url.trim();
+  const normalizedUrl = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+  if (!URL.canParse(normalizedUrl)) return null;
 
-      return new URL(normalizedUrl).pathname
-        .replace(/\/+$/, '')
-        .split('/')
-        .pop()
-        ?.replace(/\.git$/, '');
-    }),
-    REPOSITORY_NAME_PATTERN,
-  );
+  const [organization, repository] = new URL(normalizedUrl).pathname.split('/').filter(Boolean);
+  const name = repository?.replace(/\.git$/, '');
+  if (!organization || !name || !GITHUB_NAME_PATTERN.test(organization) || !REPOSITORY_NAME_PATTERN.test(name)) {
+    return null;
+  }
+
+  return { organization, repository: name };
 }
+
+export function getRepositories({ repositories }: AiUsageProduct) {
+  const parsed = (repositories ?? []).map(({ url }) => parseRepository(url)).filter((repo) => repo !== null);
+
+  return {
+    organizations: Array.from(new Set(parsed.map((repo) => repo.organization))),
+    repositories: Array.from(new Set(parsed.map((repo) => repo.repository))),
+  };
+}
+
+const AI_USAGE_TABLE = 'ai_credit_usage';
 
 const aiUsageReports: Record<AiUsageReportKey, AiUsageReportDefinition> = {
   team: {
     reportId: FABRIC_AI_USAGE_TEAM_REPORT_ID,
-    filterTarget: { table: 'ai_credit_usage', column: 'username' },
-    getFilterValues: getTeamGitHubUsernames,
+    getFilters: (product) => {
+      const usernames = getTeamGitHubUsernames(product);
+      return usernames.length > 0 ? [{ table: AI_USAGE_TABLE, column: 'username', values: usernames }] : null;
+    },
   },
   quality: {
     reportId: FABRIC_AI_USAGE_CODE_QUALITY_REPORT_ID,
-    filterTarget: { table: 'ai_credit_usage', column: 'repository' },
-    getFilterValues: getRepositoryNames,
+    // Two independent filters: a product with repositories in several organizations can also match
+    // same-named repositories across those organizations.
+    getFilters: (product) => {
+      const { organizations, repositories } = getRepositories(product);
+      if (repositories.length === 0) return null;
+
+      return [
+        { table: AI_USAGE_TABLE, column: 'organization', values: organizations },
+        { table: AI_USAGE_TABLE, column: 'repository', values: repositories },
+      ];
+    },
   },
 };
 
@@ -73,18 +92,15 @@ export function isAiUsageReportConfigured(key: AiUsageReportKey) {
   return Boolean(aiUsageReports[key].reportId);
 }
 
-export function getAiUsageReportFilter(key: AiUsageReportKey, product: AiUsageProduct): FabricReportFilter | null {
-  const { filterTarget, getFilterValues } = aiUsageReports[key];
-  const values = getFilterValues(product);
-
-  return values.length > 0 ? { ...filterTarget, values } : null;
+export function getAiUsageReportFilters(key: AiUsageReportKey, product: AiUsageProduct) {
+  return aiUsageReports[key].getFilters(product);
 }
 
 export async function getAiUsageEmbedInfo(key: AiUsageReportKey, product: AiUsageProduct): Promise<AiUsageEmbedInfo> {
-  const filter = getAiUsageReportFilter(key, product);
-  if (!filter) return { available: false };
+  const filters = getAiUsageReportFilters(key, product);
+  if (!filters) return { available: false };
 
   const embed = await generateReportEmbedToken(FABRIC_WORKSPACE_ID, aiUsageReports[key].reportId);
 
-  return { available: true, ...embed, filter };
+  return { available: true, ...embed, filters };
 }

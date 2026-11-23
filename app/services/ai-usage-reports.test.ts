@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { AiUsageProduct, getAiUsageReportFilter, getRepositoryNames, getTeamGitHubUsernames } from './ai-usage-reports';
+import { AiUsageProduct, getAiUsageReportFilters, getRepositories, getTeamGitHubUsernames } from './ai-usage-reports';
 
 const user = (username?: string) => ({ githubAccount: username ? { username } : null });
 
@@ -38,43 +38,48 @@ describe('getTeamGitHubUsernames', () => {
   });
 });
 
-describe('getRepositoryNames', () => {
-  it('extracts unique repository names from URLs in different formats', () => {
+describe('getRepositories', () => {
+  it('extracts unique organizations and repositories from URLs in different formats', () => {
     expect(
-      getRepositoryNames(
+      getRepositories(
         product({
           repositories: [
             { url: 'https://github.com/bcgov/platform-services-registry' },
             { url: 'github.com/bcgov/other-repo.git' },
-            { url: 'https://github.com/bcgov/platform-services-registry/' },
+            { url: 'https://github.com/bcgov-c/platform-services-registry/tree/main' },
           ],
         }),
       ),
-    ).toEqual(['platform-services-registry', 'other-repo']);
+    ).toEqual({
+      organizations: ['bcgov', 'bcgov-c'],
+      repositories: ['platform-services-registry', 'other-repo'],
+    });
   });
 
-  it('skips URLs without a valid repository name', () => {
-    expect(getRepositoryNames(product({ repositories: [{ url: 'https://github.com' }, { url: '' }] }))).toEqual([]);
+  it('skips URLs without both an organization and a repository', () => {
+    expect(
+      getRepositories(
+        product({ repositories: [{ url: 'https://github.com' }, { url: 'github.com/bcgov' }, { url: '' }] }),
+      ),
+    ).toEqual({ organizations: [], repositories: [] });
   });
 });
 
-describe('getAiUsageReportFilter', () => {
-  it('builds the filter for the selected report', () => {
+describe('getAiUsageReportFilters', () => {
+  it('builds the filters for the selected report', () => {
     const p = product({ projectOwner: user('owner'), repositories: [{ url: 'https://github.com/bcgov/repo' }] });
 
-    expect(getAiUsageReportFilter('team', p)).toEqual({
-      table: 'ai_credit_usage',
-      column: 'username',
-      values: ['owner'],
-    });
-    expect(getAiUsageReportFilter('quality', p)).toEqual({
-      table: 'ai_credit_usage',
-      column: 'repository',
-      values: ['repo'],
-    });
+    expect(getAiUsageReportFilters('team', p)).toEqual([
+      { table: 'ai_credit_usage', column: 'username', values: ['owner'] },
+    ]);
+    expect(getAiUsageReportFilters('quality', p)).toEqual([
+      { table: 'ai_credit_usage', column: 'organization', values: ['bcgov'] },
+      { table: 'ai_credit_usage', column: 'repository', values: ['repo'] },
+    ]);
   });
 
   it('returns null when the product has nothing to filter on', () => {
-    expect(getAiUsageReportFilter('quality', product())).toBeNull();
+    expect(getAiUsageReportFilters('team', product())).toBeNull();
+    expect(getAiUsageReportFilters('quality', product())).toBeNull();
   });
 });

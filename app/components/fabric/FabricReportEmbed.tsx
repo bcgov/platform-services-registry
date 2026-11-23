@@ -9,15 +9,17 @@ import { FabricEmbedToken, FabricReportFilter } from '@/types/fabric';
 // setTimeout overflows above ~24.8 days; embed tokens last about an hour, so this only guards bad input.
 const MAX_TIMEOUT_MS = 2 ** 31 - 1;
 
-function buildEmbedConfig(info: FabricEmbedToken & { filter: FabricReportFilter }) {
-  const filter: models.IBasicFilter = {
+type EmbedInfo = FabricEmbedToken & { filters: FabricReportFilter[] };
+
+function buildEmbedConfig(info: EmbedInfo) {
+  const filters: models.IBasicFilter[] = info.filters.map(({ table, column, values }) => ({
     $schema: 'http://powerbi.com/product/schema#basic',
-    target: { table: info.filter.table, column: info.filter.column },
+    target: { table, column },
     operator: 'In',
-    values: info.filter.values,
+    values,
     filterType: models.FilterType.Basic,
     requireSingleSelection: false,
-  };
+  }));
 
   const config: models.IReportEmbedConfiguration = {
     type: 'report',
@@ -25,7 +27,7 @@ function buildEmbedConfig(info: FabricEmbedToken & { filter: FabricReportFilter 
     embedUrl: info.embedUrl,
     accessToken: info.embedToken,
     tokenType: models.TokenType.Embed,
-    filters: [filter],
+    filters,
     settings: {
       panes: {
         filters: { visible: false },
@@ -39,13 +41,7 @@ function buildEmbedConfig(info: FabricEmbedToken & { filter: FabricReportFilter 
 
 // The embed config is fixed at mount because PowerBIEmbed reloads the report whenever it changes.
 // To pick up a new token, the parent remounts this component (e.g. keyed by the token).
-export default function FabricReportEmbed({
-  info,
-  onReload,
-}: {
-  info: FabricEmbedToken & { filter: FabricReportFilter };
-  onReload: () => void;
-}) {
+export default function FabricReportEmbed({ info, onReload }: { info: EmbedInfo; onReload: () => void }) {
   const [embedConfig] = useState(() => buildEmbedConfig(info));
   const [expired, setExpired] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);

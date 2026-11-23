@@ -17,6 +17,6 @@ export interface FabricEmbedToken {
 
 type AiUsageEmbedUnavailable = { available: false };
 
-type AiUsageEmbedAvailable = { available: true; filter: FabricReportFilter } & FabricEmbedToken;
+type AiUsageEmbedAvailable = { available: true; filters: FabricReportFilter[] } & FabricEmbedToken;
 
 export type AiUsageEmbedInfo = AiUsageEmbedUnavailable | AiUsageEmbedAvailable;
