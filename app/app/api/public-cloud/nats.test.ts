@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { PUBLIC_NATS_URL } from '@/config';
+import { PUBLIC_NATS_URL, PUBLIC_NATS_USERNAME, PUBLIC_NATS_PASSWORD } from '@/config';
 import {
   createPublicCloudProduct,
   updatePublicCloudProduct,
@@ -52,6 +52,19 @@ function getExpectedNatsMessage(decisionData: any, requestType: 'CREATE' | 'EDIT
   };
 }
 
+function expectNatsMessage(callNumber: number, decisionData: any, requestType: 'CREATE' | 'EDIT' | 'DELETE') {
+  expect(sendNatsMessage).toHaveBeenNthCalledWith(
+    callNumber,
+    PUBLIC_NATS_URL,
+    `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
+    getExpectedNatsMessage(decisionData, requestType),
+    {
+      user: PUBLIC_NATS_USERNAME,
+      pass: PUBLIC_NATS_PASSWORD,
+    },
+  );
+}
+
 describe('Public Cloud NATs', () => {
   beforeEach(() => {
     // @ts-ignore
@@ -65,11 +78,7 @@ describe('Public Cloud NATs', () => {
     if (decisionData) {
       expect(sendNatsMessage).toHaveBeenCalled();
       expect(sendNatsMessage).toHaveBeenCalledTimes(1);
-      expect(sendNatsMessage).toHaveBeenCalledWith(
-        PUBLIC_NATS_URL,
-        `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
-        getExpectedNatsMessage(decisionData, 'CREATE'),
-      );
+      expectNatsMessage(1, decisionData, 'CREATE');
     }
   });
 
@@ -80,27 +89,16 @@ describe('Public Cloud NATs', () => {
     if (decisionData) {
       expect(sendNatsMessage).toHaveBeenCalled();
       expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-      expect(sendNatsMessage).toHaveBeenNthCalledWith(
-        2,
-        PUBLIC_NATS_URL,
-        `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
-        getExpectedNatsMessage(decisionData, 'EDIT'),
-      );
+      expectNatsMessage(2, decisionData, 'EDIT');
     }
   });
 
   it('should send NATs message when deleting a product', async () => {
     const decisionData = await deletePublicCloudProduct();
     expect(decisionData).not.toBeNull();
-
     if (decisionData) {
-      expect(sendNatsMessage).toHaveBeenCalled();
-      expect(sendNatsMessage).toHaveBeenNthCalledWith(
-        2,
-        PUBLIC_NATS_URL,
-        `registry_project_provisioning_${decisionData.provider.toLowerCase()}`,
-        getExpectedNatsMessage(decisionData, 'DELETE'),
-      );
+      expect(sendNatsMessage).toHaveBeenCalledTimes(2);
+      expectNatsMessage(2, decisionData, 'DELETE');
     }
   });
 });

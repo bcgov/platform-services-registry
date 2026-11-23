@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { PRIVATE_NATS_URL } from '@/config';
+import { PRIVATE_NATS_URL, PRIVATE_NATS_USERNAME, PRIVATE_NATS_PASSWORD } from '@/config';
 import {
   createPrivateCloudProduct,
   updatePrivateCloudProduct,
@@ -40,6 +40,27 @@ function getExpectedContacts(decisionData: {
   ]);
 }
 
+function expectNatsMessage(callNumber: number, decisionData: any, action: 'create' | 'edit' | 'delete') {
+  expect(sendNatsMessage).toHaveBeenNthCalledWith(
+    callNumber,
+    PRIVATE_NATS_URL,
+    `registry_project_provisioning_${decisionData.cluster.toLowerCase()}`,
+    expect.objectContaining({
+      action,
+      cluster_name: decisionData.cluster.toLowerCase(),
+      contacts: getExpectedContacts(decisionData),
+      description: decisionData.description,
+      licencePlate: decisionData.licencePlate,
+      namespaces: getExpectedNamespaces(decisionData.licencePlate),
+      profile_id: expect.any(String),
+    }),
+    {
+      user: PRIVATE_NATS_USERNAME,
+      pass: PRIVATE_NATS_PASSWORD,
+    },
+  );
+}
+
 describe('Private Cloud NATs', () => {
   beforeEach(() => {
     // @ts-ignore
@@ -53,19 +74,7 @@ describe('Private Cloud NATs', () => {
     expect(decisionData.notificationEmails).toHaveLength(2);
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(1);
-    expect(sendNatsMessage).toHaveBeenCalledWith(
-      PRIVATE_NATS_URL,
-      `registry_project_provisioning_${decisionData.cluster.toLowerCase()}`,
-      expect.objectContaining({
-        action: 'create',
-        cluster_name: decisionData.cluster.toLowerCase(),
-        contacts: getExpectedContacts(decisionData),
-        description: decisionData.description,
-        licencePlate: decisionData.licencePlate,
-        namespaces: getExpectedNamespaces(decisionData.licencePlate),
-        profile_id: expect.any(String),
-      }),
-    );
+    expectNatsMessage(1, decisionData, 'create');
   });
 
   it('should send NATs message when updating a product', async () => {
@@ -75,20 +84,7 @@ describe('Private Cloud NATs', () => {
     expect(decisionData.notificationEmails).toHaveLength(2);
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-    expect(sendNatsMessage).toHaveBeenNthCalledWith(
-      2,
-      PRIVATE_NATS_URL,
-      `registry_project_provisioning_${decisionData.cluster.toLowerCase()}`,
-      expect.objectContaining({
-        action: 'edit',
-        cluster_name: decisionData.cluster.toLowerCase(),
-        contacts: getExpectedContacts(decisionData),
-        description: decisionData.description,
-        licencePlate: decisionData.licencePlate,
-        namespaces: getExpectedNamespaces(decisionData.licencePlate),
-        profile_id: expect.any(String),
-      }),
-    );
+    expectNatsMessage(2, decisionData, 'edit');
   });
 
   it('should send NATs message when deleting a product', async () => {
@@ -98,19 +94,6 @@ describe('Private Cloud NATs', () => {
     expect(decisionData.notificationEmails).toHaveLength(1);
     expect(sendNatsMessage).toHaveBeenCalled();
     expect(sendNatsMessage).toHaveBeenCalledTimes(2);
-    expect(sendNatsMessage).toHaveBeenNthCalledWith(
-      2,
-      PRIVATE_NATS_URL,
-      `registry_project_provisioning_${decisionData.cluster.toLowerCase()}`,
-      expect.objectContaining({
-        action: 'delete',
-        cluster_name: decisionData.cluster.toLowerCase(),
-        contacts: getExpectedContacts(decisionData),
-        description: decisionData.description,
-        licencePlate: decisionData.licencePlate,
-        namespaces: getExpectedNamespaces(decisionData.licencePlate),
-        profile_id: expect.any(String),
-      }),
-    );
+    expectNatsMessage(2, decisionData, 'delete');
   });
 });
