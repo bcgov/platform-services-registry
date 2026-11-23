@@ -27,26 +27,38 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
   const { accountCoding, confirmed } = body;
 
   if (!confirmed) return BadRequestResponse('not confirmed');
+  const billing = await prisma.publicCloudBilling.findFirst({
+    where: {
+      id: billingId,
+      licencePlate,
+      approved: false,
+    },
+  });
 
-  const [assignedTask, resignableBilling] = await Promise.all([
-    prisma.task.findFirst({
-      where: {
-        type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
-        status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
-        data: { equals: { licencePlate } },
-      },
-    }),
-    prisma.publicCloudBilling.findFirst({
-      where: {
-        id: billingId,
-        signed: true,
-        approved: false,
-        expenseAuthorityId: session.user.id,
-      },
-    }),
-  ]);
+  if (!billing) {
+    return BadRequestResponse('invalid billing');
+  }
 
-  if (!resignableBilling && !assignedTask) {
+  if (billing.agreementVersion !== 2) {
+    return BadRequestResponse('unsupported agreement version');
+  }
+
+  if (billing.expenseAuthorityId !== session.user.id) {
+    return UnauthorizedResponse();
+  }
+
+  const assignedTask = await prisma.task.findFirst({
+    where: {
+      type: TaskType.SIGN_PUBLIC_CLOUD_MOU,
+      status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
+      userIds: { has: session.user.id },
+      OR: [{ data: { equals: { licencePlate, billingId } } }, { data: { equals: { licencePlate } } }],
+    },
+  });
+
+  const canResign = billing.signed && !billing.approved;
+
+  if (!canResign && !assignedTask) {
     return UnauthorizedResponse();
   }
 
@@ -62,7 +74,11 @@ export const POST = apiHandler(async ({ pathParams, body, session }) => {
         signedById: session.user.id,
       },
     }),
-    tasks.close(TaskType.SIGN_PUBLIC_CLOUD_MOU, { licencePlate, session }),
+    tasks.close(TaskType.SIGN_PUBLIC_CLOUD_MOU, {
+      licencePlate,
+      billingId,
+      session,
+    }),
   ]);
 
   const { productDecorated, requestDecorated, billingDecorated } = await getPublicCloudBillingResources({

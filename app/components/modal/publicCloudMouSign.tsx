@@ -2,21 +2,21 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Divider, Grid, LoadingOverlay, Box } from '@mantine/core';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { string, z } from 'zod';
-import ExternalLink from '@/components/generic/button/ExternalLink';
+import { z } from 'zod';
 import FormCheckbox from '@/components/generic/checkbox/FormCheckbox';
 import FormError from '@/components/generic/FormError';
 import AccountCodingBase from '@/components/shared/AccountCoding';
 import { createModal } from '@/core/modal';
-import { AccountCoding, Provider, TaskStatus, TaskType } from '@/prisma/client';
+import AgreementAppendixV2 from '@/helpers/pdfs/emou/AgreementAppendixV2';
+import AgreementTermsV2 from '@/helpers/pdfs/emou/AgreementTermsV2';
+import { AccountCoding, Provider } from '@/prisma/client';
 import { signPublicCloudProductBilling } from '@/services/backend/public-cloud/products';
 import { publicCloudBillingBodySchema } from '@/validation-schemas';
 import { failure, success } from '../notification';
-
 interface ModalProps {
   billingId: string;
   licencePlate: string;
@@ -65,12 +65,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
       },
     });
 
-    const {
-      mutateAsync: signBilling,
-      isPending: isSigning,
-      isError: isSignError,
-      error: signError,
-    } = useMutation({
+    const { mutateAsync: signBilling, isPending: isSigning } = useMutation({
       mutationFn: (data: { accountCoding: AccountCoding; confirmed: boolean }) =>
         signPublicCloudProductBilling(licencePlate, { billingId, ...data }),
       onSuccess: () => {
@@ -85,9 +80,6 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
 
     const { handleSubmit, register } = form;
 
-    const isAWS = provider === Provider.AWS || provider === Provider.AWS_LZA;
-    const service = isAWS ? 'AWS' : 'Microsoft Azure';
-
     return (
       <Box pos="relative">
         <LoadingOverlay visible={isSigning} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} />
@@ -95,70 +87,22 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
           <form
             autoComplete="off"
             onSubmit={handleSubmit(async (formData) => {
-              if (formData.confirmed) {
-                await signBilling({ accountCoding: formData.accountCoding, confirmed: true });
-              }
+              if (!formData.confirmed) return;
 
-              closeModal();
+              try {
+                await signBilling({
+                  accountCoding: editable ? formData.accountCoding : accountCoding,
+                  confirmed: true,
+                });
+
+                closeModal();
+              } catch {
+                // Error notification is handled by onError.
+              }
             })}
           >
-            <div className="">
-              <p>This agreement is between;</p>
-              <p className="text-center font-semibold">
-                Connected Services BC
-                <br />
-                Hereby referred to as “the CSBC”
-              </p>
-              <p>And</p>
-              <p className="text-center font-semibold">
-                The {name}
-                <br />
-                Hereby referred to as “the Ministry”
-              </p>
-
-              <p>For the following services;</p>
-              <p className="mb-2">
-                &emsp;&emsp;Cloud compute, storage, and container management services, which will be accessible to the
-                Ministry’s teams, on&nbsp;
-                {isAWS ? 'the Amazon Web Services platform' : 'the Microsoft Azure platform'}, through the Government of
-                Canada Cloud Brokering Service.
-              </p>
-
-              {isAWS ? (
-                <p className="mb-2">
-                  &emsp;&emsp;AWS and the Government of Canada will invoice the CSBC, monthly, for the services consumed
-                  including the Provincial Sales Tax (PST). Additional charges include the 6% brokerage fee that covers
-                  the Government of Canada’s commission.
-                </p>
-              ) : (
-                <p className="mb-2">
-                  &emsp;&emsp;Microsoft will invoice the CSBC, monthly, for the services consumed including the
-                  Provincial Sales Tax (PST). Additional charges include the 6% CSBC administrative fee.
-                </p>
-              )}
-
-              <p className="mb-2">
-                &emsp;&emsp;The CSBC will pass these costs through to the Ministry by Journal Voucher on a quarterly
-                basis.
-              </p>
-              <p className="mb-2">
-                &emsp;&emsp;This agreement also enables the Ministry’s Expense Authority approval for all actual
-                consumed usage & any prepayment of reserved {service} services by the Ministry.
-              </p>
-              <p className="mb-2">
-                The Ministry is responsible for understanding the cost structure associated with their current and
-                future services consumption in {service} and monitoring their actual consumption to ensure it stays
-                within the planned budget.
-              </p>
-              <p>
-                This agreement will be in effect from the date of signing, until a written notification is provided to
-                the CSBC, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator
-                <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/" className="ml-1">
-                  service website
-                </ExternalLink>
-              </p>
-            </div>
-
+            <AgreementTermsV2 name={name} provider={provider} />
+            <AgreementAppendixV2 />
             <AccountCodingBase disabled={!editable} />
 
             <Divider my="md" />

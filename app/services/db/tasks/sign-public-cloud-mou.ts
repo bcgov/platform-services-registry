@@ -37,15 +37,12 @@ export async function createTask(data: CreateTaskData) {
   if (!isValidData(data)) return null;
 
   let licencePlate = '';
-  let expenseAuthorityId = '';
+  const expenseAuthorityId = data.billing.expenseAuthorityId;
 
   if (data.request) {
-    const { decisionData } = data.request;
-    licencePlate = decisionData.licencePlate;
-    expenseAuthorityId = decisionData.expenseAuthorityId ?? '';
+    licencePlate = data.request.decisionData.licencePlate;
   } else if (data.product) {
     licencePlate = data.product.licencePlate;
-    expenseAuthorityId = data.product.expenseAuthorityId ?? '';
   }
 
   if (!licencePlate || !expenseAuthorityId) {
@@ -59,6 +56,7 @@ export async function createTask(data: CreateTaskData) {
       userIds: [expenseAuthorityId],
       data: {
         licencePlate,
+        billingId: data.billing.id,
       },
     },
   });
@@ -71,22 +69,19 @@ export async function createTask(data: CreateTaskData) {
 
 export interface CloseTaskData {
   licencePlate: string;
+  billingId: string;
   session: Session;
 }
 
 export async function closeTask(data: CloseTaskData) {
-  const { licencePlate, session } = data;
+  const { licencePlate, billingId, session } = data;
 
-  const taskProm = prisma.task.updateMany({
+  const result = await prisma.task.updateMany({
     where: {
       type,
       status: { in: [TaskStatus.ASSIGNED, TaskStatus.STARTED] },
+      data: { equals: { licencePlate, billingId } },
       OR: [{ userIds: { has: session.user.id } }, { roles: { hasSome: session.roles } }],
-      data: {
-        equals: {
-          licencePlate,
-        },
-      },
     },
     data: {
       status: TaskStatus.COMPLETED,
@@ -96,6 +91,5 @@ export async function closeTask(data: CloseTaskData) {
     },
   });
 
-  const [tasks] = await Promise.all([taskProm]);
-  return tasks.count;
+  return result.count;
 }
