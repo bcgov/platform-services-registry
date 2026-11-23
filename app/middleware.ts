@@ -21,6 +21,7 @@ export function middleware(request: NextRequest) {
     'https://loginproxy.gov.bc.ca/ https://dev.loginproxy.gov.bc.ca/ https://test.loginproxy.gov.bc.ca/';
 
   const gravatar_com = 'https://gravatar.com/';
+  const powerbi_com = 'https://app.powerbi.com/ https://app.fabric.microsoft.com/';
 
   // See https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
   const cspSegments = [
@@ -33,7 +34,7 @@ export function middleware(request: NextRequest) {
     `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' blob: data: ${gravatar_com}`,
     `connect-src 'self' ${gravatar_com} ${loginproxy_gov}`,
-    `frame-src ${loginproxy_gov}`,
+    `frame-src ${loginproxy_gov} ${powerbi_com}`,
     `frame-ancestors 'none'`,
     "object-src 'none'",
     "form-action 'self'",
