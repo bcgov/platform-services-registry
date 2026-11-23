@@ -47,6 +47,9 @@ describe('sendNatsMessage', () => {
     expect(mockConnect).toHaveBeenCalledWith({
       servers: 'nats://localhost:4222',
     });
+
+    expect(mockPublish).toHaveBeenCalledTimes(1);
+    expect(mockDrain).toHaveBeenCalledTimes(1);
   });
 
   it.each([[{ user: 'test-user' }], [{ pass: 'test-password' }]])(
@@ -57,6 +60,8 @@ describe('sendNatsMessage', () => {
       ).rejects.toThrow('NATS username and password must both be provided');
 
       expect(mockConnect).not.toHaveBeenCalled();
+      expect(mockPublish).not.toHaveBeenCalled();
+      expect(mockDrain).not.toHaveBeenCalled();
     },
   );
 });

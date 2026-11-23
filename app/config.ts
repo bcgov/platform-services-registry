@@ -63,6 +63,15 @@ export const PRIVATE_NATS_PASSWORD = process.env.PRIVATE_NATS_PASSWORD;
 export const PUBLIC_NATS_USERNAME = process.env.PUBLIC_NATS_USERNAME;
 export const PUBLIC_NATS_PASSWORD = process.env.PUBLIC_NATS_PASSWORD;
 
+function validateNatsCredentials(name: string, username?: string, password?: string) {
+  if (Boolean(username) !== Boolean(password)) {
+    throw new Error(`${name} NATS username and password must both be provided`);
+  }
+}
+
+validateNatsCredentials('Private Cloud', PRIVATE_NATS_USERNAME, PRIVATE_NATS_PASSWORD);
+validateNatsCredentials('Public Cloud', PUBLIC_NATS_USERNAME, PUBLIC_NATS_PASSWORD);
+
 export const MS_GRAPH_API_URL = process.env.MS_GRAPH_API_URL || 'https://graph.microsoft.com';
 export const MS_GRAPH_API_TENANT_ID = process.env.MS_GRAPH_API_TENANT_ID || '';
 export const MS_GRAPH_API_TOKEN_ENDPOINT =
