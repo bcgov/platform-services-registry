@@ -155,21 +155,6 @@ export type PrivateCloudRequestSearch = {
   totalCount: number;
 };
 
-export type PrivateCloudRequestExternalSearch = {
-  docs: Prisma.PrivateCloudRequestGetPayload<{
-    select: {
-      id: true;
-      licencePlate: true;
-      type: true;
-      decisionStatus: true;
-      isQuotaChanged: true;
-      createdAt: true;
-      updatedAt: true;
-    };
-  }>[];
-  totalCount: number;
-};
-
 export type PrivateCloudComment = Prisma.PrivateCloudCommentGetPayload<{
   include: {
     user: true;

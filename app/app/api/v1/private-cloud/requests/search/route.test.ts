@@ -176,6 +176,31 @@ describe('API: v1 Private Cloud Request Search', () => {
   });
 
   it('should filter requests by quota increase', async () => {
+    const increasedRequest = await createTestRequest();
+    const unchangedRequest = await createTestRequest();
+
+    for (const [request, quotasIncrease] of [
+      [increasedRequest, true],
+      [unchangedRequest, false],
+    ] as const) {
+      const existingRequest = await prisma.privateCloudRequest.findUniqueOrThrow({
+        where: { id: request.id },
+        select: { changes: true },
+      });
+
+      await prisma.privateCloudRequest.update({
+        where: { id: request.id },
+        data: {
+          changes: {
+            set: {
+              ...existingRequest.changes,
+              quotasIncrease,
+            },
+          },
+        },
+      });
+    }
+
     await mockTeamServiceAccount(['private-admin']);
 
     const res = await searchPrivateCloudRequestsApi({
@@ -188,7 +213,11 @@ describe('API: v1 Private Cloud Request Search', () => {
     const result = await res.json();
 
     expect(result.success).toBe(true);
-    expect(Array.isArray(result.data)).toBe(true);
+
+    const ids = result.data.map((request: { id: string }) => request.id);
+
+    expect(ids).toContain(increasedRequest.id);
+    expect(ids).not.toContain(unchangedRequest.id);
   });
 
   it('should reject a regular user session', async () => {
