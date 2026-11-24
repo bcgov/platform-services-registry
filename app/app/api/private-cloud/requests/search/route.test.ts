@@ -337,4 +337,44 @@ describe('Search Private Cloud Requests - Validations', () => {
 
     expect(dat1.totalCount).toBe(1);
   });
+
+  it('should include provisioned requests that were auto-approved', async () => {
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const createRes = await createPrivateCloudProduct(createSamplePrivateCloudProductData());
+
+    expect(createRes.status).toBe(200);
+
+    const createdRequest = await createRes.json();
+
+    await prisma.privateCloudRequest.update({
+      where: { id: createdRequest.id },
+      data: {
+        decisionStatus: DecisionStatus.PROVISIONED,
+        decisionMakerId: null,
+      },
+    });
+
+    await mockSessionByRole(GlobalRole.Admin);
+
+    const res = await searchPrivateCloudRequests({
+      licencePlate: createdRequest.licencePlate,
+      types: [RequestType.CREATE],
+      status: [DecisionStatus.AUTO_APPROVED],
+    });
+
+    expect(res.status).toBe(200);
+
+    const data = await res.json();
+
+    expect(data.docs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          licencePlate: createdRequest.licencePlate,
+          type: RequestType.CREATE,
+          decisionStatus: DecisionStatus.PROVISIONED,
+        }),
+      ]),
+    );
+  });
 });

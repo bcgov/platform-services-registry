@@ -13,12 +13,7 @@ import { getMatchingUserIds } from './user';
 const defaultSortKey = 'updatedAt';
 const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
-export async function searchPrivateCloudRequests({
-  session,
-  skip,
-  take,
-  page,
-  pageSize,
+async function buildPrivateCloudRequestSearchQuery({
   licencePlate,
   ministries,
   clusters,
@@ -31,18 +26,9 @@ export async function searchPrivateCloudRequests({
   sortKey = defaultSortKey,
   sortOrder = Prisma.SortOrder.desc,
   extraFilter,
-  forExport = false,
 }: PrivateCloudRequestSearchBody & {
-  session: Session;
-  skip?: number;
-  take?: number;
   extraFilter?: Prisma.PrivateCloudRequestWhereInput;
-  forExport?: boolean;
 }) {
-  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
-    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
-  }
-
   const decisionDatawhere: Prisma.PrivateCloudRequestDataWhereInput = {};
 
   const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
@@ -128,13 +114,62 @@ export async function searchPrivateCloudRequests({
 
     where.AND = [...existingConditions, getRequestStatusFilter<Prisma.PrivateCloudRequestWhereInput>(status)];
   }
+  return {
+    where,
+    orderBy: orderBy ?? defaultOrderBy,
+  };
+}
+
+export async function searchPrivateCloudRequests({
+  session,
+  skip,
+  take,
+  page,
+  pageSize,
+  licencePlate,
+  ministries,
+  clusters,
+  types,
+  status,
+  temporary,
+  quotaChange,
+  quotaIncrease,
+  search,
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
+  extraFilter,
+  forExport = false,
+}: PrivateCloudRequestSearchBody & {
+  session: Session;
+  skip?: number;
+  take?: number;
+  extraFilter?: Prisma.PrivateCloudRequestWhereInput;
+  forExport?: boolean;
+}) {
+  if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
+    ({ skip, take } = parsePaginationParams(page, pageSize, 10));
+  }
+  const { where, orderBy } = await buildPrivateCloudRequestSearchQuery({
+    licencePlate,
+    ministries,
+    clusters,
+    types,
+    status,
+    temporary,
+    quotaChange,
+    quotaIncrease,
+    search,
+    sortKey,
+    sortOrder,
+    extraFilter,
+  });
 
   const { data: docs, totalCount } = await models.privateCloudRequest.list(
     {
       where,
       skip,
       take,
-      orderBy: orderBy ?? defaultOrderBy,
+      orderBy,
       includeCount: !forExport,
       ...(forExport && {
         select: {
@@ -151,6 +186,37 @@ export async function searchPrivateCloudRequests({
   );
 
   return { docs, totalCount } as PrivateCloudRequestSearch;
+}
+
+export async function searchPrivateCloudRequestsForServiceAccount({
+  page = 1,
+  pageSize = 100,
+  ...filters
+}: PrivateCloudRequestSearchBody) {
+  const { skip, take } = parsePaginationParams(page, pageSize, 10);
+
+  const { where, orderBy } = await buildPrivateCloudRequestSearchQuery(filters);
+
+  const [docs, totalCount] = await Promise.all([
+    prisma.privateCloudRequest.findMany({
+      where,
+      skip,
+      take,
+      orderBy,
+      select: {
+        id: true,
+        licencePlate: true,
+        type: true,
+        decisionStatus: true,
+        isQuotaChanged: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.privateCloudRequest.count({ where }),
+  ]);
+
+  return { docs, totalCount };
 }
 
 export async function getLastEffectivePrivateCloudRequest(licencePlate: string) {
