@@ -13,6 +13,59 @@ import { getMatchingUserIds } from './user';
 const defaultSortKey = 'updatedAt';
 const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
+async function buildDecisionDataSearchFilter({
+  licencePlate,
+  ministries,
+  clusters,
+  temporary,
+  search,
+}: PrivateCloudRequestSearchBody): Promise<Prisma.PrivateCloudRequestDataWhereInput> {
+  const where: Prisma.PrivateCloudRequestDataWhereInput = {};
+
+  if (search && search !== '*') {
+    const matchingUserIds = await getMatchingUserIds(search);
+
+    const searchCriteria: Prisma.StringFilter<'PrivateCloudRequestData'> = {
+      contains: search,
+      mode: 'insensitive',
+    };
+
+    where.OR = [
+      { projectOwnerId: { in: matchingUserIds } },
+      { primaryTechnicalLeadId: { in: matchingUserIds } },
+      { secondaryTechnicalLeadId: { in: matchingUserIds } },
+      { name: searchCriteria },
+      { description: searchCriteria },
+      { licencePlate: searchCriteria },
+    ];
+  }
+
+  if (licencePlate) {
+    where.licencePlate = licencePlate;
+  }
+
+  if (ministries?.length) {
+    const organizations = await prisma.organization.findMany({
+      where: { code: { in: ministries } },
+      select: { id: true },
+    });
+
+    where.organizationId = {
+      in: organizations.map((org) => org.id),
+    };
+  }
+
+  if (clusters?.length) {
+    where.cluster = { in: clusters };
+  }
+
+  if (temporary?.length === 1) {
+    where.isTest = temporary[0] === 'YES';
+  }
+
+  return where;
+}
+
 async function buildPrivateCloudRequestSearchQuery({
   licencePlate,
   ministries,
@@ -29,53 +82,23 @@ async function buildPrivateCloudRequestSearchQuery({
 }: PrivateCloudRequestSearchBody & {
   extraFilter?: Prisma.PrivateCloudRequestWhereInput;
 }) {
-  const decisionDatawhere: Prisma.PrivateCloudRequestDataWhereInput = {};
-
   const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
-  let orderBy!: Prisma.PrivateCloudRequestOrderByWithRelationInput;
+
+  let orderBy: Prisma.PrivateCloudRequestOrderByWithRelationInput = defaultOrderBy;
+
   if (sortOption) {
     const order = { [sortKey]: Prisma.SortOrder[sortOrder] };
+
     orderBy = sortOption.inData ? { decisionData: order } : order;
   }
 
-  if (search === '*') search = '';
-
-  if (search) {
-    const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudRequestData'> = {
-      contains: search,
-      mode: 'insensitive',
-    };
-
-    decisionDatawhere.OR = [
-      { projectOwnerId: { in: matchingUserIds } },
-      { primaryTechnicalLeadId: { in: matchingUserIds } },
-      { secondaryTechnicalLeadId: { in: matchingUserIds } },
-      { name: productSearchcreteria },
-      { description: productSearchcreteria },
-      { licencePlate: productSearchcreteria },
-    ];
-  }
-
-  if (licencePlate) {
-    decisionDatawhere.licencePlate = licencePlate;
-  }
-
-  if (ministries && ministries.length > 0) {
-    const organizations = await prisma.organization.findMany({
-      where: { code: { in: ministries } },
-      select: { id: true },
-    });
-    decisionDatawhere.organizationId = { in: organizations.map((org) => org.id) };
-  }
-
-  if (clusters && clusters.length > 0) {
-    decisionDatawhere.cluster = { in: clusters };
-  }
-
-  if (temporary && temporary.length === 1) {
-    decisionDatawhere.isTest = temporary[0] === 'YES';
-  }
+  const decisionDatawhere = await buildDecisionDataSearchFilter({
+    licencePlate,
+    ministries,
+    clusters,
+    temporary,
+    search,
+  });
 
   const matchingRequestedPrivateProjects = await prisma.privateCloudRequestData.findMany({
     where: decisionDatawhere,
@@ -83,6 +106,11 @@ async function buildPrivateCloudRequestSearchQuery({
   });
 
   const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
+
+  where.decisionDataId = {
+    in: matchingRequestedPrivateProjects.map((proj) => proj.id),
+  };
+
   where.decisionDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
 
   if (types && types.length > 0) {
