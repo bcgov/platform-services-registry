@@ -72,7 +72,13 @@ function appendRequestFilter(
 ) {
   const existing = where.AND;
 
-  where.AND = [...(existing ? (Array.isArray(existing) ? existing : [existing]) : []), filter];
+  let conditions: Prisma.PrivateCloudRequestWhereInput[] = [];
+
+  if (existing) {
+    conditions = Array.isArray(existing) ? existing : [existing];
+  }
+
+  where.AND = [...conditions, filter];
 }
 
 async function buildPrivateCloudRequestSearchQuery({
