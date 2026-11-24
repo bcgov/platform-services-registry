@@ -107,10 +107,6 @@ async function buildPrivateCloudRequestSearchQuery({
 
   const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
 
-  where.decisionDataId = {
-    in: matchingRequestedPrivateProjects.map((proj) => proj.id),
-  };
-
   where.decisionDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
 
   if (types && types.length > 0) {
@@ -225,12 +221,17 @@ export async function searchPrivateCloudRequestsForServiceAccount({
 
   const { where, orderBy } = await buildPrivateCloudRequestSearchQuery(filters);
 
+  const deterministicOrderBy: Prisma.PrivateCloudRequestOrderByWithRelationInput[] = [
+    orderBy,
+    { id: Prisma.SortOrder.asc },
+  ];
+
   const [docs, totalCount] = await Promise.all([
     prisma.privateCloudRequest.findMany({
       where,
       skip,
       take,
-      orderBy,
+      orderBy: deterministicOrderBy,
       select: {
         id: true,
         licencePlate: true,
