@@ -66,6 +66,15 @@ async function buildDecisionDataSearchFilter({
   return where;
 }
 
+function appendRequestFilter(
+  where: Prisma.PrivateCloudRequestWhereInput,
+  filter: Prisma.PrivateCloudRequestWhereInput,
+) {
+  const existing = where.AND;
+
+  where.AND = [...(existing ? (Array.isArray(existing) ? existing : [existing]) : []), filter];
+}
+
 async function buildPrivateCloudRequestSearchQuery({
   licencePlate,
   ministries,
@@ -100,16 +109,19 @@ async function buildPrivateCloudRequestSearchQuery({
     search,
   });
 
-  const matchingRequestedPrivateProjects = await prisma.privateCloudRequestData.findMany({
-    where: decisionDatawhere,
-    select: { id: true },
-  });
+  const where: Prisma.PrivateCloudRequestWhereInput = {
+    ...extraFilter,
+  };
 
-  const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
+  if (Object.keys(decisionDatawhere).length > 0) {
+    appendRequestFilter(where, {
+      decisionData: {
+        is: decisionDatawhere,
+      },
+    });
+  }
 
-  where.decisionDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
-
-  if (types && types.length > 0) {
+  if (types?.length) {
     where.type = { in: types };
   }
 
@@ -125,23 +137,11 @@ async function buildPrivateCloudRequestSearchQuery({
     };
   }
 
-  if (status && status.length > 0) {
-    const existingConditions: Prisma.PrivateCloudRequestWhereInput[] = [];
-
-    if (where.AND) {
-      if (Array.isArray(where.AND)) {
-        existingConditions.push(...where.AND);
-      } else {
-        existingConditions.push(where.AND);
-      }
-    }
-
-    where.AND = [...existingConditions, getRequestStatusFilter<Prisma.PrivateCloudRequestWhereInput>(status)];
+  if (status?.length) {
+    appendRequestFilter(where, getRequestStatusFilter<Prisma.PrivateCloudRequestWhereInput>(status));
   }
-  return {
-    where,
-    orderBy: orderBy ?? defaultOrderBy,
-  };
+
+  return { where, orderBy };
 }
 
 export async function searchPrivateCloudRequests({
