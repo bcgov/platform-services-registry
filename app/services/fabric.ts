@@ -114,6 +114,17 @@ function getReport(workspaceId: string, reportId: string) {
   return report;
 }
 
+// Health check for /api/token-check: requests a fresh access token and looks up each report directly, bypassing
+// the caches, so an expired secret or lost workspace access is caught immediately. Throws on failure.
+export async function validateFabricReportAccess(reportIds: string[]) {
+  if (!isFabricConfigured() || reportIds.length === 0 || reportIds.some((reportId) => !reportId)) return false;
+
+  cachedToken = null;
+  await Promise.all(reportIds.map((reportId) => instance.get(`/groups/${FABRIC_WORKSPACE_ID}/reports/${reportId}`)));
+
+  return true;
+}
+
 // See https://learn.microsoft.com/en-us/rest/api/power-bi/embed-token/generate-token
 export async function generateReportEmbedToken(workspaceId: string, reportId: string): Promise<FabricEmbedToken> {
   const report = await getReport(workspaceId, reportId);

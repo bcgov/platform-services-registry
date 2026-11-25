@@ -16,6 +16,14 @@ jest.mock('axios', () => {
   };
 });
 
+jest.mock('@/config', () => ({
+  ...jest.requireActual('@/config'),
+  FABRIC_TENANT_ID: 'tenant-id',
+  FABRIC_CLIENT_ID: 'client-id',
+  FABRIC_CLIENT_SECRET: 'client-secret', // pragma: allowlist secret
+  FABRIC_WORKSPACE_ID: 'workspace-id',
+}));
+
 jest.mock('@/utils/node/oauth2', () => ({
   getClientCredentialsToken: jest.fn(async () => 'access-token'),
 }));
@@ -84,5 +92,36 @@ describe('generateReportEmbedToken', () => {
     });
 
     expect(reportLookups()).toBe(2);
+  });
+});
+
+describe('validateFabricReportAccess', () => {
+  beforeEach(() => {
+    mockAdapter.mockReset();
+    mockGetClientCredentialsToken.mockClear();
+  });
+
+  it('requests a fresh access token and looks up every report, ignoring the caches', async () => {
+    mockAdapter.mockImplementation(powerBiResponses);
+    const { generateReportEmbedToken, validateFabricReportAccess } = loadFabric();
+
+    await generateReportEmbedToken('workspace-id', 'report-a');
+    await expect(validateFabricReportAccess(['report-a', 'report-b'])).resolves.toBe(true);
+
+    expect(mockGetClientCredentialsToken).toHaveBeenCalledTimes(2);
+    const lookups = mockAdapter.mock.calls.filter(([config]) => config.method === 'get').map(([config]) => config.url);
+    expect(lookups).toEqual([
+      '/groups/workspace-id/reports/report-a',
+      '/groups/workspace-id/reports/report-a',
+      '/groups/workspace-id/reports/report-b',
+    ]);
+  });
+
+  it('fails when a report is not configured or cannot be looked up', async () => {
+    mockAdapter.mockImplementation(() => Promise.reject(new Error('forbidden')));
+    const { validateFabricReportAccess } = loadFabric();
+
+    await expect(validateFabricReportAccess(['report-a', ''])).resolves.toBe(false);
+    await expect(validateFabricReportAccess(['report-a'])).rejects.toThrow('forbidden');
   });
 });
