@@ -12,7 +12,7 @@ runs:
     shell: bash
 
   - name: Setup Tools
-    uses: egose/actions/asdf-tools@71efad841d4b7bb6a479984abacf7111ebd44a16 # v0.33.0
+    uses: egose/actions/asdf-tools@0e43440beeb97fe9057856ef1de9e970d0b67b77 # v0.34.0
     with:
       plugins: |
         sonarscanner=https://github.com/virtualstaticvoid/asdf-sonarscanner.git
