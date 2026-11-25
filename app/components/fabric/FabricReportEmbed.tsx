@@ -1,13 +1,15 @@
 'use client';
 
 import { Alert, Button } from '@mantine/core';
-import { models } from 'powerbi-client';
+import { models, Report } from 'powerbi-client';
 import { EventHandler, PowerBIEmbed } from 'powerbi-client-react';
 import { useEffect, useState } from 'react';
 import { FabricEmbedToken, FabricReportFilter } from '@/types/fabric';
 
 // setTimeout overflows above ~24.8 days; embed tokens last about an hour, so this only guards bad input.
 const MAX_TIMEOUT_MS = 2 ** 31 - 1;
+
+const DEFAULT_ASPECT_RATIO = 16 / 9;
 
 type EmbedInfo = FabricEmbedToken & { filters: FabricReportFilter[] };
 
@@ -29,6 +31,10 @@ function buildEmbedConfig(info: EmbedInfo) {
     tokenType: models.TokenType.Embed,
     filters,
     settings: {
+      // Fit to page so Power BI doesn't reserve scrollbar gutters (which fit-to-width does, leaving strips of
+      // wallpaper on the right and bottom). The container is sized to the page's aspect ratio once it loads.
+      layoutType: models.LayoutType.Custom,
+      customLayout: { displayOption: models.DisplayOption.FitToPage },
       panes: {
         filters: { visible: false },
         pageNavigation: { visible: false },
@@ -45,10 +51,23 @@ export default function FabricReportEmbed({ info, onReload }: { info: EmbedInfo;
   const [embedConfig] = useState(() => buildEmbedConfig(info));
   const [expired, setExpired] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
+  const [aspectRatio, setAspectRatio] = useState(DEFAULT_ASPECT_RATIO);
 
   const [eventHandlers] = useState(
     () =>
       new Map<string, EventHandler>([
+        [
+          'loaded',
+          (_event, embed) => {
+            // Report pages are often not 16:9, so match the container to the active page to avoid letterboxing.
+            (embed as Report | undefined)
+              ?.getActivePage()
+              .then(({ defaultSize }) => {
+                if (defaultSize?.width && defaultSize?.height) setAspectRatio(defaultSize.width / defaultSize.height);
+              })
+              .catch(() => undefined);
+          },
+        ],
         [
           'error',
           (event) => {
@@ -89,7 +108,9 @@ export default function FabricReportEmbed({ info, onReload }: { info: EmbedInfo;
           {reportError}
         </Alert>
       )}
-      <PowerBIEmbed embedConfig={embedConfig} eventHandlers={eventHandlers} cssClassName="aspect-video w-full" />
+      <div className="w-full" style={{ aspectRatio }}>
+        <PowerBIEmbed embedConfig={embedConfig} eventHandlers={eventHandlers} cssClassName="h-full w-full" />
+      </div>
     </>
   );
 }
