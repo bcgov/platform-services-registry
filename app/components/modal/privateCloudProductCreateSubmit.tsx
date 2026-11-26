@@ -120,7 +120,7 @@ export const openPrivateCloudProductCreateSubmitModal = createModal<ModalProps, 
               <p className="text-sm text-gray-900">
                 By checking this box, I confirm that I have read and understood the roles and responsibilities as
                 described in the
-                <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/onboard/" className="ml-1">
+                <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/private/onboard/" className="ml-1">
                   Onboarding Guide.
                 </ExternalLink>
               </p>

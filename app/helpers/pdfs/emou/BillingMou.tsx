@@ -158,7 +158,7 @@ export default function BillingMou({
           This agreement will be in effect from the date of signing, until a written notification is provided to the
           CSBC, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator
           <a
-            href="https://digital.gov.bc.ca/cloud/services/public/"
+            href="https://digital.gov.bc.ca/technology/cloud/public/"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-1"

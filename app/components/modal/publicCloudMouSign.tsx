@@ -153,7 +153,7 @@ export const openPublicCloudMouSignModal = createModal<ModalProps, ModalState>({
               <p>
                 This agreement will be in effect from the date of signing, until a written notification is provided to
                 the CSBC, and/or the project is successfully offboarded, as described on the Public Cloud Accelerator
-                <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/" className="ml-1">
+                <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/public/" className="ml-1">
                   service website
                 </ExternalLink>
               </p>

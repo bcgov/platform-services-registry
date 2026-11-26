@@ -113,7 +113,7 @@ export default function ProjectDescriptionPrivate({
             {session?.isAdmin
               ? 'Select your hosting tier, select CLAB or KLAB for testing purposes. Read more about hosting tiers '
               : 'Select your hosting tier. Read more about hosting tiers '}
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/products-tools/hosting-tiers/">
+            <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/private/products-tools/hosting-tiers/">
               here
             </ExternalLink>
             .
