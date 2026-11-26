@@ -66,6 +66,11 @@ export default publicCloudProductSecurityACS(({ getPathParams, children }) => {
       name: 'requests',
       href: `/public-cloud/products/${licencePlate}/requests`,
     },
+    {
+      label: 'AI USAGE',
+      name: 'ai-usage',
+      href: `/public-cloud/products/${licencePlate}/ai-usage`,
+    },
   ];
 
   if (currentProduct?.provider === Provider.AWS) {
