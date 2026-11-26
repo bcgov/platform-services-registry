@@ -63,7 +63,7 @@ export const openPublicCloudProductDeleteModal = createModal<ModalProps, ModalSt
 
         {product?.expenseAuthorityId ? (
           <>
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/intro/#closure">
+            <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/public/intro/#closure">
               Account closure and project set deletion
             </ExternalLink>
 

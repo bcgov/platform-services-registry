@@ -51,13 +51,13 @@ export default function Landing() {
         <ul className="list-disc pl-8">
           <li className="mb-2 text-gray-700">
             Private Cloud Platform Administrators <MailLink to={privateCloudTeamEmail} /> to book an{' '}
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/private/onboard/">
+            <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/private/onboard/">
               onboarding session for the (Openshift Platform)
             </ExternalLink>
           </li>
           <li className="mb-2 text-gray-700">
             Public Cloud Platform Administrators <MailLink to={publicCloudTeamEmail} /> to book an{' '}
-            <ExternalLink href="https://digital.gov.bc.ca/cloud/services/public/onboard/">
+            <ExternalLink href="https://digital.gov.bc.ca/technology/cloud/public/onboard/">
               onboarding session for the (B.C. Government Public Cloud Landing Zone)
             </ExternalLink>
           </li>

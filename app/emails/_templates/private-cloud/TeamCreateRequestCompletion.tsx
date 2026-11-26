@@ -202,7 +202,7 @@ export default function TeamCreateRequestCompletion({ request }: EmailProp) {
         <li>
           <Text>
             Learn more about&nbsp;
-            <Link href="https://digital.gov.bc.ca/cloud/services/private/products-tools/sysdig/">
+            <Link href="https://digital.gov.bc.ca/technology/cloud/private/products-tools/sysdig/">
               Sysdig Monitor and its benefits
             </Link>
           </Text>
