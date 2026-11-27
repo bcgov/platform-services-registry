@@ -6,6 +6,9 @@ import { generateReportEmbedToken } from './fabric';
 const GITHUB_NAME_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPOSITORY_NAME_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 
+// The AI usage data only covers GitHub; other hosts could share an org/repo name with an unrelated GitHub repository.
+const GITHUB_HOSTS = new Set(['github.com', 'www.github.com']);
+
 type TeamUser = { githubAccount?: { username: string } | null } | null;
 
 export interface AiUsageProduct {
@@ -47,7 +50,10 @@ function parseRepository(url: string) {
   const normalizedUrl = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
   if (!URL.canParse(normalizedUrl)) return null;
 
-  const [organization, repository] = new URL(normalizedUrl).pathname.split('/').filter(Boolean);
+  const { hostname, pathname } = new URL(normalizedUrl);
+  if (!GITHUB_HOSTS.has(hostname.toLowerCase())) return null;
+
+  const [organization, repository] = pathname.split('/').filter(Boolean);
   const name = repository?.replace(/\.git$/, '');
   if (!organization || !name || !GITHUB_NAME_PATTERN.test(organization) || !REPOSITORY_NAME_PATTERN.test(name)) {
     return null;

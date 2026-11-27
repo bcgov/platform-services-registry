@@ -59,6 +59,20 @@ describe('getRepositories', () => {
     });
   });
 
+  it('skips repositories hosted outside GitHub', () => {
+    expect(
+      getRepositories(
+        product({
+          repositories: [
+            { url: 'https://gitlab.com/bcgov/repo' },
+            { url: 'https://github.example.gov.bc.ca/bcgov/repo' },
+            { url: 'https://www.github.com/bcgov/repo' },
+          ],
+        }),
+      ),
+    ).toEqual({ organizations: ['bcgov'], repositories: ['repo'] });
+  });
+
   it('skips URLs without both an organization and a repository', () => {
     expect(
       getRepositories(
