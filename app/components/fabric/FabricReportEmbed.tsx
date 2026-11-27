@@ -14,14 +14,9 @@ const DEFAULT_ASPECT_RATIO = 16 / 9;
 type EmbedInfo = FabricEmbedToken & { filters: FabricReportFilter[] };
 
 function buildEmbedConfig(info: EmbedInfo) {
-  const filters: models.IBasicFilter[] = info.filters.map(({ table, column, values }) => ({
-    $schema: 'http://powerbi.com/product/schema#basic',
-    target: { table, column },
-    operator: 'In',
-    values,
-    filterType: models.FilterType.Basic,
-    requireSingleSelection: false,
-  }));
+  const filters = info.filters.map(({ table, column, values }) =>
+    new models.BasicFilter({ table, column }, 'In', values).toJSON(),
+  );
 
   const config: models.IReportEmbedConfiguration = {
     type: 'report',
@@ -47,7 +42,7 @@ function buildEmbedConfig(info: EmbedInfo) {
 
 // The embed config is fixed at mount because PowerBIEmbed reloads the report whenever it changes.
 // To pick up a new token, the parent remounts this component (e.g. keyed by the token).
-export default function FabricReportEmbed({ info, onReload }: { info: EmbedInfo; onReload: () => void }) {
+export default function FabricReportEmbed({ info, onReload }: Readonly<{ info: EmbedInfo; onReload: () => void }>) {
   const [embedConfig] = useState(() => buildEmbedConfig(info));
   const [expired, setExpired] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);

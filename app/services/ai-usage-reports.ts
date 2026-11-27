@@ -6,7 +6,7 @@ import { generateReportEmbedToken } from './fabric';
 const GITHUB_NAME_PATTERN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 const REPOSITORY_NAME_PATTERN = /^[A-Za-z0-9._-]{1,100}$/;
 
-type TeamUser = { githubAccount?: { username: string } | null } | null | undefined;
+type TeamUser = { githubAccount?: { username: string } | null } | null;
 
 export interface AiUsageProduct {
   projectOwner: TeamUser;
@@ -14,6 +14,8 @@ export interface AiUsageProduct {
   secondaryTechnicalLead?: TeamUser;
   members: TeamUser[];
   repositories?: { url: string }[] | null;
+  // Private cloud only: repositories synced from GitOps, stored separately from the user-entered list.
+  gitOpsRepositories?: { url: string }[] | null;
 }
 
 interface AiUsageReportDefinition {
@@ -41,7 +43,8 @@ export function getTeamGitHubUsernames({
 // Repository URLs are free text, e.g. `https://github.com/<organization>/<repository>/tree/main`.
 function parseRepository(url: string) {
   const trimmedUrl = url.trim();
-  const normalizedUrl = /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+  // Keep any scheme the URL already has (https, ssh, git, ...); only scheme-less input like `github.com/org/repo` gets one.
+  const normalizedUrl = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
   if (!URL.canParse(normalizedUrl)) return null;
 
   const [organization, repository] = new URL(normalizedUrl).pathname.split('/').filter(Boolean);
@@ -53,8 +56,10 @@ function parseRepository(url: string) {
   return { organization, repository: name };
 }
 
-export function getRepositories({ repositories }: AiUsageProduct) {
-  const parsed = (repositories ?? []).map(({ url }) => parseRepository(url)).filter((repo) => repo !== null);
+export function getRepositories({ repositories, gitOpsRepositories }: AiUsageProduct) {
+  const parsed = [...(repositories ?? []), ...(gitOpsRepositories ?? [])]
+    .map(({ url }) => parseRepository(url))
+    .filter((repo) => repo !== null);
 
   return {
     organizations: Array.from(new Set(parsed.map((repo) => repo.organization))),

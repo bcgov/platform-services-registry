@@ -47,12 +47,15 @@ describe('getRepositories', () => {
             { url: 'https://github.com/bcgov/platform-services-registry' },
             { url: 'github.com/bcgov/other-repo.git' },
             { url: 'https://github.com/bcgov-c/platform-services-registry/tree/main' },
+            { url: 'ssh://git@github.com/bcgov/ssh-repo.git' },
+            { url: 'git://github.com/bcgov/git-repo.git' },
           ],
+          gitOpsRepositories: [{ url: 'https://github.com/bcgov-c/gitops-repo' }],
         }),
       ),
     ).toEqual({
       organizations: ['bcgov', 'bcgov-c'],
-      repositories: ['platform-services-registry', 'other-repo'],
+      repositories: ['platform-services-registry', 'other-repo', 'ssh-repo', 'git-repo', 'gitops-repo'],
     });
   });
 
