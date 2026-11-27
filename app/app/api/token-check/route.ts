@@ -1,6 +1,7 @@
 import createApiHandler from '@/core/api-handler';
 import { OkResponse } from '@/core/responses';
 import { validateChesServiceAccountCredentials } from './validations/ches-service-account-credentials';
+import { validateFabricServicePrincipalReportAccess } from './validations/fabric-service-principal-report-access';
 import { validateKeycloakServiceAccount } from './validations/keycloak-service-account-credentials';
 import { validateKeycloakUserLogin } from './validations/keycloak-user-login-credentials';
 import { validateKubernetisDeletionCheckTokens } from './validations/kubernetis-deletion-check-tokens';
@@ -15,6 +16,7 @@ export const GET = createApiHandler({})(async () => {
     kubernetisDeletionCheckTokens,
     chesServiceAccountCredentials,
     msGraphServiceAccountCertificateOrSecret,
+    fabricServicePrincipalReportAccess,
   ] = await Promise.all([
     validateKeycloakServiceAccount().catch(() => false),
     validateKeycloakUserLogin().catch(() => false),
@@ -22,6 +24,7 @@ export const GET = createApiHandler({})(async () => {
     validateKubernetisDeletionCheckTokens().catch(() => false),
     validateChesServiceAccountCredentials().catch(() => false),
     validateMsGraphServiceAccountCertificateOrSecret().catch(() => false),
+    validateFabricServicePrincipalReportAccess().catch(() => false),
   ]);
 
   return OkResponse({
@@ -31,5 +34,6 @@ export const GET = createApiHandler({})(async () => {
     kubernetisDeletionCheckTokens,
     chesServiceAccountCredentials,
     msGraphServiceAccountCertificateOrSecret,
+    fabricServicePrincipalReportAccess,
   });
 });

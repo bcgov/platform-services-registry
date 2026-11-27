@@ -417,6 +417,12 @@ importers:
       postcss:
         specifier: 8.5.33
         version: 8.5.33
+      powerbi-client:
+        specifier: ^2.25.0
+        version: 2.25.0
+      powerbi-client-react:
+        specifier: ^2.0.2
+        version: 2.0.2(react@19.3.1)
       react:
         specifier: ^19.2.1
         version: 19.3.1
@@ -5347,6 +5353,9 @@ packages:
   es-toolkit@1.50.0:
     resolution: {integrity: sha512-OyZKhUVvEep9ITEiwHn8GKnMRQIVqoSIX7WnRbkWgJkllCujilqP2rD0u979tkl8wqyc8ICwlc1UBVv/Sl1G6w==}
 
+  es6-promise@3.3.1:
+    resolution: {integrity: sha512-SOp9Phqvqn7jtEUxPWdWfWoLmyt2VaJ6MpvP9Comy1MceMXqE6bxvaTu4iaxpYYPzhny28Lc+M87/c2cPK6lDg==}
+
   esbuild@0.27.4:
     resolution: {integrity: sha512-Rq4vbHnYkK5fws5NF7MYTU68FPRE1ajX7heQ/8QXXWqNgqqJ/GkmmyxIzUnf2Sr/bakf8l54716CcMGHYhMrrQ==}
     engines: {node: '>=18'}
@@ -6030,6 +6039,9 @@ packages:
   http-errors@2.0.1:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
     engines: {node: '>= 0.8'}
+
+  http-post-message@0.3.0:
+    resolution: {integrity: sha512-tfn1ca5RcRKdejbFanY2ydN4pXB+youdgtNz1GSKtWvzbaf63sGQWyRjo5bnqlebTjG85wY0GUADDD0tAVpmkQ==}
 
   http-proxy-agent@7.0.2:
     resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
@@ -7563,6 +7575,20 @@ packages:
     resolution: {integrity: sha512-RVHEU9/Pp1Fnjr/MpAJsZoADukCKhfIi15OunEYiGktIkYLkPVvC1sioWolGDS7XByMTx9m/IGbro0Js13zhnQ==}
     engines: {node: ^10 || ^12 || >=14}
 
+  powerbi-client-react@2.0.2:
+    resolution: {integrity: sha512-NXn2gAQlktKQTyMeOkH8dEUUN79MTiyq6HKWG72WyayDcvcIb9mTFtlYK9CyD8efUeWa4QsiYMOg2xrkAFd4JQ==}
+    peerDependencies:
+      react: '>= 18'
+
+  powerbi-client@2.25.0:
+    resolution: {integrity: sha512-h6jMorFGRiptWiuJ8O0ZCavLf3d1IaBdxEFP34YTx830yiUPnOJWGJrUbdY0fnyAPFO3GJz1BhqjkN9Q3CB7hg==}
+
+  powerbi-models@2.2.0:
+    resolution: {integrity: sha512-L8HcBLQQP1+y1382jnf6RoC6OtOB25TCdDpEkLTXeg4d2Uku8cUUVG0b8JyZ3j5yATohFBuj8oWstkQoCJJvoA==}
+
+  powerbi-router@0.1.5:
+    resolution: {integrity: sha512-DFJCKxwh/DqMZXtHSo6xZl87mbRviZGn4P7Oi2rT0L4HMI4AjnWIrwg0JCSM7ymBzYnNe5UmrsCaf2Upur5RQA==}
+
   powershell-utils@0.1.0:
     resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
     engines: {node: '>=20'}
@@ -7976,6 +8002,9 @@ packages:
 
   rope-sequence@1.3.4:
     resolution: {integrity: sha512-UT5EDe2cu2E/6O4igUr5PSFs23nvvukicWHx6GnOPlHAiiYbzNuCRQCuiUdHJQcqKalLKlrYJnjY0ySGsXNQXQ==}
+
+  route-recognizer@0.1.11:
+    resolution: {integrity: sha512-7JNu5mXQVa39zxmUKyk/bfpeF2WyEC5JKVTJO5HATcoUQpcQsI3eLzhwGU69xeOagQxfOQ+yr2sSv0G8xy+vQA==}
 
   router@2.2.0:
     resolution: {integrity: sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==}
@@ -8863,6 +8892,9 @@ packages:
 
   wildcard-match@5.1.6:
     resolution: {integrity: sha512-Dh5N543my42ynFsbT0v6iPpaqJt95MOK1n/lhojVTe/hS3gpP6e938bbzsfaS0goLlJbhEOCIJPe/Tc3hckoaQ==}
+
+  window-post-message-proxy@0.3.0:
+    resolution: {integrity: sha512-dEpItkLX97djHvWzcbVmyelEPoq2Oglx2y5EYt+mCC0bwKvwbtE3ro3Zsg9heHAUir/3dHUBtV2Rr8DQQjwyPg==}
 
   windows-release@7.1.1:
     resolution: {integrity: sha512-0GBwC9WmR8Bm3WYiz3FC391054BsFHZ2gzBVdYj9uj5eIVYzbn/YPYCYW9SWdh9vwnLuzpn1UGwJKiMG4F236w==}
@@ -13697,6 +13729,8 @@ snapshots:
 
   es-toolkit@1.50.0: {}
 
+  es6-promise@3.3.1: {}
+
   esbuild@0.27.4:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.27.4
@@ -14627,6 +14661,10 @@ snapshots:
       setprototypeof: 1.2.0
       statuses: 2.0.2
       toidentifier: 1.0.1
+
+  http-post-message@0.3.0:
+    dependencies:
+      es6-promise: 3.3.1
 
   http-proxy-agent@7.0.2(supports-color@8.1.1):
     dependencies:
@@ -16352,6 +16390,26 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.4
 
+  powerbi-client-react@2.0.2(react@19.3.1):
+    dependencies:
+      lodash.isequal: 4.5.0
+      powerbi-client: 2.25.0
+      react: 19.3.1
+
+  powerbi-client@2.25.0:
+    dependencies:
+      http-post-message: 0.3.0
+      powerbi-models: 2.2.0
+      powerbi-router: 0.1.5
+      window-post-message-proxy: 0.3.0
+
+  powerbi-models@2.2.0: {}
+
+  powerbi-router@0.1.5:
+    dependencies:
+      es6-promise: 3.3.1
+      route-recognizer: 0.1.11
+
   powershell-utils@0.1.0: {}
 
   powershell-utils@0.2.1: {}
@@ -16880,6 +16938,8 @@ snapshots:
       package-json-from-dist: 1.0.1
 
   rope-sequence@1.3.4: {}
+
+  route-recognizer@0.1.11: {}
 
   router@2.2.0(supports-color@8.1.1):
     dependencies:
@@ -17975,6 +18035,10 @@ snapshots:
       isexe: 4.0.0
 
   wildcard-match@5.1.6: {}
+
+  window-post-message-proxy@0.3.0:
+    dependencies:
+      es6-promise: 3.3.1
 
   windows-release@7.1.1:
     dependencies:

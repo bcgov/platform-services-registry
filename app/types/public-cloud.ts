@@ -50,7 +50,18 @@ export type PublicCloudProductDetail = Prisma.PublicCloudProductGetPayload<{
   activeRequest?: Prisma.PublicCloudRequestGetPayload<null> | null;
 };
 
-type _PublicCloudProductDetail = Omit<PublicCloudProductDetail, 'members'> & ExtendedPublicCloudProductMembersData;
+type UserWithGitHubAccount = User & { githubAccount: { username: string; accountId: string } | null };
+
+type _PublicCloudProductDetail = Omit<
+  PublicCloudProductDetail,
+  'members' | 'projectOwner' | 'primaryTechnicalLead' | 'secondaryTechnicalLead' | 'expenseAuthority'
+> & {
+  projectOwner: UserWithGitHubAccount;
+  primaryTechnicalLead: UserWithGitHubAccount;
+  secondaryTechnicalLead: UserWithGitHubAccount | null;
+  expenseAuthority: UserWithGitHubAccount;
+  members: (PublicCloudProductMember & UserWithGitHubAccount)[];
+};
 
 export type PublicCloudProductDetailDecorated = _PublicCloudProductDetail & PublicCloudProductDecorate;
 

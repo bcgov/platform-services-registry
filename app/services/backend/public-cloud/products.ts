@@ -2,6 +2,7 @@ import axios from 'axios';
 import { publicCloudProductSorts } from '@/constants';
 import { AccountCoding, Prisma } from '@/prisma/client';
 import { MembersHistoryResponse } from '@/services/db/members-history';
+import { AiUsageEmbedInfo, AiUsageReportKey } from '@/types/fabric';
 import {
   PublicCloudRequestSimpleDecorated,
   PublicCloudProductSearch,
@@ -71,6 +72,13 @@ export async function getPublicCloudProduct(licencePlate: string) {
   });
 
   return result as PublicCloudProductDetailDecorated;
+}
+
+export async function getPublicCloudProductAiUsageEmbed(licencePlate: string, reportKey: AiUsageReportKey) {
+  const result = await instance
+    .get<AiUsageEmbedInfo>(`/${licencePlate}/ai-usage-embed/${reportKey}`)
+    .then((res) => res.data);
+  return result;
 }
 
 export async function createPublicCloudProduct(data: any) {

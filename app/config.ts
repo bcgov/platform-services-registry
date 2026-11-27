@@ -87,6 +87,15 @@ export const MS_GRAPH_API_CLIENT_CERTIFICATE = decodeEscapedNewlines(process.env
 export const MS_GRAPH_API_PROXY_URL = process.env.MS_GRAPH_API_PROXY_URL || 'http://localhost:8000';
 export const USE_MS_GRAPH_API_PROXY = process.env.USE_MS_GRAPH_API_PROXY === 'true';
 
+// Fabric / Power BI "app owns data" embedding via a service principal.
+export const POWER_BI_API_URL = process.env.POWER_BI_API_URL || 'https://api.powerbi.com/v1.0/myorg';
+export const FABRIC_TENANT_ID = process.env.FABRIC_TENANT_ID || '';
+export const FABRIC_CLIENT_ID = process.env.FABRIC_CLIENT_ID || '';
+export const FABRIC_CLIENT_SECRET = process.env.FABRIC_CLIENT_SECRET || '';
+export const FABRIC_WORKSPACE_ID = process.env.FABRIC_WORKSPACE_ID || '';
+export const FABRIC_AI_USAGE_TEAM_REPORT_ID = process.env.FABRIC_AI_USAGE_TEAM_REPORT_ID || '';
+export const FABRIC_AI_USAGE_CODE_QUALITY_REPORT_ID = process.env.FABRIC_AI_USAGE_CODE_QUALITY_REPORT_ID || '';
+
 export const PUBLIC_AZURE_ACCESS_EMAILS = process.env.PUBLIC_AZURE_ACCESS_EMAILS || '';
 export const WEASYPRINT_URL = process.env.WEASYPRINT_URL || 'http://localhost:8090';
 

@@ -3,6 +3,7 @@ import { EnvironmentShortName, privateCloudProductSorts } from '@/constants';
 import { Cluster, Prisma, PrivateCloudComment, QuotaUpgradeResourceDetail, ResourceRequestsEnv } from '@/prisma/client';
 import { MembersHistoryResponse } from '@/services/db/members-history';
 import { DeletionCheck } from '@/services/k8s/reads';
+import { AiUsageEmbedInfo, AiUsageReportKey } from '@/types/fabric';
 import {
   PrivateCloudRequestSimpleDecorated,
   PrivateCloudProductDetailDecorated,
@@ -63,6 +64,13 @@ export async function downloadPrivateCloudProducts(data: PrivateCloudProductSear
 
 export async function getPrivateCloudProduct(licencePlate: string) {
   const result = await instance.get<PrivateCloudProductDetailDecorated>(`/${licencePlate}`).then((res) => res.data);
+  return result;
+}
+
+export async function getPrivateCloudProductAiUsageEmbed(licencePlate: string, reportKey: AiUsageReportKey) {
+  const result = await instance
+    .get<AiUsageEmbedInfo>(`/${licencePlate}/ai-usage-embed/${reportKey}`)
+    .then((res) => res.data);
   return result;
 }
 
