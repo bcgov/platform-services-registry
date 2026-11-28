@@ -13,6 +13,143 @@ import { getMatchingUserIds } from './user';
 const defaultSortKey = 'updatedAt';
 const defaultOrderBy = { [defaultSortKey]: Prisma.SortOrder.desc };
 
+async function buildDecisionDataSearchFilter({
+  licencePlate,
+  ministries,
+  clusters,
+  temporary,
+  search,
+}: PrivateCloudRequestSearchBody): Promise<Prisma.PrivateCloudRequestDataWhereInput> {
+  const where: Prisma.PrivateCloudRequestDataWhereInput = {};
+
+  if (search && search !== '*') {
+    const matchingUserIds = await getMatchingUserIds(search);
+
+    const searchCriteria: Prisma.StringFilter<'PrivateCloudRequestData'> = {
+      contains: search,
+      mode: 'insensitive',
+    };
+
+    where.OR = [
+      { projectOwnerId: { in: matchingUserIds } },
+      { primaryTechnicalLeadId: { in: matchingUserIds } },
+      { secondaryTechnicalLeadId: { in: matchingUserIds } },
+      { name: searchCriteria },
+      { description: searchCriteria },
+      { licencePlate: searchCriteria },
+    ];
+  }
+
+  if (licencePlate) {
+    where.licencePlate = licencePlate;
+  }
+
+  if (ministries?.length) {
+    const organizations = await prisma.organization.findMany({
+      where: { code: { in: ministries } },
+      select: { id: true },
+    });
+
+    where.organizationId = {
+      in: organizations.map((org) => org.id),
+    };
+  }
+
+  if (clusters?.length) {
+    where.cluster = { in: clusters };
+  }
+
+  if (temporary?.length === 1) {
+    where.isTest = temporary[0] === 'YES';
+  }
+
+  return where;
+}
+
+function appendRequestFilter(
+  where: Prisma.PrivateCloudRequestWhereInput,
+  filter: Prisma.PrivateCloudRequestWhereInput,
+) {
+  const existing = where.AND;
+
+  let conditions: Prisma.PrivateCloudRequestWhereInput[] = [];
+
+  if (existing) {
+    conditions = Array.isArray(existing) ? existing : [existing];
+  }
+
+  where.AND = [...conditions, filter];
+}
+
+async function buildPrivateCloudRequestSearchQuery({
+  licencePlate,
+  ministries,
+  clusters,
+  types,
+  status,
+  temporary,
+  quotaChange,
+  quotaIncrease,
+  search,
+  sortKey = defaultSortKey,
+  sortOrder = Prisma.SortOrder.desc,
+  extraFilter,
+}: PrivateCloudRequestSearchBody & {
+  extraFilter?: Prisma.PrivateCloudRequestWhereInput;
+}) {
+  const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
+
+  let orderBy: Prisma.PrivateCloudRequestOrderByWithRelationInput = defaultOrderBy;
+
+  if (sortOption) {
+    const order = { [sortKey]: Prisma.SortOrder[sortOrder] };
+
+    orderBy = sortOption.inData ? { decisionData: order } : order;
+  }
+
+  const decisionDatawhere = await buildDecisionDataSearchFilter({
+    licencePlate,
+    ministries,
+    clusters,
+    temporary,
+    search,
+  });
+
+  const where: Prisma.PrivateCloudRequestWhereInput = {
+    ...extraFilter,
+  };
+
+  if (Object.keys(decisionDatawhere).length > 0) {
+    appendRequestFilter(where, {
+      decisionData: {
+        is: decisionDatawhere,
+      },
+    });
+  }
+
+  if (types?.length) {
+    where.type = { in: types };
+  }
+
+  if (quotaChange) {
+    where.isQuotaChanged = true;
+  }
+
+  if (quotaIncrease) {
+    where.changes = {
+      is: {
+        quotasIncrease: true,
+      },
+    };
+  }
+
+  if (status?.length) {
+    appendRequestFilter(where, getRequestStatusFilter<Prisma.PrivateCloudRequestWhereInput>(status));
+  }
+
+  return { where, orderBy };
+}
+
 export async function searchPrivateCloudRequests({
   session,
   skip,
@@ -42,99 +179,27 @@ export async function searchPrivateCloudRequests({
   if (!_isNumber(skip) && !_isNumber(take) && page && pageSize) {
     ({ skip, take } = parsePaginationParams(page, pageSize, 10));
   }
-
-  const decisionDatawhere: Prisma.PrivateCloudRequestDataWhereInput = {};
-
-  const sortOption = requestSorts.find((sort) => sort.sortKey === sortKey);
-  let orderBy!: Prisma.PrivateCloudRequestOrderByWithRelationInput;
-  if (sortOption) {
-    const order = { [sortKey]: Prisma.SortOrder[sortOrder] };
-    orderBy = sortOption.inData ? { decisionData: order } : order;
-  }
-
-  if (search === '*') search = '';
-
-  if (search) {
-    const matchingUserIds = await getMatchingUserIds(search);
-    const productSearchcreteria: Prisma.StringFilter<'PrivateCloudRequestData'> = {
-      contains: search,
-      mode: 'insensitive',
-    };
-
-    decisionDatawhere.OR = [
-      { projectOwnerId: { in: matchingUserIds } },
-      { primaryTechnicalLeadId: { in: matchingUserIds } },
-      { secondaryTechnicalLeadId: { in: matchingUserIds } },
-      { name: productSearchcreteria },
-      { description: productSearchcreteria },
-      { licencePlate: productSearchcreteria },
-    ];
-  }
-
-  if (licencePlate) {
-    decisionDatawhere.licencePlate = licencePlate;
-  }
-
-  if (ministries && ministries.length > 0) {
-    const organizations = await prisma.organization.findMany({
-      where: { code: { in: ministries } },
-      select: { id: true },
-    });
-    decisionDatawhere.organizationId = { in: organizations.map((org) => org.id) };
-  }
-
-  if (clusters && clusters.length > 0) {
-    decisionDatawhere.cluster = { in: clusters };
-  }
-
-  if (temporary && temporary.length === 1) {
-    decisionDatawhere.isTest = temporary[0] === 'YES';
-  }
-
-  const matchingRequestedPrivateProjects = await prisma.privateCloudRequestData.findMany({
-    where: decisionDatawhere,
-    select: { id: true },
+  const { where, orderBy } = await buildPrivateCloudRequestSearchQuery({
+    licencePlate,
+    ministries,
+    clusters,
+    types,
+    status,
+    temporary,
+    quotaChange,
+    quotaIncrease,
+    search,
+    sortKey,
+    sortOrder,
+    extraFilter,
   });
-
-  const where: Prisma.PrivateCloudRequestWhereInput = extraFilter ?? {};
-  where.decisionDataId = { in: matchingRequestedPrivateProjects.map((proj) => proj.id) };
-
-  if (types && types.length > 0) {
-    where.type = { in: types };
-  }
-
-  if (quotaChange) {
-    where.isQuotaChanged = true;
-  }
-
-  if (quotaIncrease) {
-    where.changes = {
-      is: {
-        quotasIncrease: true,
-      },
-    };
-  }
-
-  if (status && status.length > 0) {
-    const existingConditions: Prisma.PrivateCloudRequestWhereInput[] = [];
-
-    if (where.AND) {
-      if (Array.isArray(where.AND)) {
-        existingConditions.push(...where.AND);
-      } else {
-        existingConditions.push(where.AND);
-      }
-    }
-
-    where.AND = [...existingConditions, getRequestStatusFilter<Prisma.PrivateCloudRequestWhereInput>(status)];
-  }
 
   const { data: docs, totalCount } = await models.privateCloudRequest.list(
     {
       where,
       skip,
       take,
-      orderBy: orderBy ?? defaultOrderBy,
+      orderBy,
       includeCount: !forExport,
       ...(forExport && {
         select: {
@@ -151,6 +216,42 @@ export async function searchPrivateCloudRequests({
   );
 
   return { docs, totalCount } as PrivateCloudRequestSearch;
+}
+
+export async function searchPrivateCloudRequestsForServiceAccount({
+  page = 1,
+  pageSize = 100,
+  ...filters
+}: PrivateCloudRequestSearchBody) {
+  const { skip, take } = parsePaginationParams(page, pageSize, 10);
+
+  const { where, orderBy } = await buildPrivateCloudRequestSearchQuery(filters);
+
+  const deterministicOrderBy: Prisma.PrivateCloudRequestOrderByWithRelationInput[] = [
+    orderBy,
+    { id: Prisma.SortOrder.asc },
+  ];
+
+  const [docs, totalCount] = await Promise.all([
+    prisma.privateCloudRequest.findMany({
+      where,
+      skip,
+      take,
+      orderBy: deterministicOrderBy,
+      select: {
+        id: true,
+        licencePlate: true,
+        type: true,
+        decisionStatus: true,
+        isQuotaChanged: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.privateCloudRequest.count({ where }),
+  ]);
+
+  return { docs, totalCount };
 }
 
 export async function getLastEffectivePrivateCloudRequest(licencePlate: string) {
